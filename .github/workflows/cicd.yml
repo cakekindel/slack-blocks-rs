@@ -1,17 +1,17 @@
-name: cicd
+name: 'ci check'
 
 on:
   push:
-    branches: [ master ]
+    branches: [ 'master' ]
   pull_request:
-    branches: [ master ]
+    branches: [ 'master' ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  ci_build:
+    runs-on: 'ubuntu-latest'
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+    - uses: 'actions/checkout@v2'
+    - name: 'Build'
+      run: 'cargo build'
+    - name: 'Test'
+      run: 'cargo test'
