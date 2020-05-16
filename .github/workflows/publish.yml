@@ -1,0 +1,20 @@
+name: 'semantic release'
+
+on:
+  push:
+    branches: [ 'master' ]
+
+jobs:
+  publish:
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: 'actions/setup-node@v1'
+      with: { node-version: '14' }
+    - uses: 'actions/checkout@v2'
+    - run: 'cargo build'
+    - run: 'cargo install cargo-release'
+    - run: 'npm i -D @semantic-release/exec'
+    - env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
+      run: 'npx semantic-release'
