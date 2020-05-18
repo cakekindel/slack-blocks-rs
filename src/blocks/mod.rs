@@ -117,10 +117,6 @@ mod tests {
     use crate::compose::{Text};
     use crate::validation::{ValidationError, ValidationResult};
 
-    fn string_of_len(len: usize) -> String {
-        repeat(' ').take(len).collect::<String>()
-    }
-
     //#[test_case(
     //    Block::Section { text: Text::markdown(string_of_len(3001)) }
     //        => matches Err(ValidationError::Text(TextValidationError::ExceedsMaxLen { .. }));

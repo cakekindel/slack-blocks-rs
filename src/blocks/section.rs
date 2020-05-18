@@ -73,12 +73,27 @@ impl SectionContents {
     }
 }
 
-#[cfg(tests)]
+#[cfg(test)]
 mod tests {
+    use std::iter::repeat;
+    use test_case::test_case;
+
+    use crate::validation::ValidationError;
+    use super::*;
+
+    fn string_of_len(len: usize) -> String {
+        repeat(' ').take(len).collect::<String>()
+    }
+
     #[test_case(
-        SectionContents::from_text(Text::markdown(string_of_len(3001))) => matches Err(ValidationError::Text(TextValidationError::ExceedsMaxLen { .. }));
+        SectionContents::from_text(Text::markdown(string_of_len(3001))) => matches Err(ValidationError::ExceedsMaxLen { .. });
         "fail_when_text_longer_than_3k_chars"
     )]
-    pub fn section_contents_validation_should() {}
+    pub fn section_contents_validation_should(contents: SectionContents) -> ValidationResult {
+        // arrange
+        // act
+        contents.validate()
+        // assert
+    }
 }
 
