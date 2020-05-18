@@ -11,7 +11,7 @@ use crate::validation::ValidationResult;
 /// or using [`mrkdwn` 🔗](https://api.slack.com/reference/surfaces/formatting),
 /// our proprietary textual markup that's just different enough
 /// from Markdown to frustrate you.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum Text {
     /// ## Markdown text
@@ -90,6 +90,10 @@ pub enum Text {
 }
 
 impl Text {
+    pub fn plain(text: String) -> Text {
+        Text::Plain { text, emoji: None }
+    }
+
     pub fn markdown(text: String) -> Text {
         Text::Markdown { text, verbatim: None }
     }

@@ -9,6 +9,8 @@ pub enum ValidationError {
         max_len: usize,
         actual_len: usize,
     },
+    #[error("{0:?}")]
+    Multiple(Vec<ValidationError>)
 }
 
 pub type ValidationResult = Result<(), ValidationError>;

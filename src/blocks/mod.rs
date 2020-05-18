@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::validation::ValidationResult;
 
-mod section;
+pub mod section;
 use section::SectionContents;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -11,6 +11,11 @@ pub enum Block {
     /// # Section Block
     ///
     /// _[slack api docs 🔗](https://api.slack.com/reference/block-kit/blocks#section)_
+    /// 
+    /// Available in surfaces:
+    ///  - [modals 🔗](https://api.slack.com/surfaces/modals)
+    ///  - [messages 🔗](https://api.slack.com/surfaces/messages)
+    ///  - [home tabs 🔗](https://api.slack.com/surfaces/tabs)
     ///
     /// A `section` is one of the most flexible blocks available -
     /// it can be used as a simple text block,
