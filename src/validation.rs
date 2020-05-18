@@ -1,14 +1,36 @@
+use std::iter::Iterator;
 use thiserror::Error;
-
-use crate::compose::{TextValidationError};
 
 #[derive(Debug, Error)]
 pub enum ValidationError {
-    #[error("validation error! compose::text")]
-    Text(TextValidationError),
+    #[error("{context} is of length {actual_len} which exceeds max length of {max_len}")]
+    ExceedsMaxLen {
+        context: String,
+        max_len: usize,
+        actual_len: usize,
+    },
 }
 
-pub trait Validate where Self : Sized {
-    fn validate(&self) -> Result<Self, ValidationError>;
+pub type ValidationResult = Result<(), ValidationError>;
+
+pub fn is_str_shorter_than(str: &str, max_len: usize, context: &str) -> ValidationResult {
+    is_shorter_than(str.bytes().into_iter(), max_len, context)
 }
 
+pub fn is_shorter_than<A>(
+    iter: impl Iterator<Item = A>,
+    max_len: usize,
+    context: &str,
+) -> ValidationResult {
+    let actual_len = iter.count();
+
+    if actual_len > max_len {
+        Err(ValidationError::ExceedsMaxLen {
+            context: context.to_string(),
+            max_len,
+            actual_len,
+        })
+    } else {
+        Ok(())
+    }
+}

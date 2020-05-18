@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::validation::{Validate, ValidationError};
+use crate::validation::ValidationResult;
+
+mod section;
+use section::SectionContents;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "type")]
@@ -14,9 +17,7 @@ pub enum Block {
     /// in combination with text fields,
     /// or side-by-side with any of the available [block elements 🔗](https://api.slack.com/reference/messaging/block-elements)
     #[serde(rename = "section")]
-    Section {
-        text: crate::compose::Text
-    },
+    Section(SectionContents),
 
     /// # Divider Block
     ///
@@ -78,12 +79,34 @@ pub enum Block {
     File {},
 }
 
-impl Validate for Block {
-    fn validate(&self) -> Result<Block, ValidationError> {
-        todo!()
+use std::fmt;
+
+impl fmt::Display for Block {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let kind = match self {
+            Block::Section { .. } => "Section",
+            Block::Divider => "Divider",
+            Block::Image { .. } => "Image",
+            Block::Actions { .. } => "Actions",
+            Block::Context { .. } => "Context",
+            Block::Input { .. } => "Input",
+            Block::File { .. } => "File",
+        };
+
+        write!(f, "{}", kind)
     }
 }
 
+impl Block {
+    pub fn validate(&self) -> ValidationResult {
+        use Block::*;
+
+        match self {
+            Section(contents) => contents.validate(),
+            _ => todo!(),
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -91,26 +114,37 @@ mod tests {
     use test_case::test_case;
 
     use super::*;
-    use crate::compose::Text;
+    use crate::compose::{Text};
+    use crate::validation::{ValidationError, ValidationResult};
 
     fn string_of_len(len: usize) -> String {
         repeat(' ').take(len).collect::<String>()
     }
 
-    #[test_case(Block::Section { text: Text { text: string_of_len(3001) } } => matches Err(ValidationError::Text(_)))]
-    pub fn block_should_validate(block: Block) -> Result<Block, ValidationError> {
+    //#[test_case(
+    //    Block::Section { text: Text::markdown(string_of_len(3001)) }
+    //        => matches Err(ValidationError::Text(TextValidationError::ExceedsMaxLen { .. }));
+    //    "fail_when_section_text_longer_than_3k_chars"
+    //)]
+    pub fn block_validation_should(block: Block) -> ValidationResult {
         // arrange
 
         // act
         block.validate()
-        
-        // assert
+
+        // assert - handled by right hand of `=>` expression in test_case macro
     }
 
     #[test]
     pub fn section_should_deserialize() {
         // arrange
-        let json = r#"{ "type": "section", "text": {  } }"#;
+        let json = r#"{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "my message"
+            }
+        }"#;
 
         // act
         let block = serde_json::from_str::<Block>(&json).expect("Failed to serialize");
