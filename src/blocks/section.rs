@@ -101,6 +101,11 @@ pub enum SectionContents {
 }
 
 impl SectionContents {
+    pub const FIELDS_MAX_COUNT: usize= 10;
+    pub const EACH_FIELD_MAX_LEN: usize = 2000;
+    pub const TEXT_MAX_LEN: usize = 3000;
+    pub const BLOCK_ID_MAX_LEN: usize = 255;
+
     pub fn from_fields(fields: Vec<Text>) -> Self {
         SectionContents::Fields {
             fields,
@@ -145,16 +150,16 @@ impl SectionContents {
                 .map(|s| s.clone())
                 .unwrap_or_default()
                 .as_str(),
-            255,
+            Self::BLOCK_ID_MAX_LEN,
             "Section block id",
         ));
 
         if let Some(text) = text {
-            val_results.push(is_str_shorter_than(text.text(), 3000, "Section text"));
+            val_results.push(is_str_shorter_than(text.text(), Self::TEXT_MAX_LEN, "Section text"));
         }
 
         if let Some(fields) = fields {
-            val_results.push(is_shorter_than(fields.iter(), 10, "Section fields"));
+            val_results.push(is_shorter_than(fields.iter(), Self::FIELDS_MAX_COUNT, "Section fields"));
 
             let mut field_len_errors: Vec<ValidationResult> = fields
                 .iter()
@@ -162,7 +167,7 @@ impl SectionContents {
                 .map(|(ix, text)| {
                     is_str_shorter_than(
                         text.text(),
-                        2000,
+                        Self::EACH_FIELD_MAX_LEN,
                         format!("Section Field ix. {}", ix).as_str(),
                     )
                 })
@@ -204,17 +209,41 @@ mod tests {
     }
 
     #[test_case(
-        SectionContents::from_text(Text::markdown(string_of_len(3001))) => matches Err(ValidationError::ExceedsMaxLen { .. });
+        SectionContents::from_text(Text::markdown(string_of_len(3001)))
+        => matches Err(ValidationError::ExceedsMaxLen { .. });
         "fail_when_text_longer_than_3k_chars"
     )]
     #[test_case(
-        SectionContents::from_fields(vec_of_len(Text::plain("".to_string()), 11)) => matches Err(ValidationError::ExceedsMaxLen { .. });
+        SectionContents::from_fields(vec_of_len(Text::plain("".to_string()), 11))
+        => matches Err(ValidationError::ExceedsMaxLen { .. });
         "fail_when_more_than_10_fields"
     )]
+    #[test_case(
+        SectionContents::from_fields(vec![Text::plain(string_of_len(2001))])
+        => matches Err(ValidationError::ExceedsMaxLen { .. });
+        "fail_when_field_longer_than_2k_chars"
+    )]
+    #[test_case(
+        SectionContents::from_fields(vec_of_len(Text::plain(string_of_len(2001)), 2))
+        => matches Err(ValidationError::Multiple { .. });
+        "fail_when_multiple_fields_longer_than_2k_chars"
+    )]
+    #[test_case(
+        SectionContents::Fields {
+            text: None,
+            fields: vec![],
+            block_id: Some(string_of_len(256)),
+            accessory: None,
+        }
+        => matches Err(ValidationError::ExceedsMaxLen { .. });
+        "fail_when_block_id_longer_than_255_chars"
+    )]
     pub fn section_contents_validation_should(contents: SectionContents) -> ValidationResult {
-        // arrange
+        // arrange (test_case input)
+        
         // act
         contents.validate()
-        // assert
+        
+        // assert (test_case output)
     }
 }
