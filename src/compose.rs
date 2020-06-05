@@ -1,7 +1,25 @@
 use serde::{Deserialize, Serialize};
-use thiserror::Error;
 
-use crate::validation::ValidationResult;
+pub mod validation {
+    use crate::val_helpr::error;
+    use validator::ValidationError;
+    type ValidationResult = Result<(), ValidationError>;
+
+    pub fn text_max_len(text: &super::Text, max_len: usize) -> ValidationResult {
+        let len = text.text().chars().count();
+
+        if len > max_len {
+ 	    let message = format!(
+                "Section#text has max len of {}, but got text of len {}.",
+                max_len, len
+            );
+
+            Err(error("text_max_len", message))
+        } else {
+            Ok(())
+        }
+    }
+}
 
 /// # Text Object
 /// [_slack api docs 🔗_](https://api.slack.com/reference/block-kit/composition-objects#text)
@@ -95,7 +113,10 @@ impl Text {
     }
 
     pub fn markdown(text: String) -> Text {
-        Text::Markdown { text, verbatim: None }
+        Text::Markdown {
+            text,
+            verbatim: None,
+        }
     }
 
     pub fn text(&self) -> &str {
@@ -107,4 +128,3 @@ impl Text {
         }
     }
 }
-

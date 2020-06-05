@@ -1,9 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::validation::ValidationResult;
-
 pub mod section;
-use section::SectionContents;
+
+type ValidationResult = Result<(), validator::ValidationErrors>;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "type")]
@@ -11,7 +10,7 @@ pub enum Block {
     /// # Section Block
     ///
     /// _[slack api docs 🔗][section_docs]_
-    /// 
+    ///
     /// Available in surfaces:
     ///  - [modals 🔗][modal_surface]
     ///  - [messages 🔗][message_surface]
@@ -28,7 +27,7 @@ pub enum Block {
     /// [tab_surface]: https://api.slack.com/surfaces/tabs
     /// [block_elements]: https://api.slack.com/reference/messaging/block-elements
     #[serde(rename = "section")]
-    Section(SectionContents),
+    Section(section::Contents),
 
     /// # Divider Block
     ///
