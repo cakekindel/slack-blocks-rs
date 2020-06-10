@@ -134,7 +134,7 @@ impl Contents {
         })
     }
 
-    pub(crate) fn validate(&self) -> ValidationResult {
+    pub fn validate(&self) -> ValidationResult {
         match self {
             Contents::Text(text) => text.validate(),
             Contents::Fields(fields) => fields.validate()
@@ -142,7 +142,7 @@ impl Contents {
     }
 }
 
-pub(crate) mod validation {
+pub mod validation {
     use crate::compose;
 
     pub const FIELDS_MAX_CT: usize = 10;
@@ -152,11 +152,11 @@ pub(crate) mod validation {
 
     type ValidationResult = Result<(), validator::ValidationError>;
 
-    pub(super) fn text_max_len_3k(text: &compose::Text) -> ValidationResult {
+    pub fn text_max_len_3k(text: &compose::Text) -> ValidationResult {
         compose::validation::text_max_len(text, TEXT_MAX_LEN)
     }
 
-    pub(super) fn each_text_max_len_2k(texts: &Vec<compose::Text>) -> ValidationResult {
+    pub fn each_text_max_len_2k(texts: &Vec<compose::Text>) -> ValidationResult {
         texts
             .iter()
             .map(|text| compose::validation::text_max_len(text, FIELD_MAX_LEN))
@@ -170,7 +170,7 @@ mod tests {
     use test_case::test_case;
 
     use super::*;
-    use crate::validation::ValidationError;
+    use crate::compose;
 
     fn string_of_len(len: usize) -> String {
         repeat(' ').take(len).collect::<String>()
@@ -181,36 +181,36 @@ mod tests {
     }
 
     #[test_case(
-        SectionContents::from_text(Text::markdown(string_of_len(3001)))
-        => matches Err(ValidationError::ExceedsMaxLen { .. });
+        Contents::from_text(compose::Text::markdown(string_of_len(3001)))
+        => matches Err(_);
         "fail_when_text_longer_than_3k_chars"
     )]
     #[test_case(
-        SectionContents::from_fields(vec_of_len(Text::plain("".to_string()), 11))
-        => matches Err(ValidationError::ExceedsMaxLen { .. });
+        Contents::from_fields(vec_of_len(compose::Text::plain("".to_string()), 11))
+        => matches Err(_);
         "fail_when_more_than_10_fields"
     )]
     #[test_case(
-        SectionContents::from_fields(vec![Text::plain(string_of_len(2001))])
-        => matches Err(ValidationError::ExceedsMaxLen { .. });
+        Contents::from_fields(vec![compose::Text::plain(string_of_len(2001))])
+        => matches Err(_);
         "fail_when_field_longer_than_2k_chars"
     )]
     #[test_case(
-        SectionContents::from_fields(vec_of_len(Text::plain(string_of_len(2001)), 2))
-        => matches Err(ValidationError::Multiple { .. });
+        Contents::from_fields(vec_of_len(compose::Text::plain(string_of_len(2001)), 2))
+        => matches Err(_);
         "fail_when_multiple_fields_longer_than_2k_chars"
     )]
     #[test_case(
-        SectionContents::Fields {
+        Contents::Fields(Fields {
             text: None,
             fields: vec![],
             block_id: Some(string_of_len(256)),
             accessory: None,
-        }
-        => matches Err(ValidationError::ExceedsMaxLen { .. });
+        })
+        => matches Err(_);
         "fail_when_block_id_longer_than_255_chars"
     )]
-    pub fn section_contents_validation_should(contents: SectionContents) -> ValidationResult {
+    pub fn section_contents_validation_should(contents: Contents) -> ValidationResult {
         // arrange (test_case input)
 
         // act
