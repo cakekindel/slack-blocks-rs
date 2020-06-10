@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 pub mod section;
+pub mod image;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
 
@@ -50,7 +51,7 @@ pub enum Block {
     ///
     /// [image_docs]: https://api.slack.com/reference/block-kit/blocks#image
     #[serde(rename = "image")]
-    Image {},
+    Image(image::Contents),
 
     /// # Actions Block
     ///
