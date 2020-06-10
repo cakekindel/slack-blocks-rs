@@ -1,7 +1,6 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+#[macro_use]
+extern crate validator_derive;
+
+pub mod blocks;
+pub mod compose;
+pub mod val_helpr;
