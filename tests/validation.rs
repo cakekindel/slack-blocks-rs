@@ -26,9 +26,7 @@ bad_blocks!(
     image_with_long_url:
     Image(image::Contents {
         image_url: common::string_of_len(3001),
-        title: None,
-        block_id: None,
-        alt_text: String::new(),
+        ..Default::default()
     })
 );
 
