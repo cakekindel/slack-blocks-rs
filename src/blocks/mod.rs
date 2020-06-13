@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-pub mod section;
 pub mod image;
+pub mod section;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
 
@@ -133,7 +133,8 @@ impl Block {
 
         match self {
             Section(contents) => contents.validate(),
-            _ => todo!(),
+            Image(contents) => contents.validate(),
+            _ => todo!(""),
         }
     }
 }
@@ -152,7 +153,7 @@ mod tests {
                 "text": "my message"
             }
         }"#
-        => matches Block::Section { .. };
+        => matches Block::Section(section::Contents::Text(_));
         "section_text"
     )]
     #[test_case(
@@ -163,7 +164,7 @@ mod tests {
                 "text": "my message"
             }]
         }"#
-        => matches Block::Section { .. };
+        => matches Block::Section (section::Contents::Fields(_));
         "section_fields"
     )]
     #[test_case(
@@ -175,11 +176,6 @@ mod tests {
         r#"{ "type": "divider" }"#
         => matches Block::Divider;
         "divider"
-    )]
-    #[test_case(
-        r#"{ "type": "image" }"#
-        => matches Block::Image { .. };
-        "image"
     )]
     #[test_case(
         r#"{ "type": "actions" }"#

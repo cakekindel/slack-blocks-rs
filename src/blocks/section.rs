@@ -1,9 +1,8 @@
 use serde::{Deserialize, Serialize};
-use validator::{Validate};
+use validator::Validate;
 
 use crate::compose;
-
-type ValidationResult = Result<(), validator::ValidationErrors>;
+use crate::val_helpr::ValidationResult;
 
 /// ### Section
 ///
@@ -137,26 +136,25 @@ impl Contents {
     pub fn validate(&self) -> ValidationResult {
         match self {
             Contents::Text(text) => text.validate(),
-            Contents::Fields(fields) => fields.validate()
+            Contents::Fields(fields) => fields.validate(),
         }
     }
 }
 
 pub mod validation {
     use crate::compose;
+    use crate::val_helpr::ValidatorResult;
 
     pub const FIELDS_MAX_CT: usize = 10;
     pub const FIELD_MAX_LEN: usize = 2000;
     pub const TEXT_MAX_LEN: usize = 3000;
     pub const BLOCK_ID_MAX_LEN: usize = 255;
 
-    type ValidationResult = Result<(), validator::ValidationError>;
-
-    pub fn text_max_len_3k(text: &compose::Text) -> ValidationResult {
+    pub fn text_max_len_3k(text: &compose::Text) -> ValidatorResult {
         compose::validation::text_max_len(text, TEXT_MAX_LEN)
     }
 
-    pub fn each_text_max_len_2k(texts: &Vec<compose::Text>) -> ValidationResult {
+    pub fn each_text_max_len_2k(texts: &Vec<compose::Text>) -> ValidatorResult {
         texts
             .iter()
             .map(|text| compose::validation::text_max_len(text, FIELD_MAX_LEN))
@@ -166,17 +164,19 @@ pub mod validation {
 
 #[cfg(test)]
 mod tests {
-    use std::iter::repeat;
     use test_case::test_case;
 
     use super::*;
     use crate::compose;
 
-    fn string_of_len(len: usize) -> String {
+    // TODO: remove in favor of tests/common.rs
+    //       once theses tests get moved to tests/validation.rs
+    use std::iter::repeat;
+    pub fn string_of_len(len: usize) -> String {
         repeat(' ').take(len).collect::<String>()
     }
 
-    fn vec_of_len<T: Clone>(item: T, len: usize) -> Vec<T> {
+    pub fn vec_of_len<T: Clone>(item: T, len: usize) -> Vec<T> {
         repeat(item).take(len).collect::<Vec<T>>()
     }
 

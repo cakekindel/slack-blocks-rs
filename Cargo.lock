@@ -133,6 +133,7 @@ dependencies = [
 name = "slack-block-kit"
 version = "0.1.0"
 dependencies = [
+ "lazy_static",
  "serde",
  "serde_json",
  "test-case",

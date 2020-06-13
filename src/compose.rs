@@ -5,6 +5,13 @@ pub mod validation {
     use validator::ValidationError;
     type ValidationResult = Result<(), ValidationError>;
 
+    pub fn text_is_plain(text: &super::Text) -> ValidationResult {
+        match text {
+            super::Text::Markdown { .. } => Err(error("text_is_plain", "expected plain, got markdown")),
+            super::Text::Plain { .. } => Ok(()),
+        }
+    }
+
     pub fn text_max_len(text: &super::Text, max_len: usize) -> ValidationResult {
         let len = text.text().chars().count();
 
@@ -64,7 +71,7 @@ pub enum Text {
     /// <details>
     /// <summary><b>➤ Click to expand</b></summary>
     ///
-    /// <!-- markdown tables strike again! -->
+    /// <!-- wow - markdown tables strike again! -->
     /// |slack markdown    |formatted result     |
     /// |---               |---                  |
     /// |`_italic_`        |_italic_             |
@@ -107,14 +114,20 @@ pub enum Text {
     },
 }
 
+impl Default for Text {
+    fn default() -> Self {
+        Text::Markdown { text: String::new(), verbatim: None, }
+    }
+}
+
 impl Text {
-    pub fn plain(text: String) -> Text {
-        Text::Plain { text, emoji: None }
+    pub fn plain<StrIsh: AsRef<str>>(text: StrIsh) -> Text {
+        Text::Plain { text: text.as_ref().to_string(), emoji: None }
     }
 
-    pub fn markdown(text: String) -> Text {
+    pub fn markdown<StrIsh: AsRef<str>>(text: StrIsh) -> Text {
         Text::Markdown {
-            text,
+            text: text.as_ref().to_string(),
             verbatim: None,
         }
     }

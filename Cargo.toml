@@ -12,6 +12,7 @@ serde_json = "^1"
 thiserror = "1.0.18"
 validator = "0.10.0"
 validator_derive = "0.10.0"
+lazy_static = "1.4.0"
 
 [dev-dependencies]
 test-case = "1.0.0"
