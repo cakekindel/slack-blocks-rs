@@ -1,10 +1,18 @@
 [package]
-name = "slack-block-kit"
+name = "slack-blocks"
 version = "0.1.0"
-authors = ["Orion Kindel <cakekindel@gmail.com>"]
-edition = "2018"
+description = "Data structure definitions for Slack's Block Kit API - With client-side validation and helper macros"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+edition = "2018"
+authors = ["Orion Kindel <cakekindel@gmail.com>"]
+license = "MIT OR Apache-2.0"
+
+homepage = "https://github.com/cakekindel/slack-block-kit-rs"
+repository = "https://github.com/cakekindel/slack-block-kit-rs"
+readme = "README.md"
+
+keywords = ["slack", "model", "models", "validation", "json"]
+categories = ["data-structures"]
 
 [dependencies]
 serde = { version = "^1", features = ["derive"] }
