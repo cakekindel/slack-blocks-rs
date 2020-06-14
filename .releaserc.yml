@@ -3,5 +3,5 @@ plugins:
   - "@semantic-release/release-notes-generator"
   - "@semantic-release/github"
   - - "@semantic-release/exec"
-    - prepareCmd: "cargo release --no-confirm ${nextRelease.version}"
+    - prepareCmd: "cargo release --skip-tags=true --no-confirm ${nextRelease.version}"
       publishCmd: "publish-package"
