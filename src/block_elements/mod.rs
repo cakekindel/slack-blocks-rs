@@ -2,6 +2,9 @@ use serde::{Deserialize, Serialize};
 
 pub mod select;
 
+/// # Block Elements - interactive components
+/// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements)
+///
 /// Block elements can be used inside of `section`, `context`, and `actions` [layout blocks 🔗].
 /// Inputs can only be used inside of `input` blocks.
 ///
