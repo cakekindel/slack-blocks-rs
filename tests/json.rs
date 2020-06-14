@@ -1,5 +1,4 @@
-use slack_blocks::{blocks, blocks::image, compose};
-use test_case::test_case;
+use slack_blocks::{blocks::Block, blocks::image, compose};
 
 #[feature(concat_idents)]
 
@@ -10,7 +9,7 @@ macro_rules! happy_json_test {
             // arrange
 
             // act
-            let actual: blocks::Block = serde_json::from_value($json.clone()).unwrap();
+            let actual: Block = serde_json::from_value($json.clone()).unwrap();
 
             // assert
             assert_eq!(matches!(actual, $matches), true)
@@ -18,7 +17,8 @@ macro_rules! happy_json_test {
     };
 }
 
-happy_json_test!(image_should_deserialize: test_data::IMAGE_JSON => blocks::Block::Image { .. });
+happy_json_test!(image_should_deserialize: test_data::IMAGE_JSON => Block::Image { .. });
+happy_json_test!(actions_should_deserialize: test_data::ACTIONS_JSON => Block::Actions { .. });
 
 mod test_data {
     use slack_blocks::{blocks, compose};
@@ -32,6 +32,12 @@ mod test_data {
             "image_url": "http://cheese.com/favicon.png",
             "alt_text": "a cheese wheel.",
             "title": SAMPLE_TEXT_PLAIN.clone(),
+        });
+
+        // FIX: add element objects to json here after validation but before merging actions
+        pub static ref ACTIONS_JSON: serde_json::Value = serde_json::json!({
+            "type": "actions",
+            "elements": [],
         });
     }
 }

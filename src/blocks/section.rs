@@ -141,6 +141,22 @@ impl Contents {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub enum Accessory {
+    Button,
+    Checkboxes,
+    DatePicker,
+    Image,
+    OverflowMenu,
+    PlainInput,
+    RadioButtons,
+    SelectStatic,
+    SelectExt,
+    SelectUser,
+    SelectConv,
+    SelectChannel,
+}
+
 pub mod validation {
     use crate::compose;
     use crate::val_helpr::ValidatorResult;
