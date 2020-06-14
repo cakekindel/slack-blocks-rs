@@ -1,4 +1,4 @@
-use slack_block_kit::{blocks::Block::*, blocks::image, compose::Text};
+use slack_blocks::{blocks::Block::*, blocks::image, compose::Text};
 
 mod common;
 

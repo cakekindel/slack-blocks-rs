@@ -1,4 +1,4 @@
-use slack_block_kit::{blocks, blocks::image, compose};
+use slack_blocks::{blocks, blocks::image, compose};
 use test_case::test_case;
 
 #[feature(concat_idents)]
@@ -21,7 +21,7 @@ macro_rules! happy_json_test {
 happy_json_test!(image_should_deserialize: test_data::IMAGE_JSON => blocks::Block::Image { .. });
 
 mod test_data {
-    use slack_block_kit::{blocks, compose};
+    use slack_blocks::{blocks, compose};
 
     lazy_static::lazy_static! {
         static ref SAMPLE_TEXT_PLAIN: compose::Text = compose::Text::plain("Sample Text");
