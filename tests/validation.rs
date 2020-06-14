@@ -1,4 +1,4 @@
-use slack_blocks::{blocks::Block::*, blocks::image, compose::Text};
+use slack_blocks::{blocks::Block::*, blocks::image, blocks::actions, compose::Text};
 
 mod common;
 
@@ -62,3 +62,8 @@ bad_blocks!(
     })
 );
 
+// ===[ Actions Block Validation ]===
+bad_blocks!(
+    actions_with_too_many_objects:
+    Actions(actions::Contents::from_action_elements(common::vec_of_len(actions::BlockElement::Button, 6)))
+);

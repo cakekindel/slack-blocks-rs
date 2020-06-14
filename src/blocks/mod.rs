@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 pub mod image;
+pub mod actions;
 pub mod section;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
@@ -62,7 +63,7 @@ pub enum Block {
     /// [block_elements]: https://api.slack.com/reference/messaging/block-elements
     /// [section_docs]: https://api.slack.com/reference/block-kit/blocks#actions
     #[serde(rename = "actions")]
-    Actions {},
+    Actions(actions::Contents),
 
     /// # Context Block
     ///
@@ -134,7 +135,8 @@ impl Block {
         match self {
             Section(contents) => contents.validate(),
             Image(contents) => contents.validate(),
-            _ => todo!(""),
+            Actions(contents) => contents.validate(),
+            other => todo!("validation not implemented for {}", other),
         }
     }
 }
@@ -176,11 +178,6 @@ mod tests {
         r#"{ "type": "divider" }"#
         => matches Block::Divider;
         "divider"
-    )]
-    #[test_case(
-        r#"{ "type": "actions" }"#
-        => matches Block::Actions { .. };
-        "actions"
     )]
     #[test_case(
         r#"{ "type": "input" }"#
