@@ -22,6 +22,6 @@ jobs:
     - run: 'cargo install cargo-release'
     - run: 'npm i --no-save @semantic-release/exec'
     - env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
       run: 'npx semantic-release'
