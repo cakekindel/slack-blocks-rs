@@ -4,6 +4,13 @@ use validator::Validate;
 use crate::compose;
 use crate::val_helpr::ValidationResult;
 
+/// # Image Block
+///
+/// _[slack api docs 🔗][image_docs]_
+///
+/// A simple image block, designed to make those cat photos really pop.
+///
+/// [image_docs]: https://api.slack.com/reference/block-kit/blocks#image
 #[derive(Default, Validate, Debug, Serialize, Deserialize)]
 pub struct Contents {
     /// The URL of the image to be displayed.

@@ -5,6 +5,14 @@ use validator::Validate;
 use crate::block_elements;
 use crate::val_helpr::ValidationResult;
 
+/// # Actions Block
+///
+/// _[slack api docs 🔗][action_docs]_
+///
+/// A block that is used to hold interactive [elements 🔗][block_elements]
+///
+/// [block_elements]: https://api.slack.com/reference/messaging/block-elements
+/// [section_docs]: https://api.slack.com/reference/block-kit/blocks#actions
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
     /// An array of interactive [element objects 🔗]
