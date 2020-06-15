@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 
-pub mod image;
+use crate::impl_from_contents;
+
 pub mod actions;
+pub mod context;
+pub mod image;
 pub mod section;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
@@ -73,7 +76,7 @@ pub enum Block {
     ///
     /// [context_docs]: https://api.slack.com/reference/block-kit/blocks#context
     #[serde(rename = "context")]
-    Context {},
+    Context(context::Contents),
 
     /// # Input Block
     ///
@@ -136,10 +139,15 @@ impl Block {
             Section(contents) => contents.validate(),
             Image(contents) => contents.validate(),
             Actions(contents) => contents.validate(),
+            Context(contents) => contents.validate(),
             other => todo!("validation not implemented for {}", other),
         }
     }
 }
+
+impl_from_contents!(Block, Section, section::Contents);
+impl_from_contents!(Block, Actions, actions::Contents);
+impl_from_contents!(Block, Context, context::Contents);
 
 #[cfg(test)]
 mod tests {
@@ -168,26 +176,6 @@ mod tests {
         }"#
         => matches Block::Section (section::Contents::Fields(_));
         "section_fields"
-    )]
-    #[test_case(
-        r#"{ "type": "context" }"#
-        => matches Block::Context { .. };
-        "context"
-    )]
-    #[test_case(
-        r#"{ "type": "divider" }"#
-        => matches Block::Divider;
-        "divider"
-    )]
-    #[test_case(
-        r#"{ "type": "input" }"#
-        => matches Block::Input { .. };
-        "input"
-    )]
-    #[test_case(
-        r#"{ "type": "file" }"#
-        => matches Block::File { .. };
-        "file"
     )]
     pub fn block_should_deserialize(json: &str) -> Block {
         // arrange

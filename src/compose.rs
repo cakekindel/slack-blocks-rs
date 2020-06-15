@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::impl_from_contents;
+
 pub mod validation {
     use crate::val_helpr::error;
     use validator::ValidationError;
@@ -7,7 +9,9 @@ pub mod validation {
 
     pub fn text_is_plain(text: &super::Text) -> ValidationResult {
         match text {
-            super::Text::Markdown { .. } => Err(error("text_is_plain", "expected plain, got markdown")),
+            super::Text::Markdown { .. } => {
+                Err(error("text_is_plain", "expected plain, got markdown"))
+            }
             super::Text::Plain { .. } => Ok(()),
         }
     }
@@ -16,7 +20,7 @@ pub mod validation {
         let len = text.text().chars().count();
 
         if len > max_len {
- 	    let message = format!(
+            let message = format!(
                 "Section#text has max len of {}, but got text of len {}.",
                 max_len, len
             );
@@ -28,6 +32,19 @@ pub mod validation {
     }
 }
 
+/// # Composition Objects
+///
+/// Composition objects can be used inside of [block elements 🔗] and certain message payload fields.
+///
+/// They are simply common JSON object patterns that you'll encounter frequently
+/// when building blocks or composing messages.
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+pub enum Compose {
+    Text(Text),
+}
+
+impl_from_contents!(Compose, Text, Text);
+
 /// # Text Object
 /// [_slack api docs 🔗_](https://api.slack.com/reference/block-kit/composition-objects#text)
 ///
@@ -36,7 +53,7 @@ pub mod validation {
 /// or using [`mrkdwn` 🔗](https://api.slack.com/reference/surfaces/formatting),
 /// our proprietary textual markup that's just different enough
 /// from Markdown to frustrate you.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(tag = "type")]
 pub enum Text {
     /// ## Markdown text
@@ -116,13 +133,19 @@ pub enum Text {
 
 impl Default for Text {
     fn default() -> Self {
-        Text::Markdown { text: String::new(), verbatim: None, }
+        Text::Markdown {
+            text: String::new(),
+            verbatim: None,
+        }
     }
 }
 
 impl Text {
     pub fn plain<StrIsh: AsRef<str>>(text: StrIsh) -> Text {
-        Text::Plain { text: text.as_ref().to_string(), emoji: None }
+        Text::Plain {
+            text: text.as_ref().to_string(),
+            emoji: None,
+        }
     }
 
     pub fn markdown<StrIsh: AsRef<str>>(text: StrIsh) -> Text {

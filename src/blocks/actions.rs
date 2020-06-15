@@ -1,9 +1,9 @@
+use serde::{Deserialize, Serialize};
 use std::convert::{TryFrom, TryInto};
 use validator::Validate;
-use serde::{Serialize, Deserialize};
 
-use crate::val_helpr::ValidationResult;
 use crate::block_elements;
+use crate::val_helpr::ValidationResult;
 
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
@@ -33,13 +33,31 @@ pub struct Contents {
     /// Maximum length for this field is 255 characters.
     ///
     /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
+    #[validate(length(max = 255))]
     block_id: Option<String>,
 }
 
 impl Contents {
-    /// Create a empty Actions block
+    /// Create an empty Actions block
+    /// (uses `Default`)
     pub fn new() -> Self {
         Default::default()
+    }
+
+    /// Set the `block_id` for interactions on an existing `actions::Contents`
+    ///
+    /// ```
+    /// use slack_blocks::blocks::{Block, actions};
+    ///
+    /// pub fn main() {
+    ///     let actions = actions::Contents::new().with_block_id("tally_ho");
+    ///     let block: Block = actions.into();
+    ///     // < send block to slack's API >
+    /// }
+    /// ```
+    pub fn with_block_id<StrIsh: AsRef<str>>(mut self, block_id: StrIsh) -> Self {
+        self.block_id = Some(block_id.as_ref().to_string());
+        self
     }
 
     /// Populate an Actions block with a collection of `BlockElement`s that
@@ -54,9 +72,26 @@ impl Contents {
     /// For a list of `BlockElement` types that are, see `self::BlockElement`.
     ///
     /// ### Runtime Validation
+    ///
     /// **only** validates that the block elements are compatible with `Actions`,
     /// for full runtime model validation see the `validate` method.
-    pub fn from_elements<Els: Into<Vec<block_elements::BlockElement>>>(elements: Els) -> Result<Self, ()> {
+    ///
+    /// ```
+    /// use slack_blocks::blocks::{Block, actions};
+    /// use slack_blocks::compose;
+    /// use slack_blocks::block_elements;
+    ///
+    /// pub fn main() -> Result<(), ()> {
+    ///     let btn = block_elements::BlockElement::Button;
+    ///     let actions = actions::Contents::from_elements(vec![btn])?;
+    ///     let block: Block = actions.into();
+    ///     // < send block to slack's API >
+    ///     Ok(())
+    /// }
+    /// ```
+    pub fn from_elements<Els: Into<Vec<block_elements::BlockElement>>>(
+        elements: Els,
+    ) -> Result<Self, ()> {
         elements // Into<Vec>
             .into() // Vec
             .try_into() // Result<Vec>
@@ -71,10 +106,25 @@ impl Contents {
     /// ### Runtime Validation
     /// **only** validates that the block elements are compatible with `Actions`,
     /// for full runtime model validation see the `validate` method.
-    pub fn from_action_elements<Els: Into<Vec<self::BlockElement>>>(elements: Els) -> Self {
-        elements // Into<Vec>
-            .into() // Vec
-            .into() // Contents
+    ///
+    /// ```
+    /// use slack_blocks::blocks::{Block, actions};
+    /// use slack_blocks::compose;
+    /// use slack_blocks::block_elements;
+    ///
+    /// pub fn main() {
+    ///     let btn = actions::BlockElement::Button;
+    ///     let actions = actions::Contents::from_action_elements(vec![btn]);
+    ///     let block: Block = actions.into();
+    ///     // < send block to slack's API >
+    /// }
+    /// ```
+    pub fn from_action_elements<Els: IntoIterator<Item = impl Into<self::BlockElement>>>(elements: Els) -> Self {
+        elements
+            .into_iter()
+            .map(Into::<self::BlockElement>::into)
+            .collect::<Vec<_>>()
+            .into()
     }
 
     /// Validate the entire block and all of its
@@ -88,7 +138,8 @@ impl Contents {
 impl TryFrom<Vec<block_elements::BlockElement>> for Contents {
     type Error = ();
     fn try_from(elements: Vec<block_elements::BlockElement>) -> Result<Self, Self::Error> {
-        elements.into_iter()
+        elements
+            .into_iter()
             // Try to convert the bag of "any block element" to "block element supported by Actions"
             .map(TryInto::try_into)
             // If we hit one that is not supported, stop and continue with err
@@ -122,8 +173,8 @@ pub enum BlockElement {
 impl TryFrom<block_elements::BlockElement> for self::BlockElement {
     type Error = ();
     fn try_from(el: block_elements::BlockElement) -> Result<Self, Self::Error> {
-        use block_elements::BlockElement as El;
         use self::BlockElement::*;
+        use block_elements::BlockElement as El;
 
         match el {
             El::Button => Ok(Button),
@@ -137,4 +188,3 @@ impl TryFrom<block_elements::BlockElement> for self::BlockElement {
         }
     }
 }
-

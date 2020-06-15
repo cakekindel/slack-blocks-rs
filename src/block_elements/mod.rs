@@ -39,4 +39,3 @@ pub enum InputAttachment {
     PlainInput,
     RadioButtons,
 }
-

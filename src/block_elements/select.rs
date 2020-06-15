@@ -67,4 +67,3 @@ pub struct ConversationSelect {}
 /// public channels visible to the current user in the active workspace.
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct ChannelSelect {}
-
