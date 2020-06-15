@@ -12,25 +12,6 @@ type ValidationResult = Result<(), validator::ValidationErrors>;
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "type")]
 pub enum Block {
-    /// # Section Block
-    ///
-    /// _[slack api docs 🔗][section_docs]_
-    ///
-    /// Available in surfaces:
-    ///  - [modals 🔗][modal_surface]
-    ///  - [messages 🔗][message_surface]
-    ///  - [home tabs 🔗][tab_surface]
-    ///
-    /// A `section` is one of the most flexible blocks available -
-    /// it can be used as a simple text block,
-    /// in combination with text fields,
-    /// or side-by-side with any of the available [block elements 🔗][block_elements]
-    ///
-    /// [section_docs]: https://api.slack.com/reference/block-kit/blocks#section
-    /// [modal_surface]: https://api.slack.com/surfaces/modals
-    /// [message_surface]: https://api.slack.com/surfaces/messages
-    /// [tab_surface]: https://api.slack.com/surfaces/tabs
-    /// [block_elements]: https://api.slack.com/reference/messaging/block-elements
     #[serde(rename = "section")]
     Section(section::Contents),
 
@@ -47,34 +28,12 @@ pub enum Block {
     #[serde(rename = "divider")]
     Divider,
 
-    /// # Image Block
-    ///
-    /// _[slack api docs 🔗][image_docs]_
-    ///
-    /// A simple image block, designed to make those cat photos really pop.
-    ///
-    /// [image_docs]: https://api.slack.com/reference/block-kit/blocks#image
     #[serde(rename = "image")]
     Image(image::Contents),
 
-    /// # Actions Block
-    ///
-    /// _[slack api docs 🔗][action_docs]_
-    ///
-    /// A block that is used to hold interactive [elements 🔗][block_elements]
-    ///
-    /// [block_elements]: https://api.slack.com/reference/messaging/block-elements
-    /// [section_docs]: https://api.slack.com/reference/block-kit/blocks#actions
     #[serde(rename = "actions")]
     Actions(actions::Contents),
 
-    /// # Context Block
-    ///
-    /// _[slack api docs 🔗][context_docs]_
-    ///
-    /// Displays message context, which can include both images and text.
-    ///
-    /// [context_docs]: https://api.slack.com/reference/block-kit/blocks#context
     #[serde(rename = "context")]
     Context(context::Contents),
 

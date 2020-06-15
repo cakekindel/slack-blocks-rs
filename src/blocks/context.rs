@@ -4,6 +4,13 @@ use validator::Validate;
 use crate::compose::Compose;
 use crate::val_helpr::ValidationResult;
 
+/// # Context Block
+///
+/// _[slack api docs 🔗][context_docs]_
+///
+/// Displays message context, which can include both images and text.
+///
+/// [context_docs]: https://api.slack.com/reference/block-kit/blocks#context
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
     /// A collection of [image elements 🔗] and [text objects 🔗].

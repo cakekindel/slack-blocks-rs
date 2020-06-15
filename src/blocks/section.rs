@@ -4,20 +4,25 @@ use validator::Validate;
 use crate::compose;
 use crate::val_helpr::ValidationResult;
 
-/// ### Section
+/// # Section Block
 ///
-/// There is a validation requirement from
-/// Slack that a Section block **either**:
+/// _[slack api docs 🔗][section_docs]_
 ///
-/// - have the `text` field populated, in which case
-///   the `fields` field is optional
-/// OR
-/// - have the `fields` field populated, in which
-///   case the `text` field is optional
+/// Available in surfaces:
+///  - [modals 🔗][modal_surface]
+///  - [messages 🔗][message_surface]
+///  - [home tabs 🔗][tab_surface]
 ///
-/// Since Section blocks are a very commonly used structure
-/// in Block Kit, this "Contents" enum implementation
-/// was chosen to enforce that requirement at compile-time.
+/// A `section` is one of the most flexible blocks available -
+/// it can be used as a simple text block,
+/// in combination with text fields,
+/// or side-by-side with any of the available [block elements 🔗][block_elements]
+///
+/// [section_docs]: https://api.slack.com/reference/block-kit/blocks#section
+/// [modal_surface]: https://api.slack.com/surfaces/modals
+/// [message_surface]: https://api.slack.com/surfaces/messages
+/// [tab_surface]: https://api.slack.com/surfaces/tabs
+/// [block_elements]: https://api.slack.com/reference/messaging/block-elements/// ### Section
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 pub enum Contents {
@@ -25,6 +30,8 @@ pub enum Contents {
     Fields(Fields),
 }
 
+/// JSON structure for a Section block that is
+/// "fields-first" - i.e. `text` may be None
 #[derive(Serialize, Deserialize, Debug, Validate)]
 pub struct Fields {
     /// An array of [text objects 🔗][text_objects].
@@ -70,6 +77,8 @@ pub struct Fields {
     accessory: Option<()>,
 }
 
+/// JSON structure for a Section block that is
+/// "text-first" - i.e. `fields` may be None or empty
 #[derive(Serialize, Deserialize, Debug, Validate)]
 pub struct Text {
     /// The text for the block,
@@ -115,7 +124,11 @@ pub struct Text {
 }
 
 impl Contents {
-    pub fn from_fields(fields: Vec<compose::Text>) -> Self {
+    /// Construct a Section block from a collection of text
+    /// objects
+    pub fn from_fields<FieldIter: IntoIterator<Item = compose::Text>>(fields: FieldIter) -> Self {
+        let fields = fields.into_iter().collect();
+
         Contents::Fields(Fields {
             fields,
             text: None,
@@ -124,6 +137,7 @@ impl Contents {
         })
     }
 
+    /// Construct a Section block from a text object
     pub fn from_text(text: compose::Text) -> Self {
         Contents::Text(Text {
             text,
@@ -133,6 +147,7 @@ impl Contents {
         })
     }
 
+    /// Validate that the contents of the Section are valid
     pub fn validate(&self) -> ValidationResult {
         match self {
             Contents::Text(text) => text.validate(),
@@ -141,6 +156,7 @@ impl Contents {
     }
 }
 
+// FIX: move to integration tests
 pub mod validation {
     use crate::compose;
     use crate::val_helpr::ValidatorResult;
