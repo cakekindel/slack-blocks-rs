@@ -1,4 +1,4 @@
-use slack_blocks::{blocks::Block, blocks::image, compose};
+use slack_blocks::{blocks::image, blocks::Block, compose};
 
 #[feature(concat_idents)]
 

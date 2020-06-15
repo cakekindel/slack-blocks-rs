@@ -8,7 +8,10 @@ pub type ValidatorResult = Result<(), validator::ValidationError>;
 
 pub fn error<StrIsh: AsRef<str>>(kind: &'static str, msg: StrIsh) -> ValidationError {
     let mut error = ValidationError::new(kind);
-    error.add_param(Cow::from("message"), &serde_json::Value::String(msg.as_ref().to_string()));
+    error.add_param(
+        Cow::from("message"),
+        &serde_json::Value::String(msg.as_ref().to_string()),
+    );
 
     error
 }
