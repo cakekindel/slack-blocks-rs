@@ -37,7 +37,7 @@ pub struct Contents {
 }
 
 impl Contents {
-    /// Create a empty Actions block
+    /// Create an empty Actions block
     pub fn new() -> Self {
         Default::default()
     }

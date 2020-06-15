@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 pub mod image;
 pub mod actions;
 pub mod section;
+pub mod context;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
 

@@ -28,6 +28,17 @@ pub mod validation {
     }
 }
 
+/// # Composition Objects
+///
+/// Composition objects can be used inside of [block elements 🔗] and certain message payload fields.
+///
+/// They are simply common JSON object patterns that you'll encounter frequently
+/// when building blocks or composing messages.
+ #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+pub enum Compose {
+    Text(Text)
+}
+
 /// # Text Object
 /// [_slack api docs 🔗_](https://api.slack.com/reference/block-kit/composition-objects#text)
 ///
@@ -36,7 +47,7 @@ pub mod validation {
 /// or using [`mrkdwn` 🔗](https://api.slack.com/reference/surfaces/formatting),
 /// our proprietary textual markup that's just different enough
 /// from Markdown to frustrate you.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(tag = "type")]
 pub enum Text {
     /// ## Markdown text
