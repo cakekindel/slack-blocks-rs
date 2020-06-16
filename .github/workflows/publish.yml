@@ -19,6 +19,9 @@ jobs:
       with: { node-version: '14' }
     - uses: 'actions/checkout@v2'
     - run: 'npx standard-version'
+    - run: |
+        git config --local user.email "ferris@rustacean.com"
+        git config --local user.name "Crat.os, Devourer of Poor Semver Practices"
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
