@@ -1,19 +1,39 @@
 name: 'bump'
 
-on:
-  push:
-    branches: [ 'master' ]
+on: { push: branches: [ 'master' ] }
 
 jobs:
   publish:
     runs-on: 'ubuntu-latest'
     steps:
+
+    # Setup
     - uses: 'actions/setup-node@v1'
       with: { node-version: '14' }
+
     - uses: 'actions/checkout@v2'
+
+    # update version,
+    #   gen/update CHANGELOG,
+    #   gen version tag
+    #
+    # This may do nothing if no
+    #   feat | fix commits are found.
+    #   if that happens, then no updates
+    #   are made and no PR is opened.
     - name: 'bump version'
       run: 'npx standard-version'
-    - uses: 'ensure Cargo.lock fresh'
+
+    # to update version in Cargo lock
+    #   so CI caches still work
+    - name: 'ensure Cargo.lock fresh'
       run: 'cargo generate-lockfile'
+
+    # Open PR for manifest changes
     - name: 'create pull request'
       uses: 'peter-evans/create-pull-request@v2'
+
+    # Push the new tag, triggering a publish
+    - name: 'push tags'
+      run: 'git push --tags'
+
