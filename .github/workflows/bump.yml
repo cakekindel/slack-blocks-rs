@@ -37,7 +37,7 @@ jobs:
       with:
         token: ${{ secrets.GH_TOKEN }}
         commit-message: regen Cargo.lock
-        title: bump: new version
+        title: 'bump: new version'
 
     # Push the new tag, triggering a publish
     - name: 'push tags'
