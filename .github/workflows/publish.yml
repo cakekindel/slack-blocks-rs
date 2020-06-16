@@ -17,10 +17,10 @@ jobs:
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
     - uses: 'actions/setup-node@v1'
       with: { node-version: '14' }
+    - uses: 'actions/checkout@v2'
     - run: |
         git config --local user.email "ferris@rustacean.com"
         git config --local user.name "Crat.os, Devourer of Poor Semver Practices"
-    - uses: 'actions/checkout@v2'
     - run: 'npx standard-version'
     - name: Push changes
       uses: ad-m/github-push-action@master
