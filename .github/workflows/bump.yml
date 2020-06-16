@@ -1,0 +1,19 @@
+name: 'bump'
+
+on:
+  push:
+    branches: [ 'master' ]
+
+jobs:
+  publish:
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: 'actions/setup-node@v1'
+      with: { node-version: '14' }
+    - uses: 'actions/checkout@v2'
+    - name: 'bump version'
+      run: 'npx standard-version'
+    - uses: 'ensure Cargo.lock fresh'
+      run: 'cargo generate-lockfile'
+    - name: 'create pull request'
+      uses: 'peter-evans/create-pull-request@v2'

@@ -1,33 +1,20 @@
-name: 'semantic release'
+name: 'publish'
 
-on:
-  push:
-    branches: [ 'master' ]
+on: tags
 
 jobs:
   publish:
     runs-on: 'ubuntu-latest'
     steps:
-    - uses: actions/cache@v2
+    - uses: 'actions/checkout@v2'
+    - uses: 'actions/cache@v2'
       with:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
           target
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-    - uses: 'actions/setup-node@v1'
-      with: { node-version: '14' }
-    - uses: 'actions/checkout@v2'
-    - run: |
-        git config --local user.email "ferris@rustacean.com"
-        git config --local user.name "Crat.os, Devourer of Poor Semver Practices"
-    - run: 'npx standard-version'
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        force: true
-        tags: true
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-    - env:
+    - name: 'Publish'
+      env:
         CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
       run: 'cargo publish'
