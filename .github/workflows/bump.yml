@@ -15,6 +15,10 @@ jobs:
 
     - uses: 'actions/checkout@v2'
 
+    - run: |
+        git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+        git config --global user.name "${{ github.actor }}"
+
     # update version,
     #   gen/update CHANGELOG,
     #   gen version tag
