@@ -18,13 +18,13 @@ jobs:
     - uses: 'actions/setup-node@v1'
       with: { node-version: '14' }
     - uses: 'actions/checkout@v2'
+    - run: 'npx standard-version'
+    - env:
+        CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
+    - run: 'cargo publish'
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
         # force: true
         tags: true
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    - run: 'npx standard-version'
-    - env:
-        CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
-    - run: 'cargo publish'
