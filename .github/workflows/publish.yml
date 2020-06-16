@@ -27,4 +27,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - env:
         CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
-    - run: 'cargo publish'
+      run: 'cargo publish'
