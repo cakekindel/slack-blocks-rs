@@ -23,22 +23,21 @@ jobs:
     # update version,
     #   gen/update CHANGELOG,
     #   gen version tag
-    #
-    # This may do nothing if no
-    #   feat | fix commits are found.
-    #   if that happens, then no updates
-    #   are made and no PR is opened.
-    - name: 'bump version'
-      run: 'npx standard-version'
+    - run: 'npx standard-version'
 
-    # to update version in Cargo lock
+    # make sure build passes +
+    #   update version in Cargo.lock
     #   so CI caches still work
     - name: 'ensure Cargo.lock fresh'
-      run: 'cargo generate-lockfile'
+      run: 'cargo c'
 
     # Open PR for manifest changes
     - name: 'create pull request'
       uses: 'peter-evans/create-pull-request@v2'
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        commit-message: regen Cargo.lock
+        title: bump: new version
 
     # Push the new tag, triggering a publish
     - name: 'push tags'
