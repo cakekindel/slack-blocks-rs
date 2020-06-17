@@ -4,8 +4,8 @@ use crate::impl_from_contents;
 
 pub mod actions;
 pub mod context;
-pub mod image;
 pub mod file;
+pub mod image;
 pub mod input;
 pub mod section;
 

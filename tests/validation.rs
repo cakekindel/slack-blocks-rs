@@ -1,13 +1,6 @@
 use slack_blocks::{
-    block_elements,
-    blocks::actions,
-    blocks::context,
-    blocks::image,
-    blocks::input,
-    blocks::file,
-    blocks::Block,
-    compose,
-    compose::Text,
+    block_elements, blocks::actions, blocks::context, blocks::file, blocks::image, blocks::input,
+    blocks::Block, compose, compose::Text,
 };
 
 mod common;
