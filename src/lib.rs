@@ -14,6 +14,5 @@ macro_rules! impl_from_contents {
                 $enum_name::$variant(contents)
             }
         }
-    }
+    };
 }
-

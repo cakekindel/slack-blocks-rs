@@ -5,8 +5,8 @@ use crate::impl_from_contents;
 pub mod actions;
 pub mod context;
 pub mod image;
-pub mod section;
 pub mod input;
+pub mod section;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
 
@@ -80,6 +80,7 @@ impl Block {
             Image(contents) => contents.validate(),
             Actions(contents) => contents.validate(),
             Context(contents) => contents.validate(),
+            Input(contents) => contents.validate(),
             other => todo!("validation not implemented for {}", other),
         }
     }
