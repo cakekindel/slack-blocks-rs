@@ -1,5 +1,5 @@
 use slack_blocks::{
-    block_elements, blocks::actions, blocks::context, blocks::file, blocks::image, blocks::input,
+    block_elements, blocks::actions, blocks::section, blocks::context, blocks::file, blocks::image, blocks::input,
     blocks::Block, compose, compose::Text,
 };
 
@@ -23,6 +23,35 @@ macro_rules! bad_blocks {
         }
     };
 }
+
+// ===[ Section Block Validation ]===
+bad_blocks!(
+    section_with_long_block_id:
+    Block::Section(
+        section::Contents::from_text(Text::plain("")).with_block_id(common::string_of_len(256))
+    )
+);
+
+bad_blocks!(
+    section_with_long_text:
+    Block::Section(
+        section::Contents::from_text(Text::plain(common::string_of_len(3001)))
+    )
+);
+
+bad_blocks!(
+    section_with_long_field:
+    Block::Section(
+        section::Contents::from_fields(vec![Text::plain(common::string_of_len(2001))])
+    )
+);
+
+bad_blocks!(
+    section_with_many_fields:
+    Block::Section(
+        section::Contents::from_fields(common::vec_of_len(Text::plain(""), 11))
+    )
+);
 
 // ===[ File Block Validation ]===
 bad_blocks!(

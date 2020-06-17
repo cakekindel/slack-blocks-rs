@@ -20,6 +20,7 @@ macro_rules! happy_json_test {
 happy_json_test!(image_should_deserialize: test_data::IMAGE_JSON => Block::Image { .. });
 happy_json_test!(actions_should_deserialize: test_data::ACTIONS_JSON => Block::Actions { .. });
 happy_json_test!(context_should_deserialize: test_data::CONTEXT_JSON => Block::Context { .. });
+happy_json_test!(section_should_deserialize: test_data::SECTION_JSON => Block::Section { .. });
 
 mod test_data {
     use slack_blocks::{blocks, compose};
@@ -27,6 +28,14 @@ mod test_data {
     lazy_static::lazy_static! {
         static ref SAMPLE_TEXT_PLAIN: compose::Text = compose::Text::plain("Sample Text");
         static ref SAMPLE_TEXT_MRKDWN: compose::Text = compose::Text::markdown("Sample *_markdown_*");
+
+        pub static ref SECTION_JSON: serde_json::Value = serde_json::json!({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "fart"
+            }
+        });
 
         pub static ref CONTEXT_JSON: serde_json::Value = serde_json::json!({
             "type": "context",
