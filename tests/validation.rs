@@ -1,6 +1,13 @@
 use slack_blocks::{
-    block_elements, blocks::actions, blocks::context, blocks::image, blocks::input, blocks::Block,
-    compose, compose::Text,
+    block_elements,
+    blocks::actions,
+    blocks::context,
+    blocks::image,
+    blocks::input,
+    blocks::file,
+    blocks::Block,
+    compose,
+    compose::Text,
 };
 
 mod common;
@@ -23,6 +30,14 @@ macro_rules! bad_blocks {
         }
     };
 }
+
+// ===[ File Block Validation ]===
+bad_blocks!(
+    file_with_long_block_id:
+    Block::File(
+        file::Contents::from_external_id("").with_block_id(common::string_of_len(256))
+    )
+);
 
 // ===[ Image Block Validation ]===
 bad_blocks!(

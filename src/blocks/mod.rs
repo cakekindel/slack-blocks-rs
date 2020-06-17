@@ -74,6 +74,7 @@ impl Block {
             Actions(contents) => contents.validate(),
             Context(contents) => contents.validate(),
             Input(contents) => contents.validate(),
+            File(contents) => contents.validate(),
             other => todo!("validation not implemented for {}", other),
         }
     }

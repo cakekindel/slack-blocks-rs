@@ -189,6 +189,39 @@ impl Contents {
         self
     }
 
+    /// Validate that this Input block agrees with Slack's model requirements
+    ///
+    /// # Errors
+    /// - If `from_label_and_element` was passed a Text object longer
+    ///     than 2000 chars
+    /// - If `with_hint` was called with a block id longer
+    ///     than 2000 chars
+    /// - If `with_block_id` was called with a block id longer
+    ///     than 256 chars
+    ///
+    /// # Example
+    /// ```
+    /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::blocks;
+    /// use slack_blocks::compose;
+    ///
+    /// # use std::error::Error;
+    /// # pub fn main() -> Result<(), Box<dyn Error>> {
+    /// let label = compose::Text::plain("On a scale from 1 - 5, how angsty are you?");
+    /// let input = select::Static {};
+    /// let long_string = std::iter::repeat(' ').take(2001).collect::<String>();
+    ///
+    /// let block = blocks::input
+    ///     ::Contents
+    ///     ::from_label_and_element(label, input)
+    ///     .with_block_id(long_string);
+    ///
+    /// assert_eq!(true, matches!(block.validate(), Err(_)));
+    ///
+    /// // < send to slack API >
+    /// # Ok(())
+    /// # }
+    /// ```
     pub fn validate(&self) -> ValidationResult {
         Validate::validate(self)
     }

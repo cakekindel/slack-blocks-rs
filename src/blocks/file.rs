@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
+use crate::val_helpr::ValidationResult;
+
 /// # File Block
 ///
 /// [slack api docs 🔗]
@@ -13,6 +15,7 @@ use validator::Validate;
 pub struct Contents {
     external_id: String,
     source: String,
+    #[validate(length(max = 255))]
     block_id: Option<String>,
 }
 
@@ -87,4 +90,36 @@ impl Contents {
     pub fn with_block_id(mut self, block_id: impl AsRef<str>) -> Self {
         self.block_id = Some(block_id.as_ref().to_string());
         self
-    }}
+    }
+
+    /// Validate that this File block agrees with Slack's model requirements
+    ///
+    /// # Errors
+    /// - If `with_block_id` was called with a block id longer
+    ///     than 256 chars
+    ///
+    /// # Example
+    /// ```
+    /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::blocks;
+    /// use slack_blocks::compose;
+    ///
+    /// # use std::error::Error;
+    /// # pub fn main() -> Result<(), Box<dyn Error>> {
+    /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
+    ///
+    /// let block = blocks::file
+    ///     ::Contents
+    ///     ::from_external_id("file_id")
+    ///     .with_block_id(long_string);
+    ///
+    /// assert_eq!(true, matches!(block.validate(), Err(_)));
+    ///
+    /// // < send to slack API >
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn validate(&self) -> ValidationResult {
+        Validate::validate(self)
+    }
+}
