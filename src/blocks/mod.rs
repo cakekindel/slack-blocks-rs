@@ -6,6 +6,7 @@ pub mod actions;
 pub mod context;
 pub mod image;
 pub mod section;
+pub mod input;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
 
@@ -37,28 +38,8 @@ pub enum Block {
     #[serde(rename = "context")]
     Context(context::Contents),
 
-    /// # Input Block
-    ///
-    /// _[slack api docs 🔗][input_docs]_
-    ///
-    /// A block that collects information from users -
-    /// it can hold one of:
-    ///   - [a plain-text input element 🔗][input_element]
-    ///   - [a select menu element 🔗][select_element]
-    ///   - [a multi-select menu element 🔗][multi_select_element]
-    ///   - [a datepicker 🔗][datepicker_element]
-    ///
-    /// Read [slack's guide to using modals 🔗][modal_guide]
-    /// to learn how input blocks pass information to your app.
-    ///
-    /// [input_docs]: https://api.slack.com/reference/block-kit/blocks#input
-    /// [input_element]: https://api.slack.com/reference/block-kit/block-elements#input
-    /// [select_element]: https://api.slack.com/reference/block-kit/block-elements#select
-    /// [multi_select_element]: https://api.slack.com/reference/block-kit/block-elements#multi_select
-    /// [datepicker_element]: https://api.slack.com/reference/block-kit/block-elements#datepicker
-    /// [modal_guide]: https://api.slack.com/surfaces/modals/using#gathering_input
     #[serde(rename = "input")]
-    Input {},
+    Input(input::Contents),
 
     /// # File Block
     ///

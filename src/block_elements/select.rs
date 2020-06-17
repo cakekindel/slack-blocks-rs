@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::impl_from_contents;
+
 /// # Select Menu Element
 ///
 /// A select menu, just as with a standard HTML `<select>` tag,
@@ -15,12 +17,18 @@ use serde::{Deserialize, Serialize};
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub enum Contents {
-    Static(StaticSelect),
-    External(ExternalSelect),
-    User(UserSelect),
-    Conversation(ConversationSelect),
-    Channel(ChannelSelect),
+    Static(Static),
+    External(External),
+    User(User),
+    Conversation(Conversation),
+    Channel(Channel),
 }
+
+impl_from_contents!(Contents, Static, Static);
+impl_from_contents!(Contents, External, External);
+impl_from_contents!(Contents, User, User);
+impl_from_contents!(Contents, Conversation, Conversation);
+impl_from_contents!(Contents, Channel, Channel);
 
 /// ## Select menu with static options
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_select)
@@ -29,7 +37,7 @@ pub enum Contents {
 /// with a static list of options passed in when defining the element.
 ///
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct StaticSelect {}
+pub struct Static {}
 
 /// ## Select menu with external data source
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#external_select)
@@ -42,7 +50,7 @@ pub struct StaticSelect {}
 /// API section for [Select menu with external data source 🔗].
 ///
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct ExternalSelect {}
+pub struct External {}
 
 /// ## Select menu with user list
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#users_select)
@@ -50,7 +58,7 @@ pub struct ExternalSelect {}
 /// This select menu will populate its options with a list of
 /// Slack users visible to the current user in the active workspace.
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct UserSelect {}
+pub struct User {}
 
 /// ## Select menu with conversations list
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#conversation_select)
@@ -58,7 +66,7 @@ pub struct UserSelect {}
 /// This select menu will populate its options with a list of public and private channels,
 /// DMs, and MPIMs visible to the current user in the active workspace.
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct ConversationSelect {}
+pub struct Conversation {}
 
 /// ## Select menu with channels list
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#channel_select)
@@ -66,4 +74,4 @@ pub struct ConversationSelect {}
 /// This select menu will populate its options with a list of
 /// public channels visible to the current user in the active workspace.
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct ChannelSelect {}
+pub struct Channel {}
