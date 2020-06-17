@@ -127,7 +127,9 @@ impl Contents {
     ///     // < send block to slack's API >
     /// }
     /// ```
-    pub fn from_action_elements<Els: IntoIterator<Item = impl Into<self::BlockElement>>>(elements: Els) -> Self {
+    pub fn from_action_elements<Els: IntoIterator<Item = impl Into<self::BlockElement>>>(
+        elements: Els,
+    ) -> Self {
         elements
             .into_iter()
             .map(Into::<self::BlockElement>::into)

@@ -1,5 +1,6 @@
 use slack_blocks::{
-    blocks::actions, blocks::context, blocks::image, blocks::Block, compose, compose::Text,
+    block_elements, blocks::actions, blocks::context, blocks::image, blocks::input, blocks::Block,
+    compose, compose::Text,
 };
 
 mod common;
@@ -100,3 +101,38 @@ bad_blocks!(
     )
 );
 
+// ===[ Input Block Validation ]===
+bad_blocks!(
+    input_with_long_label:
+    Block::Input(
+        input::Contents
+            ::from_label_and_element(
+                Text::plain(common::string_of_len(2001)),
+                block_elements::select::Static {}
+            )
+    )
+);
+
+bad_blocks!(
+    input_with_long_hint:
+    Block::Input(
+        input::Contents
+            ::from_label_and_element(
+                Text::plain(""),
+                block_elements::select::Static {}
+            )
+            .with_hint(Text::plain(common::string_of_len(2001)))
+    )
+);
+
+bad_blocks!(
+    input_with_long_block_id:
+    Block::Input(
+        input::Contents
+            ::from_label_and_element(
+                Text::plain(""),
+                block_elements::select::Static {}
+            )
+            .with_block_id(common::string_of_len(256))
+    )
+);

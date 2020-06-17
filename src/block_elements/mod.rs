@@ -28,14 +28,3 @@ pub enum BlockElement {
     PlainInput,
     RadioButtons,
 }
-
-// TODO: move to input block mod when it exists
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub enum InputAttachment {
-    Checkboxes,
-    DatePicker,
-    MultiSelect(select::Contents),
-    Select(select::Contents),
-    PlainInput,
-    RadioButtons,
-}
