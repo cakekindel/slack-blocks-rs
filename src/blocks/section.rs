@@ -22,7 +22,7 @@ use crate::val_helpr::ValidationResult;
 /// [modals 🔗]: https://api.slack.com/surfaces/modals
 /// [messages 🔗]: https://api.slack.com/surfaces/messages
 /// [home tabs 🔗]: https://api.slack.com/surfaces/tabs
-/// [block elements 🔗]: https://api.slack.com/reference/messaging/block-elements/// ### Section
+/// [block elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
     #[validate(length(max = 10))]
@@ -96,7 +96,7 @@ impl Contents {
     /// - `text` - The text for the block, in the form of a [text object 🔗].
     ///     Maximum length for the text in this field is 3000 characters.
     ///
-    /// [text object 🔗]: https://api.slack.com/reference/messaging/composition-objects#text  pub fn from_text(text: compose::Text) -> Self {
+    /// [text object 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
     ///
     /// # Errors
     /// Doesn't error. To validate your model against the length requirements,
@@ -173,7 +173,7 @@ impl Contents {
     /// - If `from_text` was called with text longer than
     ///     3000 chars
     /// - If `with_block_id` was called with a block id longer
-    ///     than 256 chars
+    ///     than 255 chars
     ///
     /// # Example
     /// ```
