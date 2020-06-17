@@ -81,43 +81,8 @@ impl Block {
 }
 
 impl_from_contents!(Block, Section, section::Contents);
+impl_from_contents!(Block, Image, image::Contents);
 impl_from_contents!(Block, Actions, actions::Contents);
 impl_from_contents!(Block, Context, context::Contents);
-
-#[cfg(test)]
-mod tests {
-    use test_case::test_case;
-
-    use super::*;
-
-    #[test_case(
-        r#"{
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "my message"
-            }
-        }"#
-        => matches Block::Section(section::Contents::Text(_));
-        "section_text"
-    )]
-    #[test_case(
-        r#"{
-            "type": "section",
-            "fields": [{
-                "type": "mrkdwn",
-                "text": "my message"
-            }]
-        }"#
-        => matches Block::Section (section::Contents::Fields(_));
-        "section_fields"
-    )]
-    pub fn block_should_deserialize(json: &str) -> Block {
-        // arrange
-
-        // act
-        serde_json::from_str::<Block>(&json).expect("Failed to serialize")
-
-        // assert
-    }
-}
+impl_from_contents!(Block, Input, input::Contents);
+impl_from_contents!(Block, File, file::Contents);
