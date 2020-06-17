@@ -43,5 +43,7 @@ jobs:
 
     # Push the new tag, triggering a publish
     - name: 'push tags'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: 'git push --tags'
 
