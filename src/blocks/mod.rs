@@ -4,6 +4,7 @@ use crate::impl_from_contents;
 
 pub mod actions;
 pub mod context;
+pub mod file;
 pub mod image;
 pub mod input;
 pub mod section;
@@ -41,16 +42,8 @@ pub enum Block {
     #[serde(rename = "input")]
     Input(input::Contents),
 
-    /// # File Block
-    ///
-    /// _[slack api docs 🔗][file_docs]_
-    ///
-    /// Displays a [remote file 🔗][remote_file]
-    ///
-    /// [file_docs]: https://api.slack.com/reference/block-kit/blocks#file
-    /// [remote_file]: https://api.slack.com/messaging/files/remote
     #[serde(rename = "file")]
-    File {},
+    File(file::Contents),
 }
 
 use std::fmt;
@@ -81,6 +74,7 @@ impl Block {
             Actions(contents) => contents.validate(),
             Context(contents) => contents.validate(),
             Input(contents) => contents.validate(),
+            File(contents) => contents.validate(),
             other => todo!("validation not implemented for {}", other),
         }
     }
