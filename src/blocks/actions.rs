@@ -15,32 +15,9 @@ use crate::val_helpr::ValidationResult;
 /// [section_docs]: https://api.slack.com/reference/block-kit/blocks#actions
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
-    /// An array of interactive [element objects 🔗]
-    /// - [buttons 🔗]
-    /// - [select menus 🔗]
-    /// - [overflow menus 🔗]
-    /// - [date pickers 🔗]
-    ///
-    /// There is a maximum of 5 elements in each action block.
-    ///
-    /// [element objects 🔗]: https://api.slack.com/reference/messaging/block-elements
-    /// [buttons 🔗]: https://api.slack.com/reference/messaging/block-elements#button
-    /// [select menus 🔗]: https://api.slack.com/reference/messaging/block-elements#select
-    /// [overflow menus 🔗]: https://api.slack.com/reference/messaging/block-elements#overflow
-    /// [date pickers 🔗]: https://api.slack.com/reference/messaging/block-elements#datepicker
     #[validate(length(max = 5))]
     elements: Vec<BlockElement>,
 
-    /// A string acting as a unique identifier for a block.
-    ///
-    /// You can use this `block_id` when you receive an
-    /// interaction payload to [identify the source of the action 🔗].
-    ///
-    /// If not specified, a `block_id` will be generated.
-    ///
-    /// Maximum length for this field is 255 characters.
-    ///
-    /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
     #[validate(length(max = 255))]
     block_id: Option<String>,
 }
@@ -54,14 +31,24 @@ impl Contents {
 
     /// Set the `block_id` for interactions on an existing `actions::Contents`
     ///
-    /// ```
-    /// use slack_blocks::blocks::{Block, actions};
+    /// # Arguments
+    /// - `block_id` - A string acting as a unique identifier for a block.
+    ///     You can use this `block_id` when you receive an interaction payload
+    ///     to [identify the source of the action 🔗].
+    ///     If not specified, a `block_id` will be generated.
+    ///     Maximum length for this field is 255 characters.
     ///
-    /// pub fn main() {
-    ///     let actions = actions::Contents::new().with_block_id("tally_ho");
-    ///     let block: Block = actions.into();
-    ///     // < send block to slack's API >
-    /// }
+    /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads   ///
+    ///
+    /// # Example
+    /// ```
+    /// # use slack_blocks::blocks::{Block, actions};
+    ///
+    /// # pub fn main() {
+    /// let actions = actions::Contents::new().with_block_id("tally_ho");
+    /// let block: Block = actions.into();
+    /// // < send block to slack's API >
+    /// # }
     /// ```
     pub fn with_block_id<StrIsh: AsRef<str>>(mut self, block_id: StrIsh) -> Self {
         self.block_id = Some(block_id.as_ref().to_string());
@@ -73,17 +60,25 @@ impl Contents {
     ///
     /// For an infallible version of this conversion function, see `from_action_elements`.
     ///
-    /// ### Errors
+    /// # Arguments
+    /// - `elements` - An array of interactive [element objects 🔗]
+    ///     For a list of `BlockElement` types that are, see `BlockElement`.
+    ///     There is a maximum of 5 elements in each action block.
+    ///
+    /// [element objects 🔗]: https://api.slack.com/reference/messaging/block-elements
+    ///
+    /// # Errors
     /// Errors if the `block_elements::BlockElement` is one that is not supported by
     /// `Actions` blocks.
     ///
-    /// For a list of `BlockElement` types that are, see `self::BlockElement`.
+    /// For a list of `BlockElement` types that are, see `BlockElement`.
     ///
-    /// ### Runtime Validation
+    /// # Runtime Validation
     ///
     /// **only** validates that the block elements are compatible with `Actions`,
     /// for full runtime model validation see the `validate` method.
     ///
+    /// # Example
     /// ```
     /// use slack_blocks::blocks::{Block, actions};
     /// use slack_blocks::compose;
@@ -111,10 +106,11 @@ impl Contents {
     /// For slightly easier to use (but fallible) version of this conversion function,
     /// see `from_action_elements`.
     ///
-    /// ### Runtime Validation
+    /// # Runtime Validation
     /// **only** validates that the block elements are compatible with `Actions`,
     /// for full runtime model validation see the `validate` method.
     ///
+    /// # Example
     /// ```
     /// use slack_blocks::blocks::{Block, actions};
     /// use slack_blocks::compose;
@@ -127,7 +123,7 @@ impl Contents {
     ///     // < send block to slack's API >
     /// }
     /// ```
-    pub fn from_action_elements<Els: IntoIterator<Item = impl Into<self::BlockElement>>>(
+    pub fn from_action_elements<Els: IntoIterator<Item = self::BlockElement>>(
         elements: Els,
     ) -> Self {
         elements
@@ -137,8 +133,28 @@ impl Contents {
             .into()
     }
 
-    /// Validate the entire block and all of its
-    /// elements against Slack's model requirements
+    /// Validate that this Section block agrees with Slack's model requirements
+    ///
+    /// # Errors
+    /// - If `with_block_id` was called with a block id longer
+    ///     than 256 chars
+    /// - If `from_elements` or `from_action_elements` was
+    ///     called with a block id longer than 256 chars
+    ///
+    /// # Example
+    /// ```
+    /// use slack_blocks::blocks;
+    /// use slack_blocks::compose;
+    ///
+    /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
+    ///
+    /// let block = blocks::actions
+    ///     ::Contents
+    ///     ::from_action_elements(vec![])
+    ///     .with_block_id(long_string);
+    ///
+    /// assert_eq!(true, matches!(block.validate(), Err(_)));
+    /// ```
     pub fn validate(&self) -> ValidationResult {
         Validate::validate(self)
     }
