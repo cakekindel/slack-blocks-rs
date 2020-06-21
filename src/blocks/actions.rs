@@ -7,12 +7,12 @@ use crate::val_helpr::ValidationResult;
 
 /// # Actions Block
 ///
-/// _[slack api docs 🔗][action_docs]_
+/// [slack api docs 🔗]
 ///
-/// A block that is used to hold interactive [elements 🔗][block_elements]
+/// A block that is used to hold interactive [elements 🔗]
 ///
-/// [block_elements]: https://api.slack.com/reference/messaging/block-elements
-/// [section_docs]: https://api.slack.com/reference/block-kit/blocks#actions
+/// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
+/// [elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
     #[validate(length(max = 5))]
@@ -23,8 +23,18 @@ pub struct Contents {
 }
 
 impl Contents {
-    /// Create an empty Actions block
-    /// (uses `Default`)
+    /// Create an empty Actions block (shorthand for `Default::default()`)
+    ///
+    /// # Example
+    /// ```
+    /// # use slack_blocks::blocks::{Block, actions};
+    ///
+    /// # pub fn main() {
+    /// let actions = actions::Contents::new();
+    /// let block: Block = actions.into();
+    /// // < send block to slack's API >
+    /// # }
+    /// ```
     pub fn new() -> Self {
         Default::default()
     }
@@ -38,7 +48,7 @@ impl Contents {
     ///     If not specified, a `block_id` will be generated.
     ///     Maximum length for this field is 255 characters.
     ///
-    /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads   ///
+    /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
     ///
     /// # Example
     /// ```
@@ -92,12 +102,13 @@ impl Contents {
     ///     Ok(())
     /// }
     /// ```
-    pub fn from_elements<Els: Into<Vec<block_elements::BlockElement>>>(
-        elements: Els,
+    pub fn from_elements(
+        elements: impl IntoIterator<Item = block_elements::BlockElement>,
     ) -> Result<Self, ()> {
-        elements // Into<Vec>
-            .into() // Vec
-            .try_into() // Result<Vec>
+        elements
+            .into_iter()
+            .collect::<Vec<_>>()
+            .try_into()
     }
 
     /// Populate an Actions block with a collection of `BlockElement`s that
