@@ -117,6 +117,17 @@ impl Contents {
     /// For slightly easier to use (but fallible) version of this conversion function,
     /// see `from_action_elements`.
     ///
+    /// # Arguments
+    /// - `elements` - An array of interactive [element objects 🔗]
+    ///     For a list of `BlockElement` types that are supported, see `BlockElement`.
+    ///     There is a maximum of 5 elements in each action block.
+    ///
+    /// [element objects 🔗]: https://api.slack.com/reference/messaging/block-elements
+    ///
+    /// # Errors
+    /// Errors if the `block_elements::BlockElement` is one that is not supported by
+    /// `Actions` blocks.
+    ///
     /// # Runtime Validation
     /// **only** validates that the block elements are compatible with `Actions`,
     /// for full runtime model validation see the `validate` method.
@@ -134,8 +145,8 @@ impl Contents {
     ///     // < send block to slack's API >
     /// }
     /// ```
-    pub fn from_action_elements<Els: IntoIterator<Item = self::BlockElement>>(
-        elements: Els,
+    pub fn from_action_elements(
+        elements: impl IntoIterator<Item = self::BlockElement>,
     ) -> Self {
         elements
             .into_iter()
