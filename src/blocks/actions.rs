@@ -144,7 +144,7 @@ impl Contents {
     /// let block: Block = actions.into();
     ///
     /// // < send block to slack's API >
-    /// #}
+    /// # }
     /// ```
     pub fn from_action_elements(
         elements: impl IntoIterator<Item = self::BlockElement>,
