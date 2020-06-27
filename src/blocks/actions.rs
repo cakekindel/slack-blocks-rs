@@ -188,7 +188,7 @@ impl Contents {
 /// This list was pulled from the docs for all [block elements 🔗],
 /// where each declares the blocks it is usable in.
 ///
-/// [block elements 🔗]: https://api.slack.com/reference/block-kit/block-elements#static_select#setup
+/// [block elements 🔗]: https://api.slack.com/reference/block-kit/block-elements
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub enum BlockElement {
     Button,
