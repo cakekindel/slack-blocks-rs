@@ -56,15 +56,17 @@ impl Contents {
     /// let block: Block = actions.into();
     /// // < send block to slack's API >
     /// ```
-    pub fn with_block_id<StrIsh: AsRef<str>>(mut self, block_id: StrIsh) -> Self {
-        self.block_id = Some(block_id.as_ref().to_string());
+    pub fn with_block_id(mut self, block_id: impl ToString) -> Self {
+        self.block_id = Some(block_id.to_string());
         self
     }
 
-    /// Populate an Actions block with a collection of `BlockElement`s that
-    /// may not be supported by `Actions` blocks.
+    /// Populate an Actions block with a collection of `block_elements::BlockElement`s,
+    /// which may not be supported by `Actions` blocks.
     ///
-    /// For an infallible version of this conversion function, see `from_action_elements`.
+    /// If you _can_ create a collection of `actions::BlockElement`,
+    /// either by creating them directly or invoking `block_elements::BlockElement::into`,
+    /// use `from_action_elements`.
     ///
     /// # Arguments
     /// - `elements` - An array of interactive [element objects 🔗]
