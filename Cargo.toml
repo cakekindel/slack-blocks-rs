@@ -1,6 +1,6 @@
 [package]
 name = "slack-blocks"
-version = "0.5.1"
+version = "0.5.2"
 description = "Data structure definitions for Slack's Block Kit API - With client-side validation and helper macros"
 
 edition = "2018"
