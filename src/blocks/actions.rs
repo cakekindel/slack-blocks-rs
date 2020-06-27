@@ -27,13 +27,11 @@ impl Contents {
     ///
     /// # Example
     /// ```
-    /// # use slack_blocks::blocks::{Block, actions};
+    /// use slack_blocks::blocks::{Block, actions};
     ///
-    /// # pub fn main() {
     /// let actions = actions::Contents::new();
     /// let block: Block = actions.into();
     /// // < send block to slack's API >
-    /// # }
     /// ```
     pub fn new() -> Self {
         Default::default()
@@ -52,13 +50,11 @@ impl Contents {
     ///
     /// # Example
     /// ```
-    /// # use slack_blocks::blocks::{Block, actions};
+    /// use slack_blocks::blocks::{Block, actions};
     ///
-    /// # pub fn main() {
     /// let actions = actions::Contents::new().with_block_id("tally_ho");
     /// let block: Block = actions.into();
     /// // < send block to slack's API >
-    /// # }
     /// ```
     pub fn with_block_id<StrIsh: AsRef<str>>(mut self, block_id: StrIsh) -> Self {
         self.block_id = Some(block_id.as_ref().to_string());
@@ -94,13 +90,13 @@ impl Contents {
     /// use slack_blocks::compose;
     /// use slack_blocks::block_elements;
     ///
-    /// pub fn main() -> Result<(), ()> {
-    ///     let btn = block_elements::BlockElement::Button;
-    ///     let actions = actions::Contents::from_elements(vec![btn])?;
-    ///     let block: Block = actions.into();
-    ///     // < send block to slack's API >
-    ///     Ok(())
-    /// }
+    /// # pub fn main() -> Result<(), ()> {
+    /// let btn = block_elements::BlockElement::Button;
+    /// let actions = actions::Contents::from_elements(vec![btn])?;
+    /// let block: Block = actions.into();
+    /// // < send block to slack's API >
+    /// # Ok(())
+    /// # }
     /// ```
     pub fn from_elements(
         elements: impl IntoIterator<Item = block_elements::BlockElement>,
@@ -114,8 +110,10 @@ impl Contents {
     /// Populate an Actions block with a collection of `BlockElement`s that
     /// are supported by `Actions` blocks.
     ///
-    /// For slightly easier to use (but fallible) version of this conversion function,
-    /// see `from_action_elements`.
+    /// This also can be called via the `From<Vec<self::BlockElement>>` implementation.
+    ///
+    /// If you have a collection of elements that may not be supported,
+    /// see `from_elements`.
     ///
     /// # Arguments
     /// - `elements` - An array of interactive [element objects 🔗]
@@ -138,12 +136,13 @@ impl Contents {
     /// use slack_blocks::compose;
     /// use slack_blocks::block_elements;
     ///
-    /// pub fn main() {
-    ///     let btn = actions::BlockElement::Button;
-    ///     let actions = actions::Contents::from_action_elements(vec![btn]);
-    ///     let block: Block = actions.into();
-    ///     // < send block to slack's API >
-    /// }
+    /// # pub fn main() {
+    /// let btn = actions::BlockElement::Button;
+    /// let actions = actions::Contents::from_action_elements(vec![btn]);
+    /// let block: Block = actions.into();
+    ///
+    /// // < send block to slack's API >
+    /// #}
     /// ```
     pub fn from_action_elements(
         elements: impl IntoIterator<Item = self::BlockElement>,
@@ -159,9 +158,9 @@ impl Contents {
     ///
     /// # Errors
     /// - If `with_block_id` was called with a block id longer
-    ///     than 256 chars
+    ///     than 255 chars
     /// - If `from_elements` or `from_action_elements` was
-    ///     called with a block id longer than 256 chars
+    ///     called with more than 5 elements.
     ///
     /// # Example
     /// ```
@@ -182,22 +181,24 @@ impl Contents {
     }
 }
 
-// TryFrom implementation backing `Contents::from_elements`
-impl TryFrom<Vec<block_elements::BlockElement>> for Contents {
-    type Error = ();
-    fn try_from(elements: Vec<block_elements::BlockElement>) -> Result<Self, Self::Error> {
-        elements
-            .into_iter()
-            // Try to convert the bag of "any block element" to "block element supported by Actions"
-            .map(TryInto::try_into)
-            // If we hit one that is not supported, stop and continue with err
-            .collect::<Result<_, _>>()
-            // If it went ok, convert the supported elements into Contents
-            .map(|els: Vec<self::BlockElement>| -> Self { els.into() })
-    }
+/// The Block Elements supported in an Action Block.
+///
+/// This list was pulled from the docs for all [block elements 🔗],
+/// where each declares the blocks it is usable in.
+///
+/// [block elements 🔗]: https://api.slack.com/reference/block-kit/block-elements#static_select#setup
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+pub enum BlockElement {
+    Button,
+    Checkboxes,
+    DatePicker,
+    OverflowMenu,
+    PlainInput,
+    RadioButtons,
+    /// All Select types are supported.
+    Select(block_elements::select::Contents),
 }
 
-// From implementation backing `Contents::from_action_elements`
 impl From<Vec<self::BlockElement>> for Contents {
     fn from(elements: Vec<self::BlockElement>) -> Self {
         Self {
@@ -207,15 +208,15 @@ impl From<Vec<self::BlockElement>> for Contents {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub enum BlockElement {
-    Button,
-    Checkboxes,
-    DatePicker,
-    OverflowMenu,
-    PlainInput,
-    RadioButtons,
-    Select(block_elements::select::Contents),
+impl TryFrom<Vec<block_elements::BlockElement>> for Contents {
+    type Error = ();
+    fn try_from(elements: Vec<block_elements::BlockElement>) -> Result<Self, Self::Error> {
+        elements
+            .into_iter()
+            .map(TryInto::<self::BlockElement>::try_into)
+            .collect::<Result<Vec<_>, _>>()
+            .map(Into::<self::Contents>::into)
+    }
 }
 
 impl TryFrom<block_elements::BlockElement> for self::BlockElement {
