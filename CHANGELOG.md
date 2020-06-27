@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.6.0 (2020-06-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove public things that shouldn't be public (#40)
+
+### Features
+
+* remove public things that shouldn't be public ([#40](https://github.com/cakekindel/slack-blocks-rs/issues/40)) ([f9fa655](https://github.com/cakekindel/slack-blocks-rs/commit/f9fa65593a1de45e8eb58803e3da102adb011348))
+
 ### 0.5.2 (2020-06-27)
 
 ### 0.5.1 (2020-06-17)
