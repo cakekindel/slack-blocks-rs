@@ -1,9 +1,8 @@
-[![Crates.io](https://img.shields.io/crates/v/cargo-readme.svg)](https://crates.io/crates/cargo-readme)
+[![crates.io](https://img.shields.io/crates/v/slack-blocks.svg)](https://crates.io/crates/slack-blocks)
+[![docs.rs](https://docs.rs/slack-blocks/badge.svg)](https://docs.rs/slack-blocks/latest)
 ![Maintenance](https://img.shields.io/badge/maintenance-activly--developed-brightgreen.svg)
 
 # slack-blocks
-
-[docs 🔗]
 
 This crate brings Slack's terrific [Block Kit 🔗] to
 the Rust ecosystem.
@@ -19,7 +18,6 @@ This is currently being actively developed so watch the repo for a
 stable v1 release!
 
 [Block Kit 🔗]: https://api.slack.com/block-kit
-[docs 🔗]: https://docs.rs/slack-blocks/latest
 
 ## License
 
