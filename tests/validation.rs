@@ -64,42 +64,36 @@ bad_blocks!(
 // ===[ Image Block Validation ]===
 bad_blocks!(
     image_with_long_url:
-    Block::Image(image::Contents {
-        image_url: common::string_of_len(3001),
-        ..Default::default()
-    })
+    Block::Image(image::Contents::from_alt_text_and_url("", common::string_of_len(3001)))
 );
 
 bad_blocks!(
     image_with_long_alt_text:
-    Block::Image(image::Contents {
-        alt_text: common::string_of_len(2001),
-        ..Default::default()
-    })
+    Block::Image(image::Contents::from_alt_text_and_url(common::string_of_len(2001), ""))
 );
 
 bad_blocks!(
     image_with_long_block_id:
-    Block::Image(image::Contents {
-        block_id: Some(common::string_of_len(256)),
-        ..Default::default()
-    })
+    Block::Image(
+        image::Contents::from_alt_text_and_url("", "")
+            .with_block_id(common::string_of_len(256))
+    )
 );
 
 bad_blocks!(
     image_with_long_title:
-    Block::Image(image::Contents {
-        title: Some(Text::plain(common::string_of_len(2001))),
-        ..Default::default()
-    })
+    Block::Image(
+        image::Contents::from_alt_text_and_url("", "")
+            .with_title(Text::plain(common::string_of_len(2001)))
+    )
 );
 
 bad_blocks!(
     image_with_markdown_title:
-    Block::Image(image::Contents {
-        title: Some(Text::markdown("*uh oh!* :flushed:")),
-        ..Default::default()
-    })
+    Block::Image(
+        image::Contents::from_alt_text_and_url("", "")
+            .with_title(Text::markdown(""))
+    )
 );
 
 // ===[ Actions Block Validation ]===
