@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.6.2 (2020-06-28)
+
+
+### Bug Fixes
+
+* Shrink crate description ([#45](https://github.com/cakekindel/slack-blocks-rs/issues/45)) ([1f331cd](https://github.com/cakekindel/slack-blocks-rs/commit/1f331cdb8f59e163522c627f7356227ce918d976))
+
 ### 0.6.1 (2020-06-28)
 
 ## 0.6.0 (2020-06-27)
