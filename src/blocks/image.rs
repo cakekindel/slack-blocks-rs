@@ -44,11 +44,11 @@ impl Contents {
     /// use slack_blocks::blocks::{Block, image};
     ///
     /// let url = "https://www.cheese.com/favicon.ico";
-    /// let image: Block = image::Contents::from_url_and_alt_text("a small image of cheese.", url).into();
+    /// let image: Block = image::Contents::from_alt_text_and_url("a small image of cheese.", url).into();
     ///
     /// // < send to slack api >
     /// ```
-    pub fn from_url_and_alt_text(alt_text: impl ToString, image_url: impl ToString) -> Self {
+    pub fn from_alt_text_and_url(alt_text: impl ToString, image_url: impl ToString) -> Self {
         Self {
             alt_text: alt_text.to_string(),
             image_url: image_url.to_string(),
@@ -69,10 +69,11 @@ impl Contents {
     /// # Example
     /// ```
     /// use slack_blocks::blocks::{Block, image};
+    /// use slack_blocks::compose::Text;
     ///
     /// let url = "https://www.cheese.com/favicon.ico";
-    /// let image: Block = image::Contents::from_url_and_alt_text("a small image of cheese.", url)
-    ///     .with_title("here is an image of some cheese:")
+    /// let image: Block = image::Contents::from_alt_text_and_url("a small image of cheese.", url)
+    ///     .with_title(Text::plain("here is an image of some cheese:"))
     ///     .into();
     ///
     /// // < send block to slack's API >
@@ -96,10 +97,11 @@ impl Contents {
     /// # Example
     /// ```
     /// use slack_blocks::blocks::{Block, image};
+    /// use slack_blocks::compose::Text;
     ///
     /// let url = "https://www.cheese.com/favicon.ico";
-    /// let image: Block = image::Contents::from_url_and_alt_text("a small image of cheese.", url)
-    ///     .with_title("here is an image of some cheese:")
+    /// let image: Block = image::Contents::from_alt_text_and_url("a small image of cheese.", url)
+    ///     .with_title(Text::plain("here is an image of some cheese:"))
     ///     .with_block_id("msg_id_12346")
     ///     .into();
     ///
@@ -130,7 +132,7 @@ impl Contents {
     ///
     /// let block = blocks::image
     ///     ::Contents
-    ///     ::from_url_and_alt_text("", "")
+    ///     ::from_alt_text_and_url("", "")
     ///     .with_block_id(long_string);
     ///
     /// assert_eq!(true, matches!(block.validate(), Err(_)));
