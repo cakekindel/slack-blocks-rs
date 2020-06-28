@@ -1,5 +1,3 @@
-//! [docs 🔗]
-//!
 //! This crate brings Slack's terrific [Block Kit 🔗] to
 //! the Rust ecosystem.
 //!
@@ -14,7 +12,6 @@
 //! stable v1 release!
 //!
 //! [Block Kit 🔗]: https://api.slack.com/block-kit
-//! [docs 🔗]: https://docs.rs/slack-blocks/latest
 
 #[macro_use]
 extern crate validator_derive;
