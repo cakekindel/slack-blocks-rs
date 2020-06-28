@@ -1,4 +1,5 @@
-[![Crates.io](https://img.shields.io/crates/v/cargo-readme.svg)](https://crates.io/crates/cargo-readme)
+[![crates.io](https://img.shields.io/crates/v/slack-blocks.svg)](https://crates.io/crates/slack-blocks)
+[![docs.rs](https://docs.rs/slack-blocks/badge.svg)](https://docs.rs/slack-blocks/latest)
 {{badges}}
 
 # {{crate}}
