@@ -4,8 +4,6 @@
 
 # slack-blocks
 
-[docs 🔗]
-
 This crate brings Slack's terrific [Block Kit 🔗] to
 the Rust ecosystem.
 
@@ -20,7 +18,6 @@ This is currently being actively developed so watch the repo for a
 stable v1 release!
 
 [Block Kit 🔗]: https://api.slack.com/block-kit
-[docs 🔗]: https://docs.rs/slack-blocks/latest
 
 ## License
 
