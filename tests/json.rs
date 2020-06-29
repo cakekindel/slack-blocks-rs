@@ -26,8 +26,8 @@ mod test_data {
     use slack_blocks::compose::text;
 
     lazy_static::lazy_static! {
-        static ref SAMPLE_TEXT_PLAIN: text::Plain = "Sample Text".into();
-        static ref SAMPLE_TEXT_MRKDWN: text::Mrkdwn = "Sample *_markdown_*".into();
+        static ref SAMPLE_TEXT_PLAIN: text::Text = text::Plain::from("Sample Text").into();
+        static ref SAMPLE_TEXT_MRKDWN: text::Text = text::Mrkdwn::from("Sample *_markdown_*").into();
 
         pub static ref SECTION_JSON: serde_json::Value = serde_json::json!({
             "type": "section",

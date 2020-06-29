@@ -20,7 +20,7 @@ pub struct Contents {
     alt_text: String,
 
     #[validate(custom = "validate::title")]
-    title: Option<text::Plain>,
+    title: Option<text::Text>,
 
     #[validate(length(max = 255))]
     block_id: Option<String>,
@@ -77,7 +77,7 @@ impl Contents {
     /// // < send block to slack's API >
     /// ```
     pub fn with_title(mut self, title: impl Into<text::Plain>) -> Self {
-        self.title = Some(title.into());
+        self.title = Some(title.into().into());
         self
     }
 
@@ -143,7 +143,7 @@ mod validate {
     use crate::compose::text;
     use crate::val_helpr::{below_len, ValidatorResult};
 
-    pub fn title(text: &text::Plain) -> ValidatorResult {
+    pub fn title(text: &text::Text) -> ValidatorResult {
         below_len("Image Title", 2000, text.as_ref())
     }
 }
