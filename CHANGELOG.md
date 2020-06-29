@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.7.0 (2020-06-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* convert Image block contents to match patterns of others (#51)
+
+### Features
+
+* convert Image block contents to match patterns of others ([#51](https://github.com/cakekindel/slack-blocks-rs/issues/51)) ([d127ad6](https://github.com/cakekindel/slack-blocks-rs/commit/d127ad6255a73020d3c27b3293587006e54f4cac))
+
 ### 0.6.3 (2020-06-28)
 
 ### 0.6.2 (2020-06-28)
