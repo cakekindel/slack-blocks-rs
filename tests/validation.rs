@@ -1,6 +1,6 @@
 use slack_blocks::{
     block_elements, blocks::actions, blocks::section, blocks::context, blocks::file, blocks::image, blocks::input,
-    blocks::Block, compose, compose::Text,
+    blocks::Block, compose::text
 };
 
 mod common;
@@ -28,28 +28,28 @@ macro_rules! bad_blocks {
 bad_blocks!(
     section_with_long_block_id:
     Block::Section(
-        section::Contents::from_text(Text::plain("")).with_block_id(common::string_of_len(256))
+        section::Contents::from_text(text::Plain::from("")).with_block_id(common::string_of_len(256))
     )
 );
 
 bad_blocks!(
     section_with_long_text:
     Block::Section(
-        section::Contents::from_text(Text::plain(common::string_of_len(3001)))
+        section::Contents::from_text(text::Plain::from(common::string_of_len(3001)))
     )
 );
 
 bad_blocks!(
     section_with_long_field:
     Block::Section(
-        section::Contents::from_fields(vec![Text::plain(common::string_of_len(2001))])
+        section::Contents::from_fields(vec![text::Plain::from(common::string_of_len(2001))])
     )
 );
 
 bad_blocks!(
     section_with_many_fields:
     Block::Section(
-        section::Contents::from_fields(common::vec_of_len(Text::plain(""), 11))
+        section::Contents::from_fields(common::vec_of_len(text::Plain::from(""), 11))
     )
 );
 
@@ -84,15 +84,7 @@ bad_blocks!(
     image_with_long_title:
     Block::Image(
         image::Contents::from_alt_text_and_url("", "")
-            .with_title(Text::plain(common::string_of_len(2001)))
-    )
-);
-
-bad_blocks!(
-    image_with_markdown_title:
-    Block::Image(
-        image::Contents::from_alt_text_and_url("", "")
-            .with_title(Text::markdown(""))
+            .with_title(common::string_of_len(2001))
     )
 );
 
@@ -119,7 +111,7 @@ bad_blocks!(
     context_with_too_many_objects:
     Block::Context(
         common::vec_of_len(
-            compose::Compose::Text(Text::markdown("fart")),
+            text::Plain::from("fart").into(),
             11
         ).into()
     )
@@ -138,7 +130,7 @@ bad_blocks!(
     Block::Input(
         input::Contents
             ::from_label_and_element(
-                Text::plain(common::string_of_len(2001)),
+                common::string_of_len(2001),
                 block_elements::select::Static {}
             )
     )
@@ -149,10 +141,10 @@ bad_blocks!(
     Block::Input(
         input::Contents
             ::from_label_and_element(
-                Text::plain(""),
+                "",
                 block_elements::select::Static {}
             )
-            .with_hint(Text::plain(common::string_of_len(2001)))
+            .with_hint(common::string_of_len(2001))
     )
 );
 
@@ -161,7 +153,7 @@ bad_blocks!(
     Block::Input(
         input::Contents
             ::from_label_and_element(
-                Text::plain(""),
+                "",
                 block_elements::select::Static {}
             )
             .with_block_id(common::string_of_len(256))

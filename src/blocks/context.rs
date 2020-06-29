@@ -13,24 +13,9 @@ use crate::val_helpr::ValidationResult;
 /// [context_docs]: https://api.slack.com/reference/block-kit/blocks#context
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
-    /// A collection of [image elements 🔗] and [text objects 🔗].
-    ///
-    /// Maximum number of items is 10
-    /// [image elements 🔗]: https://api.slack.com/reference/messaging/block-elements#image
-    /// [text objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
     #[validate(length(max = 10))]
     elements: Vec<Compose>,
 
-    /// A string acting as a unique identifier for a block.
-    ///
-    /// You can use this `block_id` when you receive an
-    /// interaction payload to [identify the source of the action 🔗].
-    ///
-    /// If not specified, a `block_id` will be generated.
-    ///
-    /// Maximum length for this field is 255 characters.
-    ///
-    /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
     #[validate(length(max = 255))]
     block_id: Option<String>,
 }
@@ -63,10 +48,10 @@ impl Contents {
     ///
     /// ```
     /// use slack_blocks::blocks::{Block, context};
-    /// use slack_blocks::compose;
+    /// use slack_blocks::compose::text;
     ///
     /// pub fn main() {
-    ///     let text = compose::Text::markdown("*s i c k*");
+    ///     let text = text::Mrkdwn::from("*s i c k*");
     ///     let context = context::Contents::from_elements(vec![text]);
     ///     let block: Block = context.into();
     ///     // < send block to slack's API >

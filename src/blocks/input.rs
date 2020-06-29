@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::block_elements::select;
-use crate::compose;
+use crate::compose::text;
 use crate::val_helpr::ValidationResult;
 
 /// # Input Block
@@ -18,16 +18,16 @@ use crate::val_helpr::ValidationResult;
 /// [slack's guide to using modals 🔗]: https://api.slack.com/surfaces/modals/using#gathering_input
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
-    #[validate(custom = "validation::text_max_len_2k")]
-    label: compose::Text,
+    #[validate(custom = "validate::label")]
+    label: text::Plain,
 
     element: InputElement,
 
     #[validate(length(max = 255))]
     block_id: Option<String>,
 
-    #[validate(custom = "validation::text_max_len_2k")]
-    hint: Option<compose::Text>,
+    #[validate(custom = "validate::hint")]
+    hint: Option<text::Plain>,
 
     optional: Option<bool>,
 }
@@ -54,22 +54,17 @@ impl Contents {
     /// ```
     /// use slack_blocks::block_elements::select;
     /// use slack_blocks::blocks;
-    /// use slack_blocks::compose;
     ///
-    /// # use std::error::Error;
-    /// # pub fn main() -> Result<(), Box<dyn Error>> {
-    /// let label = compose::Text::plain("On a scale from 1 - 5, how angsty are you?");
+    /// let label = "On a scale from 1 - 5, how angsty are you?";
     /// let input = select::Static {};
     ///
     /// let block = blocks::input::Contents::from_label_and_element(label, input);
     ///
     /// // < send to slack API >
-    /// # Ok(())
-    /// # }
     /// ```
-    pub fn from_label_and_element<Label: Into<compose::Text>, El: Into<InputElement>>(
-        label: Label,
-        element: El,
+    pub fn from_label_and_element(
+        label: impl Into<text::Plain>,
+        element: impl Into<InputElement>,
     ) -> Self {
         Contents {
             label: label.into(),
@@ -98,11 +93,8 @@ impl Contents {
     /// ```
     /// use slack_blocks::block_elements::select;
     /// use slack_blocks::blocks;
-    /// use slack_blocks::compose;
     ///
-    /// # use std::error::Error;
-    /// # pub fn main() -> Result<(), Box<dyn Error>> {
-    /// let label = compose::Text::plain("On a scale from 1 - 5, how angsty are you?");
+    /// let label = "On a scale from 1 - 5, how angsty are you?";
     /// let input = select::Static {};
     ///
     /// let block = blocks::input
@@ -111,11 +103,9 @@ impl Contents {
     ///     .with_block_id("angst_rating_12345");
     ///
     /// // < send to slack API >
-    /// # Ok(())
-    /// # }
     /// ```
-    pub fn with_block_id<StrIsh: AsRef<str>>(mut self, block_id: StrIsh) -> Self {
-        self.block_id = Some(block_id.as_ref().to_string());
+    pub fn with_block_id(mut self, block_id: impl ToString) -> Self {
+        self.block_id = Some(block_id.to_string());
         self
     }
 
@@ -135,23 +125,22 @@ impl Contents {
     /// ```
     /// use slack_blocks::block_elements::select;
     /// use slack_blocks::blocks;
-    /// use slack_blocks::compose;
     ///
     /// # use std::error::Error;
     /// # pub fn main() -> Result<(), Box<dyn Error>> {
-    /// let label = compose::Text::plain("On a scale from 1 - 5, how angsty are you?");
+    /// let label = "On a scale from 1 - 5, how angsty are you?";
     /// let input = select::Static {};
     ///
     /// let block = blocks::input
     ///     ::Contents
     ///     ::from_label_and_element(label, input)
-    ///     .with_hint(compose::Text::plain("PSST hey! Don't let them know how angsty you are!"));
+    ///     .with_hint("PSST hey! Don't let them know how angsty you are!");
     ///
     /// // < send to slack API >
     /// # Ok(())
     /// # }
     /// ```
-    pub fn with_hint<IntoText: Into<compose::Text>>(mut self, hint: IntoText) -> Self {
+    pub fn with_hint(mut self, hint: impl Into<text::Plain>) -> Self {
         self.hint = Some(hint.into());
         self
     }
@@ -167,22 +156,17 @@ impl Contents {
     /// ```
     /// use slack_blocks::block_elements::select;
     /// use slack_blocks::blocks;
-    /// use slack_blocks::compose;
     ///
-    /// # use std::error::Error;
-    /// # pub fn main() -> Result<(), Box<dyn Error>> {
-    /// let label = compose::Text::plain("On a scale from 1 - 5, how angsty are you?");
+    /// let label = "On a scale from 1 - 5, how angsty are you?";
     /// let input = select::Static {};
     ///
     /// let block = blocks::input
     ///     ::Contents
     ///     ::from_label_and_element(label, input)
-    ///     .with_hint(compose::Text::plain("PSST hey! Don't even answer that!"))
+    ///     .with_hint("PSST hey! Don't even answer that!")
     ///     .with_optional(true);
     ///
     /// // < send to slack API >
-    /// # Ok(())
-    /// # }
     /// ```
     pub fn with_optional(mut self, optionality: bool) -> Self {
         self.optional = Some(optionality);
@@ -203,11 +187,8 @@ impl Contents {
     /// ```
     /// use slack_blocks::block_elements::select;
     /// use slack_blocks::blocks;
-    /// use slack_blocks::compose;
     ///
-    /// # use std::error::Error;
-    /// # pub fn main() -> Result<(), Box<dyn Error>> {
-    /// let label = compose::Text::plain("On a scale from 1 - 5, how angsty are you?");
+    /// let label = "On a scale from 1 - 5, how angsty are you?";
     /// let input = select::Static {};
     /// let long_string = std::iter::repeat(' ').take(2001).collect::<String>();
     ///
@@ -219,8 +200,6 @@ impl Contents {
     /// assert_eq!(true, matches!(block.validate(), Err(_)));
     ///
     /// // < send to slack API >
-    /// # Ok(())
-    /// # }
     /// ```
     pub fn validate(&self) -> ValidationResult {
         Validate::validate(self)
@@ -248,11 +227,15 @@ where
     }
 }
 
-mod validation {
-    use crate::compose;
-    use crate::val_helpr::ValidatorResult;
+mod validate {
+    use crate::compose::text;
+    use crate::val_helpr::{ValidatorResult, below_len};
 
-    pub fn text_max_len_2k(text: &compose::Text) -> ValidatorResult {
-        compose::validation::text_max_len(text, 2000)
+    pub fn label(text: &text::Plain) -> ValidatorResult {
+        below_len("Input Label", 2000, text.as_ref())
+    }
+
+    pub fn hint(text: &text::Plain) -> ValidatorResult {
+        below_len("Input Hint", 2000, text.as_ref())
     }
 }

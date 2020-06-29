@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::compose;
+use crate::compose::text;
 use crate::val_helpr::ValidationResult;
 
 /// # Section Block
@@ -26,12 +26,12 @@ use crate::val_helpr::ValidationResult;
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
     #[validate(length(max = 10))]
-    #[validate(custom = "validation::each_text_max_len_2k")]
-    fields: Option<Vec<compose::Text>>,
+    #[validate(custom = "validate::fields")]
+    fields: Option<Vec<text::Text>>,
 
 
-    #[validate(custom = "validation::text_max_len_3k")]
-    text: Option<compose::Text>,
+    #[validate(custom = "validate::text")]
+    text: Option<text::Text>,
 
     #[validate(length(max = 255))]
     block_id: Option<String>,
@@ -62,13 +62,13 @@ impl Contents {
     /// # Example
     /// ```
     /// use slack_blocks::blocks;
-    /// use slack_blocks::compose;
+    /// use slack_blocks::compose::text;
     ///
     /// # use std::error::Error;
     /// # pub fn main() -> Result<(), Box<dyn Error>> {
     /// let fields = vec![
-    ///     compose::Text::plain("Left column"),
-    ///     compose::Text::plain("Right column"),
+    ///     text::Plain::from("Left column"),
+    ///     text::Plain::from("Right column"),
     /// ];
     ///
     /// let block = blocks::section
@@ -79,7 +79,7 @@ impl Contents {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn from_fields<FieldIter: IntoIterator<Item = impl Into<compose::Text>>>(fields: FieldIter) -> Self {
+    pub fn from_fields<FieldIter: IntoIterator<Item = impl Into<text::Text>>>(fields: FieldIter) -> Self {
         let fields = Some(fields.into_iter().map(|f| f.into()).collect());
 
         Self {
@@ -105,19 +105,15 @@ impl Contents {
     /// # Example
     /// ```
     /// use slack_blocks::blocks;
-    /// use slack_blocks::compose;
+    /// use slack_blocks::compose::text;
     ///
-    /// # use std::error::Error;
-    /// # pub fn main() -> Result<(), Box<dyn Error>> {
     /// let block = blocks::section
     ///     ::Contents
-    ///     ::from_text(compose::Text::plain("I am a section!"));
+    ///     ::from_text(text::Plain::from("I am a section!"));
     ///
     /// // < send to slack API >
-    /// # Ok(())
-    /// # }
     /// ```
-    pub fn from_text(text: impl Into<compose::Text>) -> Self {
+    pub fn from_text(text: impl Into<text::Text>) -> Self {
         Self {
             text: Some(text.into()),
             fields: None,
@@ -143,7 +139,6 @@ impl Contents {
     /// # example
     /// ```
     /// use slack_blocks::blocks;
-    /// use slack_blocks::compose;
     ///
     /// # fn upload_file_to_slack(s: &str) -> String { String::new() }
     /// # use std::error::Error;
@@ -178,40 +173,38 @@ impl Contents {
     /// # Example
     /// ```
     /// use slack_blocks::blocks;
-    /// use slack_blocks::compose;
+    /// use slack_blocks::compose::text;
     ///
-    /// # use std::error::Error;
-    /// # pub fn main() -> Result<(), Box<dyn Error>> {
     /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
     ///
     /// let block = blocks::section
     ///     ::Contents
-    ///     ::from_text(compose::Text::plain("file_id"))
+    ///     ::from_text(text::Plain::from("file_id"))
     ///     .with_block_id(long_string);
     ///
     /// assert_eq!(true, matches!(block.validate(), Err(_)));
     ///
     /// // < send to slack API >
-    /// # Ok(())
-    /// # }
     /// ```
     pub fn validate(&self) -> ValidationResult {
         Validate::validate(self)
     }
 }
 
-mod validation {
-    use crate::compose;
-    use crate::val_helpr::ValidatorResult;
+mod validate {
+    use crate::compose::text;
+    use crate::val_helpr::{ValidatorResult, below_len};
 
-    pub fn text_max_len_3k(text: &compose::Text) -> ValidatorResult {
-        compose::validation::text_max_len(text, 3000)
+    pub fn text(text: &text::Text) -> ValidatorResult {
+        below_len("Section Text", 3000, text.as_ref())
     }
 
-    pub fn each_text_max_len_2k(texts: &Vec<compose::Text>) -> ValidatorResult {
+    pub fn fields(texts: &Vec<text::Text>) -> ValidatorResult {
         texts
             .iter()
-            .map(|text| compose::validation::text_max_len(text, 2000))
+            .map(|text| {
+                below_len("Section Field", 2000, text.as_ref())
+            })
             .collect()
     }
 }

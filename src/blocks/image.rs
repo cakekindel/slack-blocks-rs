@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::compose;
+use crate::compose::text;
 use crate::val_helpr::ValidationResult;
 
 /// # Image Block
@@ -19,9 +19,8 @@ pub struct Contents {
     #[validate(length(max = 2000))]
     alt_text: String,
 
-    #[validate(custom = "compose::validation::text_is_plain")]
-    #[validate(custom = "validation::text_max_len_2k")]
-    title: Option<compose::Text>,
+    #[validate(custom = "validate::title")]
+    title: Option<text::Plain>,
 
     #[validate(length(max = 255))]
     block_id: Option<String>,
@@ -63,22 +62,21 @@ impl Contents {
     /// - title - An optional title for the image in the form of a
     ///     Plaintext [text object 🔗].
     ///     Maximum length for the text in this field is 2000 characters.
-    ///
+    ///)
     /// [text object 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
     ///
     /// # Example
     /// ```
     /// use slack_blocks::blocks::{Block, image};
-    /// use slack_blocks::compose::Text;
     ///
     /// let url = "https://www.cheese.com/favicon.ico";
     /// let image: Block = image::Contents::from_alt_text_and_url("a small image of cheese.", url)
-    ///     .with_title(Text::plain("here is an image of some cheese:"))
+    ///     .with_title("here is an image of some cheese:")
     ///     .into();
     ///
     /// // < send block to slack's API >
     /// ```
-    pub fn with_title(mut self, title: impl Into<compose::Text>) -> Self {
+    pub fn with_title(mut self, title: impl Into<text::Plain>) -> Self {
         self.title = Some(title.into());
         self
     }
@@ -97,11 +95,10 @@ impl Contents {
     /// # Example
     /// ```
     /// use slack_blocks::blocks::{Block, image};
-    /// use slack_blocks::compose::Text;
     ///
     /// let url = "https://www.cheese.com/favicon.ico";
     /// let image: Block = image::Contents::from_alt_text_and_url("a small image of cheese.", url)
-    ///     .with_title(Text::plain("here is an image of some cheese:"))
+    ///     .with_title("here is an image of some cheese:")
     ///     .with_block_id("msg_id_12346")
     ///     .into();
     ///
@@ -142,11 +139,11 @@ impl Contents {
     }
 }
 
-mod validation {
-    use crate::compose;
-    use crate::val_helpr::ValidatorResult;
+mod validate {
+    use crate::compose::text;
+    use crate::val_helpr::{below_len, ValidatorResult};
 
-    pub fn text_max_len_2k(text: &compose::Text) -> ValidatorResult {
-        compose::validation::text_max_len(text, 2000)
+    pub fn title(text: &text::Plain) -> ValidatorResult {
+        below_len("Image Title", 2000, text.as_ref())
     }
 }
