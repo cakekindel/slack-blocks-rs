@@ -1,4 +1,4 @@
-use slack_blocks::{blocks::image, blocks::Block, compose};
+use slack_blocks::blocks::Block;
 
 #[feature(concat_idents)]
 
@@ -23,11 +23,11 @@ happy_json_test!(context_should_deserialize: test_data::CONTEXT_JSON => Block::C
 happy_json_test!(section_should_deserialize: test_data::SECTION_JSON => Block::Section { .. });
 
 mod test_data {
-    use slack_blocks::{blocks, compose};
+    use slack_blocks::compose::text;
 
     lazy_static::lazy_static! {
-        static ref SAMPLE_TEXT_PLAIN: compose::Text = compose::Text::plain("Sample Text");
-        static ref SAMPLE_TEXT_MRKDWN: compose::Text = compose::Text::markdown("Sample *_markdown_*");
+        static ref SAMPLE_TEXT_PLAIN: text::Text = text::Plain::from("Sample Text").into();
+        static ref SAMPLE_TEXT_MRKDWN: text::Text = text::Mrkdwn::from("Sample *_markdown_*").into();
 
         pub static ref SECTION_JSON: serde_json::Value = serde_json::json!({
             "type": "section",
@@ -49,7 +49,7 @@ mod test_data {
             "title": SAMPLE_TEXT_PLAIN.clone(),
         });
 
-        // FIX: add element objects to json here after validation but before merging actions
+        // FIX: add element objects to json here when implemented
         pub static ref ACTIONS_JSON: serde_json::Value = serde_json::json!({
             "type": "actions",
             "elements": [],

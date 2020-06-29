@@ -103,10 +103,7 @@ impl Contents {
     pub fn from_elements(
         elements: impl IntoIterator<Item = block_elements::BlockElement>,
     ) -> Result<Self, ()> {
-        elements
-            .into_iter()
-            .collect::<Vec<_>>()
-            .try_into()
+        elements.into_iter().collect::<Vec<_>>().try_into()
     }
 
     /// Populate an Actions block with a collection of `BlockElement`s that
@@ -146,9 +143,7 @@ impl Contents {
     /// // < send block to slack's API >
     /// # }
     /// ```
-    pub fn from_action_elements(
-        elements: impl IntoIterator<Item = self::BlockElement>,
-    ) -> Self {
+    pub fn from_action_elements(elements: impl IntoIterator<Item = self::BlockElement>) -> Self {
         elements
             .into_iter()
             .map(Into::<self::BlockElement>::into)
