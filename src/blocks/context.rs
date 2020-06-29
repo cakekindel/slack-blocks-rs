@@ -102,7 +102,7 @@ impl Contents {
             .map(Into::<compose::Compose>::into)
             .map(TryInto::<self::Compose>::try_into)
             .collect::<Result<Vec<_>, _>>()
-            .map(|elements| elements.into())
+            .map(Into::<Self>::into)
     }
 
     /// Add a composition object to a context block.
