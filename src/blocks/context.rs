@@ -32,7 +32,7 @@ impl Contents {
     /// use slack_blocks::text;
     ///
     /// let context = context::Contents::new()
-    ///     .with_comp(text::Plain::from("my unformatted text"));
+    ///     .with_element(text::Plain::from("my unformatted text"));
     ///
     /// let block: Block = context.into();
     /// // < send block to slack's API >
@@ -59,7 +59,7 @@ impl Contents {
     ///
     /// let text = text::Mrkdwn::from("_flavor_ *text*");
     /// let context: Block = context::Contents::new()
-    ///     .with_comp(text)
+    ///     .with_element(text)
     ///     .with_block_id("msg_id_12346")
     ///     .into();
     ///
@@ -75,11 +75,11 @@ impl Contents {
     /// Blocks.
     ///
     /// If you _can_ guarantee that a collection only contains image
-    /// or text objects, `from_context_comps` may be more ergonomic for you.
+    /// or text objects, `from_context_elements` may be more ergonomic for you.
     ///
     ///
     /// # Arguments
-    /// - `comps` - An array of composition objects;
+    /// - `elements` - An array of composition objects;
     ///     Must be image elements or text objects.
     ///     Maximum number of items is 10.
     ///
@@ -90,29 +90,29 @@ impl Contents {
     ///
     /// # pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let text = text::Mrkdwn::from("*s i c k*");
-    /// let context = context::Contents::from_comps(vec![text])?;
+    /// let context = context::Contents::from_elements(vec![text])?;
     /// let block: Block = context.into();
     /// // < send block to slack's API >
     /// # Ok(())
     /// # }
     /// ```
-    pub fn from_comps(comps: impl IntoIterator<Item = impl Into<compose::Compose>>) -> Result<Self, UnsupportedComposeError> {
-        comps
+    pub fn from_elements(elements: impl IntoIterator<Item = impl Into<compose::Compose>>) -> Result<Self, UnsupportedComposeError> {
+        elements
             .into_iter()
             .map(Into::<compose::Compose>::into)
             .map(TryInto::<self::Compose>::try_into)
             .collect::<Result<Vec<_>, _>>()
-            .map(|comps| comps.into())
+            .map(|elements| elements.into())
     }
 
     /// Add a composition object to a context block.
     ///
     /// If you _can_ guarantee that a collection only contains image
-    /// or text objects, `from_context_comps` may be more ergonomic for you.
+    /// or text objects, `from_context_elements` may be more ergonomic for you.
     ///
     ///
     /// # Arguments
-    /// - `comp` - A composition object;
+    /// - `element` - A composition object;
     ///     Must be image elements or text objects.
     ///     Maximum number of items is 10.
     ///
@@ -122,13 +122,13 @@ impl Contents {
     /// use slack_blocks::text;
     ///
     /// let context = context::Contents::new()
-    ///     .with_comp(text::Plain::from("my unformatted text"));
+    ///     .with_element(text::Plain::from("my unformatted text"));
     ///
     /// let block: Block = context.into();
     /// // < send block to slack's API >
     /// ```
-    pub fn with_comp(mut self, comp: impl Into<self::Compose>) -> Self {
-        self.elements.push(comp.into());
+    pub fn with_element(mut self, element: impl Into<self::Compose>) -> Self {
+        self.elements.push(element.into());
         self
     }
 
@@ -137,10 +137,10 @@ impl Contents {
     /// Blocks.
     ///
     /// If you _can't_ guarantee that a collection only contains image
-    /// or text objects, `from_comps` may be more ergonomic for you.
+    /// or text objects, `from_elements` may be more ergonomic for you.
     ///
     /// # Arguments
-    /// - `comps` - An array of composition objects;
+    /// - `elements` - An array of composition objects;
     ///     Must be image elements or text objects.
     ///     Maximum number of items is 10.
     ///
@@ -154,13 +154,13 @@ impl Contents {
     ///         text::Mrkdwn::from("*s i c k*").into(),
     ///         text::Mrkdwn::from("*t i g h t*").into(),
     ///     ];
-    ///     let context = context::Contents::from_context_comps(objs);
+    ///     let context = context::Contents::from_context_elements(objs);
     ///     let block: Block = context.into();
     ///     // < send block to slack's API >
     /// }
     /// ```
-    pub fn from_context_comps(comps: impl IntoIterator<Item = impl Into<Compose>>) -> Self {
-        comps
+    pub fn from_context_elements(elements: impl IntoIterator<Item = impl Into<Compose>>) -> Self {
+        elements
             .into_iter()
             .map(Into::<self::Compose>::into)
             .collect::<Vec<_>>()
@@ -172,7 +172,7 @@ impl Contents {
     /// # Errors
     /// - If `with_block_id` was called with a block id longer
     ///     than 255 chars
-    /// - If `from_comps`, `from_context_comps`, or `with_comp` was called with
+    /// - If `from_elements`, `from_context_elements`, or `with_element` was called with
     ///     more than 10 objects
     ///
     /// # Example
