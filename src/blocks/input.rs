@@ -19,7 +19,7 @@ use crate::val_helpr::ValidationResult;
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
     #[validate(custom = "validate::label")]
-    label: text::Plain,
+    label: text::Text,
 
     element: InputElement,
 
@@ -27,7 +27,7 @@ pub struct Contents {
     block_id: Option<String>,
 
     #[validate(custom = "validate::hint")]
-    hint: Option<text::Plain>,
+    hint: Option<text::Text>,
 
     optional: Option<bool>,
 }
@@ -67,7 +67,7 @@ impl Contents {
         element: impl Into<InputElement>,
     ) -> Self {
         Contents {
-            label: label.into(),
+            label: label.into().into(),
             element: element.into(),
             block_id: None,
             hint: None,
@@ -141,7 +141,7 @@ impl Contents {
     /// # }
     /// ```
     pub fn with_hint(mut self, hint: impl Into<text::Plain>) -> Self {
-        self.hint = Some(hint.into());
+        self.hint = Some(hint.into().into());
         self
     }
 
@@ -231,11 +231,11 @@ mod validate {
     use crate::compose::text;
     use crate::val_helpr::{below_len, ValidatorResult};
 
-    pub fn label(text: &text::Plain) -> ValidatorResult {
+    pub fn label(text: &text::Text) -> ValidatorResult {
         below_len("Input Label", 2000, text.as_ref())
     }
 
-    pub fn hint(text: &text::Plain) -> ValidatorResult {
+    pub fn hint(text: &text::Text) -> ValidatorResult {
         below_len("Input Hint", 2000, text.as_ref())
     }
 }

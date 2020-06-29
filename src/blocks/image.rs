@@ -62,7 +62,7 @@ impl Contents {
     /// - title - An optional title for the image in the form of a
     ///     Plaintext [text object 🔗].
     ///     Maximum length for the text in this field is 2000 characters.
-    ///)
+    ///
     /// [text object 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
     ///
     /// # Example
