@@ -65,8 +65,8 @@ impl Contents {
     ///
     /// // < send block to slack's API >
     /// ```
-    pub fn with_block_id<StrIsh: AsRef<str>>(mut self, block_id: StrIsh) -> Self {
-        self.block_id = Some(block_id.as_ref().to_string());
+    pub fn with_block_id(mut self, block_id: impl ToString) -> Self {
+        self.block_id = Some(block_id.to_string());
         self
     }
 
@@ -107,9 +107,9 @@ impl Contents {
 
     /// Add a composition object to a context block.
     ///
-    /// If you _can_ guarantee that a collection only contains image
-    /// or text objects, `from_context_elements` may be more ergonomic for you.
-    ///
+    /// This is chainable, and can be used to easily
+    /// populate the elements of a context block
+    /// right after invoking `new`.
     ///
     /// # Arguments
     /// - `element` - A composition object;
@@ -150,9 +150,9 @@ impl Contents {
     /// use slack_blocks::text;
     ///
     /// pub fn main() {
-    ///     let objs: Vec<context::Compose> = vec![
-    ///         text::Mrkdwn::from("*s i c k*").into(),
-    ///         text::Mrkdwn::from("*t i g h t*").into(),
+    ///     let objs: Vec<text::Mrkdwn> = vec![
+    ///         text::Mrkdwn::from("*s i c k*"),
+    ///         text::Mrkdwn::from("*t i g h t*"),
     ///     ];
     ///     let context = context::Contents::from_context_elements(objs);
     ///     let block: Block = context.into();
