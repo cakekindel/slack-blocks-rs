@@ -75,7 +75,9 @@ impl Contents {
     /// let text = mrkdwn::Contents::from_text("This link doesn't work! :tada: https://www.cheese.com")
     ///     .with_verbatim(true);
     /// ```
-    pub fn from_text(text: impl ToString) -> Self { Into::<Self>::into(text.to_string()) }
+    pub fn from_text(text: impl ToString) -> Self {
+        Into::<Self>::into(text.to_string())
+    }
 
     /// Sets the `verbatim` flag
     ///

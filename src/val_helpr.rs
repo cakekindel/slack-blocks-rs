@@ -20,7 +20,10 @@ pub fn below_len(context: &'static str, max_len: u16, text: impl AsRef<str>) -> 
     let len = text.as_ref().len();
 
     if len >= max_len.into() {
-        Err(error(context, format!("{} has a max length of {}, got {}", context, max_len, len)))
+        Err(error(
+            context,
+            format!("{} has a max length of {}, got {}", context, max_len, len),
+        ))
     } else {
         Ok(())
     }

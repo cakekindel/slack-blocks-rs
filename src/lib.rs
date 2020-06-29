@@ -21,6 +21,8 @@ pub mod blocks;
 pub mod compose;
 mod val_helpr;
 
+pub use compose::text;
+
 #[macro_export]
 #[doc(hidden)]
 macro_rules! impl_from_contents {

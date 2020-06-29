@@ -1,4 +1,4 @@
-use slack_blocks::{blocks::Block};
+use slack_blocks::blocks::Block;
 
 #[feature(concat_idents)]
 
@@ -23,7 +23,7 @@ happy_json_test!(context_should_deserialize: test_data::CONTEXT_JSON => Block::C
 happy_json_test!(section_should_deserialize: test_data::SECTION_JSON => Block::Section { .. });
 
 mod test_data {
-    use slack_blocks::{compose::text};
+    use slack_blocks::compose::text;
 
     lazy_static::lazy_static! {
         static ref SAMPLE_TEXT_PLAIN: text::Plain = "Sample Text".into();

@@ -52,7 +52,7 @@ impl Contents {
             alt_text: alt_text.to_string(),
             image_url: image_url.to_string(),
             title: None,
-            block_id: None
+            block_id: None,
         }
     }
 

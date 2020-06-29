@@ -27,7 +27,9 @@ impl Contents {
     /// let text = mrkdwn::Contents::from_text("This link doesn't work! :tada: https://www.cheese.com")
     ///     .with_verbatim(true);
     /// ```
-    pub fn from_text(text: impl ToString) -> Self { Into::<Self>::into(text.to_string()) }
+    pub fn from_text(text: impl ToString) -> Self {
+        Into::<Self>::into(text.to_string())
+    }
 
     /// Sets the `emoji` flag
     ///
@@ -56,10 +58,7 @@ impl AsRef<str> for Contents {
 
 impl From<String> for Contents {
     fn from(text: String) -> Self {
-        Self {
-            text,
-            emoji: None,
-        }
+        Self { text, emoji: None }
     }
 }
 

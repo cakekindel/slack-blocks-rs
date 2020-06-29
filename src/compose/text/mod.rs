@@ -1,11 +1,11 @@
-use serde::{Deserialize, Serialize};
 use crate::impl_from_contents;
+use serde::{Deserialize, Serialize};
 
-pub mod plain;
 pub mod mrkdwn;
+pub mod plain;
 
-pub use plain::Contents as Plain;
 pub use mrkdwn::Contents as Mrkdwn;
+pub use plain::Contents as Plain;
 
 /// # Text Object
 /// [_slack api docs 🔗_](https://api.slack.com/reference/block-kit/composition-objects#text)
@@ -48,7 +48,7 @@ impl AsRef<str> for Text {
     fn as_ref(&self) -> &str {
         match self {
             Self::Mrkdwn(cts) => cts.as_ref(),
-            Self::Plain(cts) => cts.as_ref()
+            Self::Plain(cts) => cts.as_ref(),
         }
     }
 }

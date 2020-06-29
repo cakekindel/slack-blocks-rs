@@ -29,7 +29,6 @@ pub struct Contents {
     #[validate(custom = "validate::fields")]
     fields: Option<Vec<text::Text>>,
 
-
     #[validate(custom = "validate::text")]
     text: Option<text::Text>,
 
@@ -79,7 +78,9 @@ impl Contents {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn from_fields<FieldIter: IntoIterator<Item = impl Into<text::Text>>>(fields: FieldIter) -> Self {
+    pub fn from_fields<FieldIter: IntoIterator<Item = impl Into<text::Text>>>(
+        fields: FieldIter,
+    ) -> Self {
         let fields = Some(fields.into_iter().map(|f| f.into()).collect());
 
         Self {
@@ -193,7 +194,7 @@ impl Contents {
 
 mod validate {
     use crate::compose::text;
-    use crate::val_helpr::{ValidatorResult, below_len};
+    use crate::val_helpr::{below_len, ValidatorResult};
 
     pub fn text(text: &text::Text) -> ValidatorResult {
         below_len("Section Text", 3000, text.as_ref())
@@ -202,9 +203,7 @@ mod validate {
     pub fn fields(texts: &Vec<text::Text>) -> ValidatorResult {
         texts
             .iter()
-            .map(|text| {
-                below_len("Section Field", 2000, text.as_ref())
-            })
+            .map(|text| below_len("Section Field", 2000, text.as_ref()))
             .collect()
     }
 }

@@ -1,6 +1,6 @@
 use slack_blocks::{
-    block_elements, blocks::actions, blocks::section, blocks::context, blocks::file, blocks::image, blocks::input,
-    blocks::Block, compose::text
+    block_elements, blocks::actions, blocks::context, blocks::file, blocks::image, blocks::input,
+    blocks::section, blocks::Block, compose::text,
 };
 
 mod common;
@@ -41,9 +41,9 @@ bad_blocks!(
 
 bad_blocks!(
     section_with_long_field:
-    Block::Section(
-        section::Contents::from_fields(vec![text::Plain::from(common::string_of_len(2001))])
-    )
+        Block::Section(
+            section::Contents::from_fields(vec![text::Plain::from(common::string_of_len(2001))]),
+        )
 );
 
 bad_blocks!(

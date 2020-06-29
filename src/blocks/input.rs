@@ -229,7 +229,7 @@ where
 
 mod validate {
     use crate::compose::text;
-    use crate::val_helpr::{ValidatorResult, below_len};
+    use crate::val_helpr::{below_len, ValidatorResult};
 
     pub fn label(text: &text::Plain) -> ValidatorResult {
         below_len("Input Label", 2000, text.as_ref())
