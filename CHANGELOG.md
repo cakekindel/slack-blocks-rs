@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.8.0 (2020-06-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* rework text (#55)
+
+### Features
+
+* rework text ([#55](https://github.com/cakekindel/slack-blocks-rs/issues/55)) ([3573f44](https://github.com/cakekindel/slack-blocks-rs/commit/3573f4431dc6fc18f6412c783de20782837f2de4))
+
 ## 0.7.0 (2020-06-29)
 
 
