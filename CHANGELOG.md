@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.9.0 (2020-06-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* refactor context block api (#57)
+
+### Features
+
+* refactor context block api ([#57](https://github.com/cakekindel/slack-blocks-rs/issues/57)) ([d407405](https://github.com/cakekindel/slack-blocks-rs/commit/d4074059c21eddafb41a5d8800e272e25a663ebf))
+
 ## 0.8.0 (2020-06-29)
 
 
