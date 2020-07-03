@@ -24,10 +24,31 @@ pub struct Contents {
 }
 
 impl Contents {
-    pub fn from_text_and_action_id(text: impl Into<text::Plain>, action_id: impl ToString) -> Self { todo!() }
-    pub fn with_url(mut self, url: impl ToString) -> Self { todo!() }
-    pub fn with_value(mut self, value: impl ToString) -> Self { todo!() }
-    pub fn with_style(mut self, style: Style) -> Self { todo!() }
+    pub fn from_text_and_action_id(text: impl Into<text::Plain>, action_id: impl ToString) -> Self {
+        Self {
+            text: text.into().into(),
+            action_id: action_id.to_string(),
+            url: None,
+            value: None,
+            style: None,
+            confirm: None,
+        }
+    }
+
+    pub fn with_url(mut self, url: impl ToString) -> Self {
+        self.url = Some(url.to_string());
+        self
+    }
+
+    pub fn with_value(mut self, value: impl ToString) -> Self {
+        self.value = Some(value.to_string());
+        self
+    }
+
+    pub fn with_style(mut self, style: Style) -> Self {
+        self.style = Some(style);
+        self
+    }
 
     fn with_confirm(confirm: ()) -> Self { todo!() } // FIX: private until usable
 

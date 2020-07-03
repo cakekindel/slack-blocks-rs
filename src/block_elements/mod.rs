@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::val_helpr::ValidationResult;
+use crate::impl_from_contents;
 
 pub mod select;
 pub mod button;
@@ -42,3 +43,5 @@ impl BlockElement {
         }
     }
 }
+
+impl_from_contents!(BlockElement, Button, Button);
