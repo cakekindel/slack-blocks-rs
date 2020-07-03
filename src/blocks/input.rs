@@ -209,8 +209,9 @@ impl Contents {
 /// Enum representing the [`BlockElement` 🔗] types
 /// supported by InputElement.
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[serde(untagged)]
 pub enum InputElement {
-    Checkboxes,
+    Checkboxes { fixme: String },
     DatePicker,
     MultiSelect,
     Select(select::Contents),
