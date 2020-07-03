@@ -1,4 +1,5 @@
 use slack_blocks::blocks::Block;
+use slack_blocks::block_elements::BlockElement;
 
 #[feature(concat_idents)]
 
@@ -25,6 +26,8 @@ happy_json_test!(Block, SECTION_JSON => Block::Section { .. });
 happy_json_test!(Block, DIVIDER_JSON => Block::Divider { .. });
 happy_json_test!(Block, INPUT_JSON => Block::Input { .. });
 happy_json_test!(Block, FILE_JSON => Block::File { .. });
+
+happy_json_test!(BlockElement, BUTTON_JSON => BlockElement::Button { .. });
 
 mod test_data {
     use slack_blocks::compose::text;
