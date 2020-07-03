@@ -1,6 +1,5 @@
 use slack_blocks::blocks::Block;
-
-#[feature(concat_idents)]
+use slack_blocks::block_elements::BlockElement;
 
 macro_rules! happy_json_test {
     ($ty:ty, $test_data:ident => $matches:pat) => {
@@ -25,6 +24,8 @@ happy_json_test!(Block, SECTION_JSON => Block::Section { .. });
 happy_json_test!(Block, DIVIDER_JSON => Block::Divider { .. });
 happy_json_test!(Block, INPUT_JSON => Block::Input { .. });
 happy_json_test!(Block, FILE_JSON => Block::File { .. });
+
+happy_json_test!(BlockElement, BUTTON_JSON => BlockElement::Button { .. });
 
 mod test_data {
     use slack_blocks::compose::text;
@@ -75,6 +76,15 @@ mod test_data {
             "type": "input",
             "label": SAMPLE_TEXT_PLAIN.clone(),
             "element": { "fixme": "see comment" },
+        });
+
+        pub static ref BUTTON_JSON: serde_json::Value = serde_json::json!({
+            "type": "button",
+            "text": SAMPLE_TEXT_PLAIN.clone(),
+            "action_id": "abc123",
+            "url": "https://www.cheese.com/",
+            "style": "primary",
+            "value": "valvalval",
         });
     }
 }

@@ -3,6 +3,7 @@ use std::convert::{TryFrom, TryInto};
 use validator::Validate;
 
 use crate::block_elements;
+use crate::impl_from_contents;
 use crate::val_helpr::ValidationResult;
 
 /// # Actions Block
@@ -93,8 +94,8 @@ impl Contents {
     /// use slack_blocks::block_elements;
     ///
     /// # pub fn main() -> Result<(), ()> {
-    /// let btn = block_elements::BlockElement::Button;
-    /// let actions = actions::Contents::from_elements(vec![btn])?;
+    /// let btn = block_elements::Button::from_text_and_action_id("Button", "123");
+    /// let actions = actions::Contents::from_elements(vec![btn.into()])?;
     /// let block: Block = actions.into();
     /// // < send block to slack's API >
     /// # Ok(())
@@ -136,8 +137,8 @@ impl Contents {
     /// use slack_blocks::block_elements;
     ///
     /// # pub fn main() {
-    /// let btn = actions::BlockElement::Button;
-    /// let actions = actions::Contents::from_action_elements(vec![btn]);
+    /// let btn = block_elements::Button::from_text_and_action_id("Button", "123");
+    /// let actions = actions::Contents::from_action_elements(vec![btn.into()]);
     /// let block: Block = actions.into();
     ///
     /// // < send block to slack's API >
@@ -186,7 +187,7 @@ impl Contents {
 /// [block elements 🔗]: https://api.slack.com/reference/block-kit/block-elements
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub enum BlockElement {
-    Button,
+    Button(block_elements::Button),
     Checkboxes,
     DatePicker,
     OverflowMenu,
@@ -223,7 +224,7 @@ impl TryFrom<block_elements::BlockElement> for self::BlockElement {
         use block_elements::BlockElement as El;
 
         match el {
-            El::Button => Ok(Button),
+            El::Button(cts) => Ok(Button(cts)),
             El::Checkboxes => Ok(Checkboxes),
             El::DatePicker => Ok(DatePicker),
             El::OverflowMenu => Ok(OverflowMenu),
@@ -234,3 +235,5 @@ impl TryFrom<block_elements::BlockElement> for self::BlockElement {
         }
     }
 }
+
+impl_from_contents!(BlockElement, Button, block_elements::Button);

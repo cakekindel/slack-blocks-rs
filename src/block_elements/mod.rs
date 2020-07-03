@@ -1,6 +1,12 @@
 use serde::{Deserialize, Serialize};
 
+use crate::val_helpr::ValidationResult;
+use crate::impl_from_contents;
+
 pub mod select;
+pub mod button;
+
+pub use button::Contents as Button;
 
 /// # Block Elements - interactive components
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements)
@@ -17,8 +23,9 @@ pub mod select;
 /// [handling user interactivity guide 🔗]: https://api.slack.com/interactivity/handling
 /// [layout blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
 pub enum BlockElement {
-    Button,
+    Button(Button),
     Checkboxes,
     DatePicker,
     Image,
@@ -28,3 +35,14 @@ pub enum BlockElement {
     PlainInput,
     RadioButtons,
 }
+
+impl BlockElement {
+    pub fn validate(&self) -> ValidationResult {
+        match self {
+            Self::Button(cts) => cts.validate(),
+            rest => todo!("validation not implemented for {:?}", rest)
+        }
+    }
+}
+
+impl_from_contents!(BlockElement, Button, Button);
