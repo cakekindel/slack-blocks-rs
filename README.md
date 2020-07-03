@@ -38,6 +38,9 @@ This repo follows [Conventional Commits] in order to fully automate the semver p
 but you don't _need_ to follow this convention since the repo is configured for Squash
 commits on merge.
 
+[issues]: https://github.com/cakekindel/slack-blocks-rs/issues/
+[Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
+
 ## License
 
 Licensed under either of
