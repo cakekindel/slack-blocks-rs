@@ -1,8 +1,10 @@
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
+use crate::val_helpr::ValidationResult;
 use crate::text;
 
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[derive(Validate, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Contents {
     text: text::Text,
     action_id: String,
@@ -18,6 +20,10 @@ impl Contents {
     pub fn with_value(mut self, value: impl ToString) -> Self { todo!() }
     pub fn with_style(mut self, style: Style) -> Self { todo!() }
     fn with_confirm(confirm: ()) -> Self { todo!() } // FIX: private until usable
+
+    pub fn validate(&self) -> ValidationResult {
+        Validate::validate(self)
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]

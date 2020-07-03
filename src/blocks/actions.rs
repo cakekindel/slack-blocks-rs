@@ -186,7 +186,7 @@ impl Contents {
 /// [block elements 🔗]: https://api.slack.com/reference/block-kit/block-elements
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub enum BlockElement {
-    Button,
+    Button(block_elements::Button),
     Checkboxes,
     DatePicker,
     OverflowMenu,
@@ -223,7 +223,7 @@ impl TryFrom<block_elements::BlockElement> for self::BlockElement {
         use block_elements::BlockElement as El;
 
         match el {
-            El::Button => Ok(Button),
+            El::Button(cts) => Ok(Button(cts)),
             El::Checkboxes => Ok(Checkboxes),
             El::DatePicker => Ok(DatePicker),
             El::OverflowMenu => Ok(OverflowMenu),

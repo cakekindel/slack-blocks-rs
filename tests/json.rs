@@ -76,5 +76,14 @@ mod test_data {
             "label": SAMPLE_TEXT_PLAIN.clone(),
             "element": { "fixme": "see comment" },
         });
+
+        pub static ref BUTTON_JSON: serde_json::Value = serde_json::json!({
+            "type": "button",
+            "text": SAMPLE_TEXT_PLAIN.clone(),
+            "action_id": "abc123",
+            "url": "https://www.cheese.com/",
+            "style": "primary",
+            "value": "valvalval",
+        });
     }
 }
