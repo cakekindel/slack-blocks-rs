@@ -1,8 +1,6 @@
 use slack_blocks::blocks::Block;
 use slack_blocks::block_elements::BlockElement;
 
-#[feature(concat_idents)]
-
 macro_rules! happy_json_test {
     ($ty:ty, $test_data:ident => $matches:pat) => {
         #[test]
