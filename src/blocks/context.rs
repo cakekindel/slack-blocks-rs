@@ -211,9 +211,11 @@ pub enum Compose {
 
 impl TryFrom<compose::Compose> for Compose {
     type Error = UnsupportedComposeError;
+
     fn try_from(comp: compose::Compose) -> Result<Self, Self::Error> {
         match comp {
-            compose::Compose::Text(txt) => Ok(Compose::Text(txt))
+            compose::Compose::Text(txt) => Ok(Compose::Text(txt)),
+            rest => Err(UnsupportedComposeError::from(rest))
         }
     }
 }
@@ -234,6 +236,12 @@ impl From<text::mrkdwn::Contents> for Compose {
 
 #[derive(Debug)]
 pub struct UnsupportedComposeError(Vec<compose::Compose>);
+
+impl From<compose::Compose> for UnsupportedComposeError {
+    fn from(comp: compose::Compose) -> Self {
+        Self(vec![comp])
+    }
+}
 
 impl std::fmt::Display for UnsupportedComposeError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {

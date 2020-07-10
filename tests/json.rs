@@ -1,15 +1,16 @@
 use slack_blocks::blocks::Block;
 use slack_blocks::block_elements::BlockElement;
+use slack_blocks::compose::Compose;
 
 macro_rules! happy_json_test {
-    ($ty:ty, $test_data:ident => $matches:pat) => {
+    ($name:ident, $test_data:expr => $matches:pat) => {
         #[test]
         #[allow(non_snake_case)]
-        pub fn $test_data() {
+        pub fn $name() {
             // arrange
 
             // act
-            let actual: $ty = serde_json::from_value(test_data::$test_data.clone()).unwrap();
+            let actual = serde_json::from_value($test_data.clone()).unwrap();
 
             // assert
             assert_eq!(matches!(actual, $matches), true)
@@ -17,15 +18,18 @@ macro_rules! happy_json_test {
     };
 }
 
-happy_json_test!(Block, IMAGE_JSON => Block::Image { .. });
-happy_json_test!(Block, ACTIONS_JSON => Block::Actions { .. });
-happy_json_test!(Block, CONTEXT_JSON => Block::Context { .. });
-happy_json_test!(Block, SECTION_JSON => Block::Section { .. });
-happy_json_test!(Block, DIVIDER_JSON => Block::Divider { .. });
-happy_json_test!(Block, INPUT_JSON => Block::Input { .. });
-happy_json_test!(Block, FILE_JSON => Block::File { .. });
+happy_json_test!(image,   test_data::IMAGE_JSON => Block::Image { .. });
+happy_json_test!(actions, test_data::ACTIONS_JSON => Block::Actions { .. } );
+happy_json_test!(context, test_data::CONTEXT_JSON => Block::Context { .. } );
+happy_json_test!(section, test_data::SECTION_JSON => Block::Section { .. } );
+happy_json_test!(divider, test_data::DIVIDER_JSON => Block::Divider { .. } );
+happy_json_test!(input,   test_data::INPUT_JSON => Block::Input { .. });
+happy_json_test!(file,    test_data::FILE_JSON => Block::File { .. });
 
-happy_json_test!(BlockElement, BUTTON_JSON => BlockElement::Button { .. });
+happy_json_test!(option, test_data::OPT_JSON => Compose::Option { .. });
+happy_json_test!(text,   test_data::TEXT_JSON => Compose::Text { .. });
+
+happy_json_test!(button, test_data::BUTTON_JSON => BlockElement::Button { .. });
 
 mod test_data {
     use slack_blocks::compose::text;
@@ -33,6 +37,11 @@ mod test_data {
     lazy_static::lazy_static! {
         static ref SAMPLE_TEXT_PLAIN: text::Text = text::Plain::from("Sample Text").into();
         static ref SAMPLE_TEXT_MRKDWN: text::Text = text::Mrkdwn::from("Sample *_markdown_*").into();
+
+        pub static ref TEXT_JSON: serde_json::Value = serde_json::json!({
+            "type": "mrkdwn",
+            "text": "fart"
+        });
 
         pub static ref SECTION_JSON: serde_json::Value = serde_json::json!({
             "type": "section",
@@ -85,6 +94,13 @@ mod test_data {
             "url": "https://www.cheese.com/",
             "style": "primary",
             "value": "valvalval",
+        });
+
+        pub static ref OPT_JSON: serde_json::Value = serde_json::json!({
+            "text": SAMPLE_TEXT_PLAIN.clone(),
+            "value": "valvalval",
+            "description": SAMPLE_TEXT_PLAIN.clone(),
+            "url": "https://www.url.com/",
         });
     }
 }
