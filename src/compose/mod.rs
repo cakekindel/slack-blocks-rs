@@ -5,6 +5,9 @@ use crate::impl_from_contents;
 pub mod text;
 use text::Text;
 
+pub mod opt;
+use opt::Opt;
+
 /// # Composition Objects
 ///
 /// Composition objects can be used inside of [block elements 🔗] and certain message payload fields.
@@ -14,9 +17,11 @@ use text::Text;
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub enum Compose {
     Text(Text),
+    Option(Opt),
 }
 
 impl_from_contents!(Compose, Text, Text);
+impl_from_contents!(Compose, Option, Opt);
 
 impl From<text::plain::Contents> for Compose {
     fn from(text: text::plain::Contents) -> Self {
