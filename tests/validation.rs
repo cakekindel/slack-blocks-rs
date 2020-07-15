@@ -1,6 +1,6 @@
 use slack_blocks::{
-    block_elements, block_elements::BlockElement, blocks::actions, blocks::context, blocks::file, blocks::image, blocks::input,
-    blocks::section, blocks::Block, compose::text,
+    block_elements, block_elements::BlockElement, blocks::actions, blocks::context, blocks::file,
+    blocks::image, blocks::input, blocks::section, blocks::Block, compose::text, compose::Opt,
 };
 
 mod common;
@@ -159,6 +159,14 @@ should_fail!(
             )
             .with_block_id(common::string_of_len(256))
     )
+);
+
+// # Composition Objects
+
+// ## Option
+should_fail!(
+    option_with_long_text:
+    Opt::from_plain_text_and_value(common::string_of_len(76), "")
 );
 
 // # Block Elements
