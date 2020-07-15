@@ -27,8 +27,14 @@ pub struct Opt<Marker = ()> {
 
     #[validate(custom = "validate::text")]
     text: text::Text,
+
+    #[validate(length(max = 75))]
     value: String,
+
+    #[validate(custom = "validate::desc")]
     description: Option<text::Text>,
+
+    #[validate(length(max = 3000))]
     url: Option<String>,
 
     // this prevents an unused generic
@@ -61,14 +67,21 @@ impl Opt {
         text: impl Into<text::Mrkdwn>,
         value: impl ToString,
     ) -> Opt<MrkdwnOpt> {
-        todo!()
+        Opt::<MrkdwnOpt> {
+            text: text.into().into(),
+            value: value.to_string(),
+            description: None,
+            url: None,
+            __phantom: std::marker::PhantomData
+        }
     }
 }
 
 // Methods available to all specializations
 impl<M> Opt<M> {
     pub fn with_description(mut self, desc: impl Into<text::Mrkdwn>) -> Self {
-        todo!()
+        self.description = Some(desc.into().into());
+        self
     }
 
     pub fn validate(&self) -> ValidationResult {
@@ -81,8 +94,14 @@ impl<M> Opt<M>
 where
     M: marker::FromText<text::Plain>,
 {
-    pub fn with_url(mut self, url: impl ToString) -> Opt<PlainTextOptWithUrl> {
-        todo!()
+    pub fn with_url(self, url: impl ToString) -> Opt<PlainTextOptWithUrl> {
+        Opt::<PlainTextOptWithUrl> {
+            text: self.text,
+            value: self.value,
+            description: self.description,
+            url: Some(url.to_string()),
+            __phantom: std::marker::PhantomData
+        }
     }
 }
 
@@ -102,5 +121,9 @@ pub mod validate {
 
     pub fn text(text: &text::Text) -> ValidatorResult {
         below_len("Option Text", 75, text.as_ref())
+    }
+
+    pub fn desc(text: &text::Text) -> ValidatorResult {
+        below_len("Option Description", 75, text.as_ref())
     }
 }

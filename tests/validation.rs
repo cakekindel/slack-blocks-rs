@@ -165,8 +165,29 @@ should_fail!(
 
 // ## Option
 should_fail!(
-    option_with_long_text:
+    option_plain_with_long_text:
     Opt::from_plain_text_and_value(common::string_of_len(76), "")
+);
+should_fail!(
+    option_mrkdwn_with_long_text:
+    Opt::from_mrkdwn_and_value(common::string_of_len(76), "")
+);
+
+should_fail!(
+    option_with_long_value:
+    Opt::from_plain_text_and_value("", common::string_of_len(76))
+);
+
+should_fail!(
+    option_with_long_description:
+    Opt::from_plain_text_and_value("", "")
+        .with_description(common::string_of_len(76))
+);
+
+should_fail!(
+    option_with_long_url:
+    Opt::from_plain_text_and_value("", "")
+        .with_url(common::string_of_len(3001))
 );
 
 // # Block Elements
