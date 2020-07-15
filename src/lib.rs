@@ -38,11 +38,19 @@ macro_rules! impl_from_contents {
 
 #[macro_export]
 #[doc(hidden)]
+<<<<<<< HEAD
 macro_rules! convert {
     (impl From<$source:ty> for $dest:ty => $closure:expr) => {
         impl From<$source> for $dest {
             fn from(src: $source) -> Self {
                 $closure(src)
+=======
+macro_rules! quic_from {
+    (impl From<$source:ty> for $dest:ty => wrap_with($tuple:expr)) => {
+        impl From<$source> for $dest {
+            fn from(src: $source) -> Self {
+                $tuple(src)
+>>>>>>> b45d919476715132f632e3d951ec54b633bb9f1d
             }
         }
     };
