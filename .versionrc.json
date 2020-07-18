@@ -2,13 +2,13 @@
   "packageFiles": [
     {
       "filename": "Cargo.toml",
-      "updater": "cargo-updater.js"
+      "updater": ".utils/cargo-updater.js"
     }
   ],
   "bumpFiles": [
     {
       "filename": "Cargo.toml",
-      "updater": "cargo-updater.js"
+      "updater": ".utils/cargo-updater.js"
     }
   ]
 }
