@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.9.4 (2020-07-18)
+
+
+### Features
+
+* Option composition object ([#69](https://github.com/cakekindel/slack-blocks-rs/issues/69)) ([ccaec03](https://github.com/cakekindel/slack-blocks-rs/commit/ccaec03a0b31e3ea6deb764d0a073ea3ec4fa3fd))
+
 ### 0.9.3 (2020-07-18)
 
 ### 0.9.2 (2020-07-03)
