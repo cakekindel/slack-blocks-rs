@@ -60,6 +60,7 @@ impl Contents {
     /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
     ///
     /// [text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
+    ///
     /// # Example
     /// ```
     /// use slack_blocks::blocks::{Block, actions};

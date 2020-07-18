@@ -1,4 +1,4 @@
-use crate::impl_from_contents;
+use crate::convert;
 use serde::{Deserialize, Serialize};
 
 pub mod mrkdwn;
@@ -41,8 +41,8 @@ impl Text {
     }
 }
 
-impl_from_contents!(Text, Mrkdwn, mrkdwn::Contents);
-impl_from_contents!(Text, Plain, plain::Contents);
+convert!(impl From<mrkdwn::Contents> for Text => |contents| Text::Mrkdwn(contents));
+convert!(impl From<plain::Contents> for Text => |contents| Text::Plain(contents));
 
 impl AsRef<str> for Text {
     fn as_ref(&self) -> &str {

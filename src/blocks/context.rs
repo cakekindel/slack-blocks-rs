@@ -1,10 +1,10 @@
-use std::convert::{TryFrom, TryInto};
 use serde::{Deserialize, Serialize};
+use std::convert::{TryFrom, TryInto};
 use validator::Validate;
 
-use crate::impl_from_contents;
-use crate::text;
 use crate::compose;
+use crate::convert;
+use crate::text;
 use crate::val_helpr::ValidationResult;
 
 /// # Context Block
@@ -68,41 +68,6 @@ impl Contents {
     pub fn with_block_id(mut self, block_id: impl ToString) -> Self {
         self.block_id = Some(block_id.to_string());
         self
-    }
-
-    /// Construct a new `context::Contents` from a collection of
-    /// composition objects that are definitely supported by Context
-    /// Blocks.
-    ///
-    /// If you _can_ guarantee that a collection only contains image
-    /// or text objects, `from_context_elements` may be more ergonomic for you.
-    ///
-    ///
-    /// # Arguments
-    /// - `elements` - An array of composition objects;
-    ///     Must be image elements or text objects.
-    ///     Maximum number of items is 10.
-    ///
-    /// # Examples
-    /// ```
-    /// use slack_blocks::blocks::{Block, context};
-    /// use slack_blocks::text;
-    ///
-    /// # pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let text = text::Mrkdwn::from("*s i c k*");
-    /// let context = context::Contents::from_elements(vec![text])?;
-    /// let block: Block = context.into();
-    /// // < send block to slack's API >
-    /// # Ok(())
-    /// # }
-    /// ```
-    pub fn from_elements(elements: impl IntoIterator<Item = impl Into<compose::Compose>>) -> Result<Self, UnsupportedComposeError> {
-        elements
-            .into_iter()
-            .map(Into::<compose::Compose>::into)
-            .map(TryInto::<self::Compose>::try_into)
-            .collect::<Result<Vec<_>, _>>()
-            .map(Into::<Self>::into)
     }
 
     /// Add a composition object to a context block.
@@ -209,16 +174,7 @@ pub enum Compose {
     Image,
 }
 
-impl TryFrom<compose::Compose> for Compose {
-    type Error = UnsupportedComposeError;
-    fn try_from(comp: compose::Compose) -> Result<Self, Self::Error> {
-        match comp {
-            compose::Compose::Text(txt) => Ok(Compose::Text(txt))
-        }
-    }
-}
-
-impl_from_contents!(Compose, Text, text::Text);
+convert!(impl From<text::Text> for Compose => |txt| Compose::Text(txt));
 
 impl From<text::plain::Contents> for Compose {
     fn from(text: text::plain::Contents) -> Self {
@@ -226,20 +182,8 @@ impl From<text::plain::Contents> for Compose {
     }
 }
 
-impl From<text::mrkdwn::Contents> for Compose {
-    fn from(text: text::mrkdwn::Contents) -> Self {
+impl From<text::Mrkdwn> for Compose {
+    fn from(text: text::Mrkdwn) -> Self {
         Into::<text::Text>::into(text).into()
     }
 }
-
-#[derive(Debug)]
-pub struct UnsupportedComposeError(Vec<compose::Compose>);
-
-impl std::fmt::Display for UnsupportedComposeError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "Unsupported composition object in Context block: {:?}", self.0)
-    }
-}
-
-impl std::error::Error for UnsupportedComposeError {}
-
