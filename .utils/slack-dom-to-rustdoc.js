@@ -14,17 +14,19 @@ process.stdin.on('end', () => {
     // functions that the stdin will
     // be piped through
     const transformers = [
-        commaRetIndent,
-        periodRetRet,
-        stripLinks,
+        periodRet,
+        qualifyRootLinks,
+        qualifyAnchors,
+        escapeLinks,
         moveLinkDefs,
+        escapeCode,
+        escapeStrong,
         docComment,
     ];
 
     // Flow stdin through each transformer
     const output = transformers.reduce((c, t) => t(c), contents);
 
-    process.stdout.write('\n\n\n');
     process.stdout.write(output);
 });
 
@@ -35,20 +37,38 @@ const helpers = {
         return output;
     },
     eachLine: map => contents => contents.split('\n')
-                                          .map(map)
-                                          .join('\n'),
+                                         .map(map)
+                                         .join('\n'),
 }
 
 // # Transformers
 
-// Turn anchors into MD reference-style links
-const stripLinks = helpers.replace(/<a href\="(.*?)">(.*?)<\/a>/gi, '[$2 🔗]%%[$2 🔗]: https://api.slack.com$1\n%%');
+// <a src="/link"> -> <a src="https://api.slack.com/link">
+const qualifyRootLinks = helpers.replace(
+  /<a href\="\/(.*?)">/gi,
+  '<a href\="https://api.slack.com/$1">'
+);
 
-// break lists up with newline + indent
-const commaRetIndent = helpers.replace(/,/gi, ',\n    ');
+// <a src="#anchor"> -> <a src="CURRENT_PAGE#anchor">
+const qualifyAnchors = helpers.replace(
+  /<a href\="(.*?)">/gi,
+  `<a href\="CURRENT_PAGE#$1">`
+);
 
-// Separate sentences with double newline
-const periodRetRet = helpers.replace(/\./gi, '.\n\n');
+// <a src="/link">Text</a> -> [Text 🔗] [Text 🔗]: https://api.slack.com/link
+const escapeLinks = helpers.replace(
+  /<a href\="(.*?)">(.*?)<\/a>/gi,
+  '[$2 🔗]%%[$2 🔗]: https://api.slack.com$1\n%%'
+);
+
+// <code>blah</code> -> `blah`
+const escapeCode = helpers.replace(/<code>(.*?)<\/code>/gi, '`$1`');
+
+// <strong>blah</strong> -> **blah**
+const escapeStrong = helpers.replace(/<strong>(.*?)<\/strong>/gi, '**$1**');
+
+// Separate sentences with newline
+const periodRet = helpers.replace(/\./gi, '.\n');
 
 // Move MD link definitions to the bottom
 const moveLinkDefs = c => c.split(/%%/g).sort((a, b) => helpers.isLink(a) ? 1 : helpers.isLink(b) ? -1 : 0).join('');
