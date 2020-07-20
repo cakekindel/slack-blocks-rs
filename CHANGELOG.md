@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 0.9.7 (2020-07-20)
 
+### Features
+
+* option group ([#80](https://github.com/cakekindel/slack-blocks-rs/issues/80)) ([a74fc18](https://github.com/cakekindel/slack-blocks-rs/commit/a74fc18928c6c3250b12d6b1e7e2ec1c46cccdb1))
+
 ### 0.9.6 (2020-07-20)
 
 ### 0.9.5 (2020-07-20)
