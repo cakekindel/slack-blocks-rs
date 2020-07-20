@@ -326,6 +326,7 @@ where
 ///
 /// This is used in trait bounds of Block Elements to restrict
 /// which kinds of Options they support.
+#[derive(Clone, Debug, Hash, PartialEq)]
 pub struct MrkdwnOpt;
 impl marker::FromText<text::Mrkdwn> for MrkdwnOpt {}
 
@@ -333,6 +334,7 @@ impl marker::FromText<text::Mrkdwn> for MrkdwnOpt {}
 ///
 /// This is used in trait bounds of Block Elements to restrict
 /// which kinds of Options they support.
+#[derive(Clone, Debug, Hash, PartialEq)]
 pub struct PlainTextOpt;
 impl marker::FromText<text::Plain> for PlainTextOpt {}
 
@@ -341,6 +343,7 @@ impl marker::FromText<text::Plain> for PlainTextOpt {}
 ///
 /// This is used in trait bounds of Block Elements to restrict
 /// which kinds of Options they support.
+#[derive(Clone, Debug, Hash, PartialEq)]
 pub struct PlainTextOptWithUrl;
 impl marker::WithUrl for PlainTextOptWithUrl {}
 impl marker::FromText<text::Plain> for PlainTextOptWithUrl {}
