@@ -35,7 +35,6 @@ pub struct Opt<Marker = ()> {
     // - being created from mrkdwn
     // - being created from plaintext
     // - whether or not it has `url` set
-
     #[validate(custom = "validate::text")]
     text: text::Text,
 
@@ -117,7 +116,7 @@ impl Opt {
             value: value.to_string(),
             description: None,
             url: None,
-            __phantom: std::marker::PhantomData
+            __phantom: std::marker::PhantomData,
         }
     }
 
@@ -180,7 +179,7 @@ impl Opt {
             value: value.to_string(),
             description: None,
             url: None,
-            __phantom: std::marker::PhantomData
+            __phantom: std::marker::PhantomData,
         }
     }
 }
@@ -276,7 +275,7 @@ where
     /// # Arguments
     /// - `url` - A URL to load in the user's browser when the option is clicked.
     ///     Maximum length for this field is 3000 characters.
-    /// 
+    ///
     /// [overflow menus 🔗]: https://api.slack.com/reference/block-kit/block-elements#overflow
     /// [interaction payload 🔗]: https://api.slack.com/interactivity/handling#payloads
     /// [send an acknowledgement response 🔗]: https://api.slack.com/interactivity/handling#acknowledgment_response
@@ -317,7 +316,7 @@ where
             value: self.value,
             description: self.description,
             url: Some(url.to_string()),
-            __phantom: std::marker::PhantomData
+            __phantom: std::marker::PhantomData,
         }
     }
 }
