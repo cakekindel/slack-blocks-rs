@@ -1,14 +1,14 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::val_helpr::ValidationResult;
-use super::Opt;
 use super::text;
+use super::Opt;
+use crate::val_helpr::ValidationResult;
 /// # Option Group
 /// [slack api docs 🔗]
 ///
 /// Provides a way to group options in a [select menu 🔗] or [multi-select menu 🔗].
-/// 
+///
 /// [select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
 /// [multi-select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#multi_select
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option_group
@@ -32,10 +32,10 @@ impl OptGroup<()> {
     ///     Maximum length for the `text` in this field is 75 characters.
     /// - `opts` - An array of [option objects 🔗] that belong to
     ///     this specific group. Maximum of 100 items.
-    /// 
+    ///
     /// [option objects 🔗]: https://api.slack.comCURRENT_PAGEoption
     /// [`plain_text` only text object 🔗]: https://api.slack.comCURRENT_PAGEtext
-    /// 
+    ///
     /// # Example
     /// ```
     /// use slack_blocks::blocks::Block;
