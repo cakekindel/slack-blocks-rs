@@ -4,16 +4,22 @@ use validator::Validate;
 use super::text;
 use crate::val_helpr::ValidationResult;
 
-// Used to _statically_
-// identify `Opt`s as:
-// - being created from mrkdwn
-// - being created from plaintext
-// - whether or not it has `url` set
+/// Used to statically identify `Opt`s as:
+/// - being created from mrkdwn
+/// - being created from plaintext
+/// - whether or not it has `url` set
 pub mod marker {
     use crate::text;
 
-    pub trait FromText<Text: Into<text::Text>> {}
-    pub trait WithUrl {}
+    /// Marker struct used to restrict / indicate
+    /// `Opt`s created from Mrkdwn or Plain text.
+    #[derive(Clone, Debug, Hash, PartialEq)]
+    pub struct FromText<T: Into<text::Text>>(std::marker::PhantomData<T>);
+
+    /// Marker struct used to restrict / indicate
+    /// `Opt`s created from Plain text + has `url` set.
+    #[derive(Clone, Debug, Hash, PartialEq)]
+    pub struct FromPlainTextWithUrl;
 }
 
 /// # Option Object
@@ -115,8 +121,8 @@ impl Opt {
     pub fn from_plain_text_and_value(
         text: impl Into<text::Plain>,
         value: impl ToString,
-    ) -> Opt<PlainTextOpt> {
-        Opt::<PlainTextOpt> {
+    ) -> Opt<marker::FromText<text::Plain>> {
+        Opt::<marker::FromText<text::Plain>> {
             text: text.into().into(),
             value: value.to_string(),
             description: None,
@@ -178,8 +184,8 @@ impl Opt {
     pub fn from_mrkdwn_and_value(
         text: impl Into<text::Mrkdwn>,
         value: impl ToString,
-    ) -> Opt<MrkdwnOpt> {
-        Opt::<MrkdwnOpt> {
+    ) -> Opt<marker::FromText<text::Mrkdwn>> {
+        Opt::<marker::FromText<text::Mrkdwn>> {
             text: text.into().into(),
             value: value.to_string(),
             description: None,
@@ -266,10 +272,7 @@ impl<M> Opt<M> {
 }
 
 // Methods available only to `Opt` created from `text::Plain`
-impl<M> Opt<M>
-where
-    M: marker::FromText<text::Plain>,
-{
+impl Opt<marker::FromText<text::Plain>> {
     /// Chainable setter method, that sets a description for this `Opt`.
     ///
     /// **The `url` attribute is only available in [overflow menus 🔗]**.
@@ -315,8 +318,8 @@ where
     ///
     /// // < send block to slack's API >
     /// ```
-    pub fn with_url(self, url: impl ToString) -> Opt<PlainTextOptWithUrl> {
-        Opt::<PlainTextOptWithUrl> {
+    pub fn with_url(self, url: impl ToString) -> Opt<marker::FromPlainTextWithUrl> {
+        Opt::<marker::FromPlainTextWithUrl> {
             text: self.text,
             value: self.value,
             description: self.description,
@@ -325,32 +328,6 @@ where
         }
     }
 }
-
-/// A unit struct that indicates an `Opt` containing Mrkdwn text.
-///
-/// This is used in trait bounds of Block Elements to restrict
-/// which kinds of Options they support.
-#[derive(Clone, Debug, Hash, PartialEq)]
-pub struct MrkdwnOpt;
-impl marker::FromText<text::Mrkdwn> for MrkdwnOpt {}
-
-/// A unit struct that indicates an `Opt` containing Plain text.
-///
-/// This is used in trait bounds of Block Elements to restrict
-/// which kinds of Options they support.
-#[derive(Clone, Debug, Hash, PartialEq)]
-pub struct PlainTextOpt;
-impl marker::FromText<text::Plain> for PlainTextOpt {}
-
-/// A unit struct that indicates an `Opt` containing Plain text,
-/// with `url` set.
-///
-/// This is used in trait bounds of Block Elements to restrict
-/// which kinds of Options they support.
-#[derive(Clone, Debug, Hash, PartialEq)]
-pub struct PlainTextOptWithUrl;
-impl marker::WithUrl for PlainTextOptWithUrl {}
-impl marker::FromText<text::Plain> for PlainTextOptWithUrl {}
 
 pub mod validate {
     use super::*;
