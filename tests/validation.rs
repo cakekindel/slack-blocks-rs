@@ -1,6 +1,7 @@
 use slack_blocks::{
     block_elements, block_elements::BlockElement, blocks::actions, blocks::context, blocks::file,
-    blocks::image, blocks::input, blocks::section, blocks::Block, compose::text, compose::Opt, compose::OptGroup,
+    blocks::image, blocks::input, blocks::section, blocks::Block, compose::text, compose::Opt,
+    compose::OptGroup,
 };
 
 mod common;
