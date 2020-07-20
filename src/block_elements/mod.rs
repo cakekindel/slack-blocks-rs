@@ -1,10 +1,10 @@
 use serde::{Deserialize, Serialize};
 
-use crate::val_helpr::ValidationResult;
 use crate::impl_from_contents;
+use crate::val_helpr::ValidationResult;
 
-pub mod select;
 pub mod button;
+pub mod select;
 
 pub use button::Contents as Button;
 
@@ -40,7 +40,7 @@ impl BlockElement {
     pub fn validate(&self) -> ValidationResult {
         match self {
             Self::Button(cts) => cts.validate(),
-            rest => todo!("validation not implemented for {:?}", rest)
+            rest => todo!("validation not implemented for {:?}", rest),
         }
     }
 }
