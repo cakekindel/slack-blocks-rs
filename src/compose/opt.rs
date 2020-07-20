@@ -15,6 +15,10 @@ pub mod marker {
     pub trait FromText<Text: Into<text::Text>> {}
     pub trait WithUrl {}
 }
+
+/// # Option Object
+/// [slack api docs 🔗]
+///
 /// An object that represents a single selectable item in a
 /// - [select menu 🔗],
 /// - [multi-select menu 🔗],
@@ -22,6 +26,7 @@ pub mod marker {
 /// - [radio button group 🔗],
 /// - or [overflow menu 🔗].
 ///
+/// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option
 /// [select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
 /// [multi-select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#multi_select
 /// [checkbox group 🔗]: https://api.slack.com/reference/block-kit/block-elements#checkboxes
