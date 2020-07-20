@@ -51,8 +51,8 @@ const qualifyRootLinks = helpers.replace(
 
 // <a src="#anchor"> -> <a src="CURRENT_PAGE#anchor">
 const qualifyAnchors = helpers.replace(
-  /<a href\="(.*?)">/gi,
-  `<a href\="CURRENT_PAGE#$1">`
+  /<a href\="#(.*?)">/gi,
+  `<a href\="CURRENT_PAGE$1">`
 );
 
 // <a src="/link">Text</a> -> [Text 🔗] [Text 🔗]: https://api.slack.com/link

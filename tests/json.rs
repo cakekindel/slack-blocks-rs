@@ -1,6 +1,6 @@
 use slack_blocks::block_elements::BlockElement;
 use slack_blocks::blocks::Block;
-use slack_blocks::compose::{Opt, Text};
+use slack_blocks::compose::{Opt, OptGroup, Text};
 
 macro_rules! happy_json_test {
     ($name:ident, $test_data:expr => $matches:pat) => {
@@ -26,8 +26,9 @@ happy_json_test!(divider, test_data::DIVIDER_JSON => Block::Divider { .. } );
 happy_json_test!(input,   test_data::INPUT_JSON => Block::Input { .. });
 happy_json_test!(file,    test_data::FILE_JSON => Block::File { .. });
 
-happy_json_test!(option, test_data::OPT_JSON => Opt::<()> { .. });
-happy_json_test!(text,   test_data::MRKDWN_TEXT_JSON => Text::Mrkdwn { .. });
+happy_json_test!(option,       test_data::OPT_JSON => Opt::<()> { .. });
+happy_json_test!(option_group, test_data::OPT_GROUP_JSON => OptGroup::<()> { .. });
+happy_json_test!(text,         test_data::MRKDWN_TEXT_JSON => Text::Mrkdwn { .. });
 
 happy_json_test!(button, test_data::BUTTON_JSON => BlockElement::Button { .. });
 
@@ -101,6 +102,11 @@ mod test_data {
             "value": "valvalval",
             "description": SAMPLE_TEXT_PLAIN.clone(),
             "url": "https://www.url.com/",
+        });
+
+        pub static ref OPT_GROUP_JSON: serde_json::Value = serde_json::json!({
+            "label": SAMPLE_TEXT_PLAIN.clone(),
+            "options": [],
         });
     }
 }

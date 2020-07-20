@@ -15,6 +15,10 @@ pub mod marker {
     pub trait FromText<Text: Into<text::Text>> {}
     pub trait WithUrl {}
 }
+
+/// # Option Object
+/// [slack api docs 🔗]
+///
 /// An object that represents a single selectable item in a
 /// - [select menu 🔗],
 /// - [multi-select menu 🔗],
@@ -22,6 +26,7 @@ pub mod marker {
 /// - [radio button group 🔗],
 /// - or [overflow menu 🔗].
 ///
+/// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option
 /// [select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
 /// [multi-select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#multi_select
 /// [checkbox group 🔗]: https://api.slack.com/reference/block-kit/block-elements#checkboxes
@@ -325,6 +330,7 @@ where
 ///
 /// This is used in trait bounds of Block Elements to restrict
 /// which kinds of Options they support.
+#[derive(Clone, Debug, Hash, PartialEq)]
 pub struct MrkdwnOpt;
 impl marker::FromText<text::Mrkdwn> for MrkdwnOpt {}
 
@@ -332,6 +338,7 @@ impl marker::FromText<text::Mrkdwn> for MrkdwnOpt {}
 ///
 /// This is used in trait bounds of Block Elements to restrict
 /// which kinds of Options they support.
+#[derive(Clone, Debug, Hash, PartialEq)]
 pub struct PlainTextOpt;
 impl marker::FromText<text::Plain> for PlainTextOpt {}
 
@@ -340,6 +347,7 @@ impl marker::FromText<text::Plain> for PlainTextOpt {}
 ///
 /// This is used in trait bounds of Block Elements to restrict
 /// which kinds of Options they support.
+#[derive(Clone, Debug, Hash, PartialEq)]
 pub struct PlainTextOptWithUrl;
 impl marker::WithUrl for PlainTextOptWithUrl {}
 impl marker::FromText<text::Plain> for PlainTextOptWithUrl {}

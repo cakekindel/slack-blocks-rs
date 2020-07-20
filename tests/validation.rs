@@ -1,6 +1,7 @@
 use slack_blocks::{
     block_elements, block_elements::BlockElement, blocks::actions, blocks::context, blocks::file,
     blocks::image, blocks::input, blocks::section, blocks::Block, compose::text, compose::Opt,
+    compose::OptGroup,
 };
 
 mod common;
@@ -162,6 +163,23 @@ should_fail!(
 );
 
 // # Composition Objects
+
+// ## Option Group
+should_fail!(
+    option_group_with_long_label:
+    OptGroup::from_label_and_opts(
+        common::string_of_len(76),
+        vec![Opt::from_mrkdwn_and_value("", "")],
+    )
+);
+
+should_fail!(
+    option_group_with_many_options:
+    OptGroup::from_label_and_opts(
+        "whoa!",
+        common::vec_of_len(Opt::from_mrkdwn_and_value("", ""), 101)
+    )
+);
 
 // ## Option
 should_fail!(
