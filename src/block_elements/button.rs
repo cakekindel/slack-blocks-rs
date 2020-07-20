@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::val_helpr::ValidationResult;
 use crate::text;
+use crate::val_helpr::ValidationResult;
 
 /// # Button
 /// [slack api docs 🔗]
@@ -41,7 +41,7 @@ pub struct Contents {
 
     style: Option<Style>,
 
-    confirm: Option<()> // FIX: doesn't exist yet
+    confirm: Option<()>, // FIX: doesn't exist yet
 }
 
 impl Contents {
@@ -159,7 +159,9 @@ impl Contents {
     }
 
     #[allow(dead_code)]
-    fn with_confirm(_confirm: ()) -> Self { todo!() } // FIX: private until usable
+    fn with_confirm(_confirm: ()) -> Self {
+        todo!()
+    } // FIX: private until usable
 
     /// Validate that this Button element agrees with Slack's model requirements
     ///
@@ -199,8 +201,8 @@ pub enum Style {
 }
 
 mod validate {
-    use crate::val_helpr::{below_len, ValidatorResult};
     use crate::text;
+    use crate::val_helpr::{below_len, ValidatorResult};
 
     pub fn text(text: &text::Text) -> ValidatorResult {
         below_len("Button Text", 75, text.as_ref())
