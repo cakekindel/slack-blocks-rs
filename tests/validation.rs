@@ -2,6 +2,8 @@ use slack_blocks::{
     block_elements, block_elements::BlockElement, blocks::actions, blocks::context, blocks::file,
     blocks::image, blocks::input, blocks::section, blocks::Block, compose::text, compose::Opt,
     compose::OptGroup,
+    compose::conversation_filter::ConversationKind,
+    compose::ConversationFilter,
 };
 
 mod common;
@@ -163,6 +165,33 @@ should_fail!(
 );
 
 // # Composition Objects
+
+// ## Conversation Filter
+should_fail!(
+    conv_filter_with_no_include:
+    ConversationFilter::new()
+        .include_conversation_kinds(vec![])
+);
+
+// NOTE: this can't fail because there are
+//       only 4 variants of the enum, and
+//       the input collection gets deduped.
+//       If there ever are more than 4 variants,
+//       or multiple appearances of the same variant
+//       is a valid use case, then re-introduce this
+//       test.
+
+//should_fail!(
+//    conv_filter_with_many_includes:
+//    conversationfilter::new()
+//        .include_conversation_kinds(vec![
+//            conversationkind::dm,
+//            conversationkind::dm,
+//            conversationkind::dm,
+//            conversationkind::dm,
+//            conversationkind::dm,
+//        ])
+//);
 
 // ## Option Group
 should_fail!(
