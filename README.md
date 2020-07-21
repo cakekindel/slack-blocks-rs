@@ -19,7 +19,7 @@ stable v1 release!
 
 [Block Kit 🔗]: https://api.slack.com/block-kit
 
-# Contributing
+## Contributing
 
 If you're interested in contributing, head over to the [issues] and see what's left to
 do to get this crate fully usable and stable - at the time of writing there are a few
