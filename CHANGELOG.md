@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.9.9 (2020-07-21)
+
+
+### Features
+
+* conversation filter ([#86](https://github.com/cakekindel/slack-blocks-rs/issues/86)) ([f0877bc](https://github.com/cakekindel/slack-blocks-rs/commit/f0877bca9f498676f2889f4ff28158cd8a16254a))
+
 ### 0.9.8 (2020-07-21)
 
 ### 0.9.7 (2020-07-20)
