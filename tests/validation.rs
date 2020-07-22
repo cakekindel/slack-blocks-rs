@@ -2,6 +2,7 @@ use slack_blocks::{
     block_elements, block_elements::BlockElement, blocks::actions, blocks::context, blocks::file,
     blocks::image, blocks::input, blocks::section, blocks::Block, compose::text, compose::Opt,
     compose::OptGroup,
+    compose,
     compose::conversation_filter::ConversationKind,
     compose::ConversationFilter,
 };
@@ -165,6 +166,47 @@ should_fail!(
 );
 
 // # Composition Objects
+
+// ## Confirm Dialog
+should_fail!(
+    confirm_dialog_with_long_title:
+    compose::Confirm::from_parts(
+            common::string_of_len(101),
+            text::Plain::from(""),
+            "",
+            ""
+        )
+);
+
+should_fail!(
+    confirm_dialog_with_long_text:
+    compose::Confirm::from_parts(
+            "",
+            text::Plain::from(common::string_of_len(301)),
+            "",
+            ""
+        )
+);
+
+should_fail!(
+    confirm_dialog_with_long_confirm:
+    compose::Confirm::from_parts(
+            "",
+            text::Plain::from(""),
+            common::string_of_len(31),
+            ""
+        )
+);
+
+should_fail!(
+    confirm_dialog_with_long_deny:
+    compose::Confirm::from_parts(
+            "",
+            text::Plain::from(""),
+            "",
+            common::string_of_len(31),
+        )
+);
 
 // ## Conversation Filter
 should_fail!(

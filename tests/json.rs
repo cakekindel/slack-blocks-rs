@@ -1,6 +1,6 @@
 use slack_blocks::block_elements::BlockElement;
 use slack_blocks::blocks::Block;
-use slack_blocks::compose::{ConversationFilter, Opt, OptGroup, Text};
+use slack_blocks::compose;
 
 macro_rules! happy_json_test {
     ($name:ident, $test_data:expr => $matches:pat) => {
@@ -26,10 +26,11 @@ happy_json_test!(divider, test_data::DIVIDER_JSON => Block::Divider { .. } );
 happy_json_test!(input,   test_data::INPUT_JSON => Block::Input { .. });
 happy_json_test!(file,    test_data::FILE_JSON => Block::File { .. });
 
-happy_json_test!(option,       test_data::OPT_JSON => Opt::<()> { .. });
-happy_json_test!(option_group, test_data::OPT_GROUP_JSON => OptGroup::<()> { .. });
-happy_json_test!(text,         test_data::MRKDWN_TEXT_JSON => Text::Mrkdwn { .. });
-happy_json_test!(conv_filter,  test_data::CONV_FILTER_JSON => ConversationFilter { .. });
+happy_json_test!(option,       test_data::OPT_JSON         => compose::Opt::<()> { .. });
+happy_json_test!(option_group, test_data::OPT_GROUP_JSON   => compose::OptGroup::<()> { .. });
+happy_json_test!(conv_filter,  test_data::CONV_FILTER_JSON => compose::ConversationFilter { .. });
+happy_json_test!(confirm,      test_data::CONFIRM_DIALOG   => compose::Confirm { .. });
+happy_json_test!(text,         test_data::MRKDWN_TEXT_JSON => compose::Text::Mrkdwn { .. });
 
 happy_json_test!(button, test_data::BUTTON_JSON => BlockElement::Button { .. });
 
@@ -114,6 +115,14 @@ mod test_data {
             "include": ["mpim", "im", "public", "private"],
             "exclude_bot_users": true,
             "exclude_external_shared_channels": true,
+        });
+
+        pub static ref CONFIRM_DIALOG: serde_json::Value = serde_json::json!({
+            "title": SAMPLE_TEXT_PLAIN.clone(),
+            "text": SAMPLE_TEXT_PLAIN.clone(),
+            "confirm": SAMPLE_TEXT_PLAIN.clone(),
+            "deny": SAMPLE_TEXT_PLAIN.clone(),
+            "style": "danger"
         });
     }
 }
