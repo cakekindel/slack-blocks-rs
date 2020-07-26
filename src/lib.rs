@@ -20,7 +20,7 @@
 //! big-picture things left to do:
 //!
 //! - Implement Block Elements ([#61](https://github.com/cakekindel/slack-blocks-rs/issues/61))
-//! - Implement Composition Objects ([#63](https://github.com/cakekindel/slack-blocks-rs/issues/63))
+//! - ~~Implement Composition Objects ([#63](https://github.com/cakekindel/slack-blocks-rs/issues/63))~~
 //! - Remove the `validator` crate from the public API ([#9](https://github.com/cakekindel/slack-blocks-rs/issues/9))
 //! - Add a `validation` crate feature ([#8](https://github.com/cakekindel/slack-blocks-rs/issues/8))
 //! 
