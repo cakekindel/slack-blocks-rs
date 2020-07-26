@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.9.10 (2020-07-22)
+
+
+### Features
+
+* confirmation dialog ([#104](https://github.com/cakekindel/slack-blocks-rs/issues/104)) ([be6b2bb](https://github.com/cakekindel/slack-blocks-rs/commit/be6b2bb1beee4ffc41275cc29ebb06cb6e00509f))
+
 ### 0.9.9 (2020-07-21)
 
 
