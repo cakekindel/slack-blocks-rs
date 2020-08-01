@@ -15,6 +15,7 @@ use crate::val_helpr::ValidationResult;
 pub struct Contents {
     external_id: String,
     source: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 255))]
     block_id: Option<String>,
 }

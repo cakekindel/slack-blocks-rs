@@ -19,6 +19,7 @@ pub struct Contents {
     #[validate(length(max = 5))]
     elements: Vec<BlockElement>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 255))]
     block_id: Option<String>,
 }
