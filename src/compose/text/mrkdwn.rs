@@ -52,6 +52,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Contents {
     text: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     verbatim: Option<bool>,
 }
 
