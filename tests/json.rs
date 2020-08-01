@@ -13,7 +13,10 @@ macro_rules! happy_json_test {
             let actual = serde_json::from_value($test_data.clone()).unwrap();
 
             // assert
-            assert_eq!(matches!(actual, $matches), true)
+            assert_eq!(matches!(actual, $matches), true);
+
+            let serialized = serde_json::to_string(&actual).unwrap();
+            assert!(!serialized.contains("null"));
         }
     };
 }
