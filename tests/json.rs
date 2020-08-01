@@ -2,6 +2,22 @@ use slack_blocks::block_elements::BlockElement;
 use slack_blocks::blocks::Block;
 use slack_blocks::compose;
 
+fn assert_no_nulls(json: &serde_json::Value) {
+    assert!(!json.is_null());
+
+    if json.is_object() {
+        let obj = json.as_object().unwrap();
+        for val in obj.values() {
+            assert_no_nulls(val);
+        }
+    } else if json.is_array() {
+        let arr = json.as_array().unwrap();
+        for val in arr.iter() {
+            assert_no_nulls(val);
+        }
+    }
+}
+
 macro_rules! happy_json_test {
     ($name:ident, $test_data:expr => $matches:pat) => {
         #[test]
@@ -15,8 +31,10 @@ macro_rules! happy_json_test {
             // assert
             assert_eq!(matches!(actual, $matches), true);
 
+            // roundtrip JSON to ensure no nulls were introduced
             let serialized = serde_json::to_string(&actual).unwrap();
-            assert!(!serialized.contains("null"));
+            let deserialized = serde_json::from_str(&serialized).unwrap();
+            assert_no_nulls(&deserialized);
         }
     };
 }
