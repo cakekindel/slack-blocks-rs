@@ -23,12 +23,15 @@ pub struct Contents {
 
     element: InputElement,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 255))]
     block_id: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(custom = "validate::hint")]
     hint: Option<text::Text>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     optional: Option<bool>,
 }
 

@@ -19,9 +19,11 @@ pub struct Contents {
     #[validate(length(max = 2000))]
     alt_text: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(custom = "validate::title")]
     title: Option<text::Text>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 255))]
     block_id: Option<String>,
 }

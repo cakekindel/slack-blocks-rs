@@ -25,19 +25,23 @@ use crate::val_helpr::ValidationResult;
 /// [block elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Contents {
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 10))]
     #[validate(custom = "validate::fields")]
     fields: Option<Vec<text::Text>>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(custom = "validate::text")]
     text: Option<text::Text>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 255))]
     block_id: Option<String>,
 
     /// One of the available [element objects 🔗][element_objects].
     ///
     /// [element_objects]: https://api.slack.com/reference/messaging/block-elements
+    #[serde(skip_serializing_if = "Option::is_none")]
     accessory: Option<()>,
 }
 

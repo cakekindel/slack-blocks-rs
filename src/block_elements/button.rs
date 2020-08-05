@@ -33,14 +33,18 @@ pub struct Contents {
     #[validate(length(max = 255))]
     action_id: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 3000))]
     url: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 2000))]
     value: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     style: Option<Style>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     confirm: Option<()>, // FIX: doesn't exist yet
 }
 
