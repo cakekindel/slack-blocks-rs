@@ -1,0 +1,36 @@
+name: 'gh_release'
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  gh_release:
+    if: |
+         !contains(github.event.head_commit.message, 'bump')
+      && !contains(github.event.head_commit.message, 'ci')
+    runs-on: 'ubuntu-latest'
+    steps:
+
+    # Setup
+    - uses: 'actions/setup-node@v1'
+      with: { node-version: '14' }
+
+    - uses: 'actions/checkout@v2'
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+
+    - run: |
+        git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+        git config --global user.name "${{ github.actor }}"
+
+    # Create Github Release
+    - name: 'Create Github Release'
+      uses: 'actions/create-release@v1'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        body_path: CHANGELOG.md
