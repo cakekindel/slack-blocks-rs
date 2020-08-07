@@ -1,6 +1,18 @@
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 
-use crate::impl_from_contents;
+use crate::text;
+use crate::convert;
+
+mod builder;
+pub use builder::SelectBuilder;
+
+mod public_channel;
+pub use public_channel::PublicChannel as PublicChannelSelect;
+
+mod select_ty_value {
+    pub const PUBLIC_CHANNEL: &'static str = "users_select";
+}
 
 /// # Select Menu Element
 ///
@@ -16,19 +28,29 @@ use crate::impl_from_contents;
 /// [Select Menu Element 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub enum Contents {
+#[serde(tag = "type")]
+pub enum Contents<'a> {
     Static(Static),
     External(External),
     User(User),
     Conversation(Conversation),
-    Channel(Channel),
+    PublicChannel(PublicChannelSelect<'a>),
 }
 
-impl_from_contents!(Contents, Static, Static);
-impl_from_contents!(Contents, External, External);
-impl_from_contents!(Contents, User, User);
-impl_from_contents!(Contents, Conversation, Conversation);
-impl_from_contents!(Contents, Channel, Channel);
+impl<'a> Contents<'a> {
+    pub fn from_placeholder_and_action_id(
+        placeholder: impl Into<text::Plain>,
+        action_id: impl Into<Cow<'a, str>>
+    ) -> SelectBuilder<'a> {
+        SelectBuilder::from_placeholder_and_action_id(placeholder, action_id)
+    }
+}
+
+convert!(impl From<User> for Contents<'static> => |u| Contents::User(u));
+convert!(impl From<Static> for Contents<'static> => |s| Contents::Static(s));
+convert!(impl From<External> for Contents<'static> => |e| Contents::External(e));
+convert!(impl From<Conversation> for Contents<'static> => |e| Contents::Conversation(e));
+convert!(impl<'_> From<PublicChannelSelect> for Contents => |e| Contents::PublicChannel(e));
 
 /// ## Select menu with static options
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_select)
@@ -68,10 +90,3 @@ pub struct User {}
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Conversation {}
 
-/// ## Select menu with channels list
-/// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#channel_select)
-///
-/// This select menu will populate its options with a list of
-/// public channels visible to the current user in the active workspace.
-#[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct Channel {}

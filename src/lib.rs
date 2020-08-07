@@ -68,4 +68,11 @@ macro_rules! convert {
             }
         }
     };
+    (impl<'_> From<$source:ident> for $dest:ident => $closure:expr) => {
+        impl<'a> From<$source<'a>> for $dest<'a> {
+            fn from(src: $source<'a>) -> $dest<'a> {
+                $closure(src)
+            }
+        }
+    };
 }
