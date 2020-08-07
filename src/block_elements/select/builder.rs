@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use crate::text;
 use crate::compose::Confirm;
 
-use super::{PublicChannelSelect};
+use super::{PublicChannel};
 
 /// # Select Element Builder
 /// Use to construct a Select element
@@ -31,8 +31,8 @@ impl<'a> SelectBuilder<'a> {
         self
     }
 
-    pub fn choose_from_public_channels(self) -> PublicChannelSelect<'a> {
-        let sel = PublicChannelSelect::from_placeholder_and_action_id(
+    pub fn choose_from_public_channels(self) -> PublicChannel<'a> {
+        let sel = PublicChannel::from_placeholder_and_action_id(
             self.placeholder,
             self.action_id,
         );

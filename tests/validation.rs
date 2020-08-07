@@ -136,7 +136,8 @@ should_fail!(
         input::Contents
             ::from_label_and_element(
                 common::string_of_len(2001),
-                block_elements::select::Static {}
+                block_elements::select::PublicChannel
+                    ::from_placeholder_and_action_id("fart", "")
             )
     )
 );
@@ -147,7 +148,8 @@ should_fail!(
         input::Contents
             ::from_label_and_element(
                 "",
-                block_elements::select::Static {}
+                block_elements::select::PublicChannel
+                    ::from_placeholder_and_action_id("fart", "")
             )
             .with_hint(common::string_of_len(2001))
     )
@@ -159,7 +161,8 @@ should_fail!(
         input::Contents
             ::from_label_and_element(
                 "",
-                block_elements::select::Static {}
+                block_elements::select::PublicChannel
+                    ::from_placeholder_and_action_id("fart", "")
             )
             .with_block_id(common::string_of_len(256))
     )

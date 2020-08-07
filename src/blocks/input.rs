@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
+use crate::convert;
 use crate::block_elements::select;
 use crate::compose::text;
 use crate::val_helpr::ValidationResult;
@@ -17,11 +18,11 @@ use crate::val_helpr::ValidationResult;
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#input
 /// [slack's guide to using modals 🔗]: https://api.slack.com/surfaces/modals/using#gathering_input
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct Contents {
+pub struct Contents<'a> {
     #[validate(custom = "validate::label")]
     label: text::Text,
 
-    element: InputElement,
+    element: InputElement<'a>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 255))]
@@ -35,7 +36,7 @@ pub struct Contents {
     optional: Option<bool>,
 }
 
-impl Contents {
+impl<'a> Contents<'a> {
     /// Create an Input Block from a text Label and interactive element.
     ///
     /// # Arguments
@@ -55,11 +56,12 @@ impl Contents {
     ///
     /// # Example
     /// ```
-    /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::block_elements::Select;
     /// use slack_blocks::blocks;
     ///
     /// let label = "On a scale from 1 - 5, how angsty are you?";
-    /// let input = select::Static {};
+    /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
+    ///     .choose_from_public_channels();
     ///
     /// let block = blocks::input::Contents::from_label_and_element(label, input);
     ///
@@ -67,7 +69,7 @@ impl Contents {
     /// ```
     pub fn from_label_and_element(
         label: impl Into<text::Plain>,
-        element: impl Into<InputElement>,
+        element: impl Into<InputElement<'a>>,
     ) -> Self {
         Contents {
             label: label.into().into(),
@@ -94,11 +96,12 @@ impl Contents {
     ///
     /// # Example
     /// ```
-    /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::block_elements::Select;
     /// use slack_blocks::blocks;
     ///
     /// let label = "On a scale from 1 - 5, how angsty are you?";
-    /// let input = select::Static {};
+    /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
+    ///     .choose_from_public_channels();
     ///
     /// let block = blocks::input
     ///     ::Contents
@@ -126,13 +129,14 @@ impl Contents {
     ///
     /// # Example
     /// ```
-    /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::block_elements::Select;
     /// use slack_blocks::blocks;
     ///
     /// # use std::error::Error;
     /// # pub fn main() -> Result<(), Box<dyn Error>> {
     /// let label = "On a scale from 1 - 5, how angsty are you?";
-    /// let input = select::Static {};
+    /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
+    ///     .choose_from_public_channels();
     ///
     /// let block = blocks::input
     ///     ::Contents
@@ -157,11 +161,12 @@ impl Contents {
     ///
     /// # Example
     /// ```
-    /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::block_elements::Select;
     /// use slack_blocks::blocks;
     ///
     /// let label = "On a scale from 1 - 5, how angsty are you?";
-    /// let input = select::Static {};
+    /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
+    ///     .choose_from_public_channels();
     ///
     /// let block = blocks::input
     ///     ::Contents
@@ -188,11 +193,12 @@ impl Contents {
     ///
     /// # Example
     /// ```
-    /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::block_elements::Select;
     /// use slack_blocks::blocks;
     ///
     /// let label = "On a scale from 1 - 5, how angsty are you?";
-    /// let input = select::Static {};
+    /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
+    ///     .choose_from_public_channels();
     /// let long_string = std::iter::repeat(' ').take(2001).collect::<String>();
     ///
     /// let block = blocks::input
@@ -212,23 +218,21 @@ impl Contents {
 /// Enum representing the [`BlockElement` 🔗] types
 /// supported by InputElement.
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-#[serde(untagged)]
-pub enum InputElement {
-    Checkboxes { fixme: String },
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum InputElement<'a> {
+    #[serde(rename = "channels_select")]
+    SelectPublicChannel(select::PublicChannel<'a>),
+    Checkboxes,
     DatePicker,
     MultiSelect,
-    Select(select::Contents),
     PlainInput,
     RadioButtons,
 }
 
-impl<T> From<T> for InputElement
-where
-    T: Into<select::Contents>,
-{
-    fn from(contents: T) -> Self {
-        InputElement::Select(contents.into())
-    }
+use select::PublicChannel as SelectPublicChannel;
+convert! {
+    impl<'_> From<impl Into<SelectPublicChannel>> for InputElement
+        => |contents| InputElement::SelectPublicChannel(contents.into())
 }
 
 mod validate {

@@ -13,7 +13,11 @@ use crate::compose::Confirm;
 pub struct PublicChannel<'a> {
     placeholder: text::Plain,
     action_id: Cow<'a, str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     confirm: Option<Confirm>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     user_id: Option<Cow<'a, str>>,
 }
 

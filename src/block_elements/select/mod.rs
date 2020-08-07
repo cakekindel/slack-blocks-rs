@@ -8,7 +8,7 @@ mod builder;
 pub use builder::SelectBuilder;
 
 mod public_channel;
-pub use public_channel::PublicChannel as PublicChannelSelect;
+pub use public_channel::PublicChannel;
 
 mod select_ty_value {
     pub const PUBLIC_CHANNEL: &'static str = "users_select";
@@ -28,16 +28,16 @@ mod select_ty_value {
 /// [Select Menu Element 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-#[serde(tag = "type")]
-pub enum Contents<'a> {
+pub enum Select<'a> {
     Static(Static),
     External(External),
     User(User),
     Conversation(Conversation),
-    PublicChannel(PublicChannelSelect<'a>),
+    #[serde(rename = "channels_select")]
+    PublicChannel(PublicChannel<'a>),
 }
 
-impl<'a> Contents<'a> {
+impl<'a> Select<'a> {
     pub fn from_placeholder_and_action_id(
         placeholder: impl Into<text::Plain>,
         action_id: impl Into<Cow<'a, str>>
@@ -46,11 +46,11 @@ impl<'a> Contents<'a> {
     }
 }
 
-convert!(impl From<User> for Contents<'static> => |u| Contents::User(u));
-convert!(impl From<Static> for Contents<'static> => |s| Contents::Static(s));
-convert!(impl From<External> for Contents<'static> => |e| Contents::External(e));
-convert!(impl From<Conversation> for Contents<'static> => |e| Contents::Conversation(e));
-convert!(impl<'_> From<PublicChannelSelect> for Contents => |e| Contents::PublicChannel(e));
+convert!(impl From<User> for Select<'static> => |u| Select::User(u));
+convert!(impl From<Static> for Select<'static> => |s| Select::Static(s));
+convert!(impl From<External> for Select<'static> => |e| Select::External(e));
+convert!(impl From<Conversation> for Select<'static> => |e| Select::Conversation(e));
+convert!(impl<'_> From<PublicChannel> for Select => |e| Select::PublicChannel(e));
 
 /// ## Select menu with static options
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_select)
