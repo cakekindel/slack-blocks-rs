@@ -6,6 +6,8 @@ use slack_blocks::{
     compose::conversation_filter::ConversationKind,
     compose::ConversationFilter,
 };
+use slack_blocks::block_elements::select;
+use select::PublicChannel;
 
 mod common;
 
@@ -316,5 +318,26 @@ should_fail!(
         block_elements::Button
             ::from_text_and_action_id("", "")
             .with_value(common::string_of_len(2001))
+    )
+);
+
+// ## Public Channel Select Validation
+should_fail!(
+    public_channel_select_with_long_placeholder:
+    BlockElement::from(
+        select::PublicChannel::from_placeholder_and_action_id(
+            common::string_of_len(151),
+            ""
+        )
+    )
+);
+
+should_fail!(
+    public_channel_select_with_long_action_id:
+    BlockElement::from(
+        select::PublicChannel::from_placeholder_and_action_id(
+            "",
+            common::string_of_len(256),
+        )
     )
 );

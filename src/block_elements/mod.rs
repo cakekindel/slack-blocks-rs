@@ -43,6 +43,7 @@ impl<'a> BlockElement<'a> {
     pub fn validate(&self) -> ValidationResult {
         match self {
             Self::Button(cts) => cts.validate(),
+            Self::SelectPublicChannel(cts) => cts.validate(),
             rest => todo!("validation not implemented for {:?}", rest),
         }
     }
@@ -52,7 +53,12 @@ convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button
 
 convert!(impl<'_> From<Select> for BlockElement
     => |s| match s {
-        Select::PublicChannel(s) => BlockElement::SelectPublicChannel(s),
-        rest => todo!()
+        Select::PublicChannel(s) => s.into(),
+        _ => todo!()
     }
+);
+
+use select::PublicChannel as SelectPublicChannel;
+convert!(impl<'_> From<SelectPublicChannel> for BlockElement
+    => |s| BlockElement::SelectPublicChannel(s)
 );

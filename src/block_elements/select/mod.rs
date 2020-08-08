@@ -90,3 +90,11 @@ pub struct User {}
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Conversation {}
 
+mod validate {
+    use crate::text;
+    use crate::val_helpr::*;
+
+    pub fn placeholder(text: &text::Text) -> ValidatorResult {
+        below_len("Select Placeholder text", 150, text.as_ref())
+    }
+}

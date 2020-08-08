@@ -231,8 +231,8 @@ pub enum InputElement<'a> {
 
 use select::PublicChannel as SelectPublicChannel;
 convert! {
-    impl<'_> From<impl Into<SelectPublicChannel>> for InputElement
-        => |contents| InputElement::SelectPublicChannel(contents.into())
+    impl<'_> From<SelectPublicChannel> for InputElement
+        => |contents| InputElement::SelectPublicChannel(contents)
 }
 
 mod validate {
