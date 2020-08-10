@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use validator::{Validate};
-use std::fmt;
 
 use crate::val_helpr::ValidationResult;
 

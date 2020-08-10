@@ -10,10 +10,6 @@ pub use builder::SelectBuilder;
 mod public_channel;
 pub use public_channel::PublicChannel;
 
-mod select_ty_value {
-    pub const PUBLIC_CHANNEL: &'static str = "users_select";
-}
-
 /// # Select Menu Element
 ///
 /// A select menu, just as with a standard HTML `<select>` tag,
