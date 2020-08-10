@@ -23,9 +23,6 @@ pub struct PublicChannel<'a> {
     confirm: Option<Confirm>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    user_id: Option<Cow<'a, str>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
     initial_channel: Option<Cow<'a, str>>,
 }
 
@@ -50,6 +47,8 @@ impl<'a> PublicChannel<'a> {
     /// # Example
     /// ```
     /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::blocks;
+    /// use slack_blocks::text;
     ///
     /// let select = select::PublicChannel::from_placeholder_and_action_id(
     ///     "Pick a Channel...",
@@ -59,8 +58,8 @@ impl<'a> PublicChannel<'a> {
     /// let blocks: Vec<blocks::Block> = vec![
     ///     blocks::Section::from_text(text::Plain::from(
     ///         "Pick a channel to send your poll to...")
-    ///     ),
-    ///     blocks::Actions::from_elements(vec![select]),
+    ///     ).into(),
+    ///     blocks::Actions::from_action_elements(vec![select.into()]).into(),
     /// ];
     ///
     /// // <send to slack's API>
@@ -73,7 +72,6 @@ impl<'a> PublicChannel<'a> {
             placeholder: placeholder.into().into(),
             action_id: action_id.into(),
             confirm: None,
-            user_id: None,
             initial_channel: None,
         }
     }
@@ -92,12 +90,15 @@ impl<'a> PublicChannel<'a> {
     /// # Example
     /// ```
     /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::text;
     /// use slack_blocks::blocks;
     /// use slack_blocks::compose;
     ///
     /// let confirm = compose::Confirm::from_parts(
     ///     "Confirm Poll Channel",
-    ///     "Are you sure this is the channel you want to send this to?",
+    ///     text::Plain::from(
+    ///         "Are you sure this is the channel you want to send this to?"
+    ///     ),
     ///     "Yep, I'm sure",
     ///     "No way!"
     /// );
@@ -110,9 +111,9 @@ impl<'a> PublicChannel<'a> {
     ///
     /// let blocks: Vec<blocks::Block> = vec![
     ///     blocks::Section::from_text(text::Plain::from(
-    ///         "Pick a channel to send your poll to...")
-    ///     ),
-    ///     blocks::Actions::from_elements(vec![select]),
+    ///         "Pick a channel to send your poll to..."
+    ///     )).into(),
+    ///     blocks::Actions::from_action_elements(vec![select.into()]).into(),
     /// ];
     ///
     /// // <send to slack's API>
@@ -122,14 +123,45 @@ impl<'a> PublicChannel<'a> {
         self
     }
 
-    pub fn with_initial_user(
-        mut self,
-        user_id: impl Into<Cow<'a, str>>
-    ) -> Self {
-        self.user_id = Some(user_id.into());
-        self
-    }
-
+    /// Optional method that allows you to set a pre-selected
+    /// channel in the select menu with the channel's ID.
+    ///
+    /// # Arguments
+    /// - `channel` - The ID of any valid public channel to be
+    ///     pre-selected when the menu loads.
+    ///
+    /// # Example
+    /// ```
+    /// use slack_blocks::block_elements::select;
+    /// use slack_blocks::text;
+    /// use slack_blocks::blocks;
+    /// use slack_blocks::compose;
+    ///
+    /// let confirm = compose::Confirm::from_parts(
+    ///     "Confirm Poll Channel",
+    ///     text::Plain::from(
+    ///         "Are you sure this is the channel you want to send this to?"
+    ///     ),
+    ///     "Yep, I'm sure",
+    ///     "No way!"
+    /// );
+    /// let channel_general = ("#general", "C12345");
+    /// let select = select::PublicChannel::from_placeholder_and_action_id(
+    ///         "Pick a Channel...",
+    ///         "ABC123"
+    ///     )
+    ///     .with_confirm(confirm)
+    ///     .with_initial_channel(channel_general.1);
+    ///
+    /// let blocks: Vec<blocks::Block> = vec![
+    ///     blocks::Section::from_text(text::Plain::from(
+    ///         "Pick a channel to send your poll to..."
+    ///     )).into(),
+    ///     blocks::Actions::from_action_elements(vec![select.into()]).into(),
+    /// ];
+    ///
+    /// // <send to slack's API>
+    /// ```
     pub fn with_initial_channel(
         mut self,
         channel_id: impl Into<Cow<'a, str>>
@@ -138,6 +170,31 @@ impl<'a> PublicChannel<'a> {
         self
     }
 
+    /// Validate that this Public Channel Select element
+    /// agrees with Slack's model requirements
+    ///
+    /// # Errors
+    /// - If `from_placeholder_and_action_id` was called with
+    ///     `placeholder` longer than 150 chars
+    /// - If `from_placeholder_and_action_id` was called with
+    ///     `action_id` longer than 255 chars
+    ///
+    /// # Example
+    /// ```
+    /// use slack_blocks::block_elements::select;
+    ///
+    /// let select = select::PublicChannel::from_placeholder_and_action_id(
+    ///         r#"Hey I really would appreciate it if you chose
+    ///         a channel relatively soon, so that we can figure out
+    ///         where we need to send this poll, ok? it's kind of
+    ///         important that you specify where this poll should be
+    ///         sent, in case we haven't made that super clear.
+    ///         If you understand, could you pick a channel, already??"#,
+    ///         "ABC123"
+    ///     );
+    ///
+    /// assert!(matches!(select.validate(), Err(_)))
+    /// ```
     pub fn validate(&self) -> ValidationResult {
         Validate::validate(&self)
     }

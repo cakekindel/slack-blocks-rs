@@ -28,6 +28,7 @@ pub struct Confirm {
 }
 
 impl Confirm {
+    // TODO: refactor into builder
     /// Creates a Confirmation Dialog from the required parts.
     ///
     /// # Arguments

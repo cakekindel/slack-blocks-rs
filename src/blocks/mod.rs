@@ -4,12 +4,21 @@ use crate::convert;
 
 pub mod actions;
 pub use actions::Contents as Actions;
+
 pub mod context;
+pub use context::Contents as Context;
+
 pub mod file;
+pub use file::Contents as File;
+
 pub mod image;
+pub use image::Contents as Image;
+
 pub mod input;
 pub use input::Contents as Input;
+
 pub mod section;
+pub use section::Contents as Section;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
 
