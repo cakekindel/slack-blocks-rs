@@ -7,9 +7,9 @@ on:
 jobs:
   bump:
     if: |
-         !contains(github.event.head_commit.message, 'bump')
-         && !contains(github.event.head_commit.message, 'ci')
-         && !contains(github.event.head_commit.message, '[NO_PUB]')
+         !startsWith(github.event.head_commit.message, 'bump')
+         && !startsWith(github.event.head_commit.message, 'ci')
+         && !startsWith(github.event.head_commit.message, '[NO_PUB]')
     runs-on: 'ubuntu-latest'
     steps:
 
@@ -31,8 +31,8 @@ jobs:
     # - create version commits
     - run: 'npx standard-version'
 
-    - name: 'ensure Cargo.lock fresh'
-      run: 'cargo --locked c'
+    - name: 'Update our own version in Cargo.lock'
+      run: 'cargo c'
 
     - name: 'push changes to main'
       env:
