@@ -9,7 +9,7 @@ jobs:
   gh_release:
     if: |
          !contains(github.event.head_commit.message, 'bump')
-      && !contains(github.event.head_commit.message, 'ci')
+         && !contains(github.event.head_commit.message, 'ci')
     runs-on: 'ubuntu-latest'
     steps:
 
@@ -25,7 +25,6 @@ jobs:
         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
         git config --global user.name "${{ github.actor }}"
 
-    # Create Github Release
     - name: 'Create Github Release'
       uses: 'actions/create-release@v1'
       env:
