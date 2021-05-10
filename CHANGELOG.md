@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.10.0 (2021-05-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* select public channels
+
+### Features
+
+* select public channels ([6c87d02](https://github.com/cakekindel/slack-blocks-rs/commit/6c87d02baca43e3751cc42f980e534d41422e242))
+
 ### 0.9.19 (2021-05-10)
 
 ### 0.9.18 (2021-05-10)
