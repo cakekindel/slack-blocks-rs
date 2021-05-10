@@ -10,13 +10,16 @@ jobs:
     steps:
     # Setup
     - uses: 'actions/checkout@v2'
-    - uses: 'actions/cache@v2'
+
+    - uses: actions/cache@v2
       with:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
           target
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
 
     # Push changes to crates.io
     - name: 'Publish'
