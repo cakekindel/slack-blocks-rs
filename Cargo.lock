@@ -203,7 +203,7 @@ dependencies = [
 
 [[package]]
 name = "slack-blocks"
-version = "0.10.2"
+version = "0.11.0"
 dependencies = [
  "derive_builder",
  "lazy_static",
