@@ -8,8 +8,9 @@ on:
 jobs:
   gh_release:
     if: |
-         !contains(github.event.head_commit.message, 'bump')
-         && !contains(github.event.head_commit.message, 'ci')
+         !startsWith(github.event.head_commit.message, 'bump')
+         && !startsWith(github.event.head_commit.message, 'ci')
+         && !startsWith(github.event.head_commit.message, '[NO_PUB]')
     runs-on: 'ubuntu-latest'
     steps:
 
