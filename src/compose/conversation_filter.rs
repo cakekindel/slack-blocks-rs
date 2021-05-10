@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use validator::{Validate};
 use std::fmt;
+use validator::Validate;
 
 use crate::val_helpr::ValidationResult;
 
@@ -10,7 +10,7 @@ use crate::val_helpr::ValidationResult;
 /// Provides a way to filter the list of options
 /// in a [conversations select menu 🔗] or
 /// [conversations multi-select menu 🔗].
-/// 
+///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#filter_conversations
 /// [conversations select menu 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/block-elements#conversation_select
 /// [conversations multi-select menu 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/block-elements#conversation_multi_select
@@ -35,7 +35,9 @@ impl ConversationFilter {
     /// // TODO: once conversationselect is implemented
     /// // let select = ConversationSelect::from_filter(filter);
     /// ```
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 
     /// Chainable setter method that allows you to restrict
     /// the kinds of channels that will appear in the
@@ -114,9 +116,7 @@ impl ConversationFilter {
     /// // TODO: once conversationselect is implemented
     /// // let select = ConversationSelect::from_filter(filter);
     /// ```
-    pub fn exclude_external_shared_channels(
-        mut self,
-    ) -> Self {
+    pub fn exclude_external_shared_channels(mut self) -> Self {
         self.exclude_external_shared_channels = Some(true);
         self
     }
@@ -159,9 +159,7 @@ impl ConversationFilter {
     /// // TODO: once conversationselect is implemented
     /// // let select = ConversationSelect::from_filter(filter);
     /// ```
-    pub fn exclude_bot_users(
-        mut self,
-    ) -> Self {
+    pub fn exclude_bot_users(mut self) -> Self {
         self.exclude_bot_users = Some(true);
         self
     }

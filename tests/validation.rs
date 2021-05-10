@@ -1,10 +1,8 @@
 use slack_blocks::{
     block_elements, block_elements::BlockElement, blocks::actions, blocks::context, blocks::file,
-    blocks::image, blocks::input, blocks::section, blocks::Block, compose::text, compose::Opt,
-    compose::OptGroup,
-    compose,
-    compose::conversation_filter::ConversationKind,
-    compose::ConversationFilter,
+    blocks::image, blocks::input, blocks::section, blocks::Block, compose,
+    compose::conversation_filter::ConversationKind, compose::text, compose::ConversationFilter,
+    compose::Opt, compose::OptGroup,
 };
 
 mod common;

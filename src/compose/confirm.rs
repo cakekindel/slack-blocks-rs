@@ -46,7 +46,7 @@ impl Confirm {
     /// - `deny` - A [`plain_text`-only text object 🔗] to define
     ///     the text of the button that cancels the action.
     ///     Maximum length for the `text` in this field is 30 characters.
-    /// 
+    ///
     /// [text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
     /// [`plain_text`-only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
     ///
@@ -86,7 +86,7 @@ impl Confirm {
             text: text.into(),
             confirm: confirm.into().into(),
             deny: deny.into().into(),
-            style: None
+            style: None,
         }
     }
 
@@ -112,10 +112,7 @@ impl Confirm {
     ///     )
     ///     .with_style(ConfirmStyle::Danger);
     /// ```
-    pub fn with_style(
-        mut self,
-        style: ConfirmStyle,
-    ) -> Self {
+    pub fn with_style(mut self, style: ConfirmStyle) -> Self {
         self.style = Some(style);
         self
     }
