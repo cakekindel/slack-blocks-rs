@@ -31,20 +31,15 @@ jobs:
     # - create version commits
     - run: 'npx standard-version'
 
-    # Cargo Check
-    # - update version in Cargo.lock
-    # - run build / tests
     - name: 'ensure Cargo.lock fresh'
-      run: 'cargo c'
+      run: 'cargo --locked c'
 
-    # Push changes to main
-    - name: 'push'
+    - name: 'push changes to main'
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: 'git push'
 
-    # Push the new tag
-    # - triggers 'publish' job
+    # triggers 'publish' job
     - name: 'push tags'
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

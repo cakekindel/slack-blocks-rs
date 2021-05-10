@@ -25,7 +25,6 @@ jobs:
         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
         git config --global user.name "${{ github.actor }}"
 
-    # Create Github Release
     - name: 'Create Github Release'
       uses: 'actions/create-release@v1'
       env:
