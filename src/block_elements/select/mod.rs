@@ -34,6 +34,37 @@ pub enum Select<'a> {
 }
 
 impl<'a> Select<'a> {
+    /// Construct a Select block element from required parts
+    ///
+    /// # Arguments
+    /// - `placeholder`: A plain_text [text object 🔗] that defines the placeholder text shown on the menu.
+    ///                  Maximum length for the text in this field is 150 characters.
+    /// - `action_id`: An identifier for the action triggered when a menu option is selected.
+    ///                You can use this when you receive an interaction payload to identify the source of the action.
+    ///                Should be unique among all other action_ids in the containing block.
+    ///                Maximum length for this field is 255 characters.
+    ///
+    /// [text objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
+    /// # Example
+    /// ```
+    /// use slack_blocks::{block_elements as element, compose::text};
+    ///
+    /// # use std::error::Error;
+    /// # pub fn main() -> Result<(), Box<dyn Error>> {
+    /// let fields = vec![
+    ///     text::Plain::from("Left column"),
+    ///     text::Plain::from("Right column"),
+    /// ];
+    ///
+    /// let select = element::Select::from_placeholder_and_action_id("Pick a channel!", "1234")
+    ///                              .choose_from_public_channels();
+    ///
+    /// let block = blocks::actions::Contents::from_elements(&[select.into()]);
+    ///
+    /// // < send `block` to slack API >
+    /// # Ok(())
+    /// # }
+    /// ```
     pub fn from_placeholder_and_action_id(
         placeholder: impl Into<text::Plain>,
         action_id: impl Into<Cow<'a, str>>
@@ -46,7 +77,7 @@ convert!(impl From<User> for Select<'static> => |u| Select::User(u));
 convert!(impl From<Static> for Select<'static> => |s| Select::Static(s));
 convert!(impl From<External> for Select<'static> => |e| Select::External(e));
 convert!(impl From<Conversation> for Select<'static> => |e| Select::Conversation(e));
-convert!(impl<'_> From<PublicChannel> for Select => |e| Select::PublicChannel(e));
+convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicChannel(e));
 
 /// ## Select menu with static options
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_select)
