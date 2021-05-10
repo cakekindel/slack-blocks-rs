@@ -45,7 +45,7 @@ jobs:
     - run: 'sleep 5s'
 
     - name: 'Update our own version in Cargo.lock'
-      run: 'cargo check'
+      run: 'cargo update -p slack-blocks'
 
     - name: 'push changes to main'
       env:
