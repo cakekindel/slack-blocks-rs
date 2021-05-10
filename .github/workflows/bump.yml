@@ -42,8 +42,10 @@ jobs:
     # - create version commits
     - run: 'npx standard-version'
 
+    - run: 'sleep 5s'
+
     - name: 'Update our own version in Cargo.lock'
-      run: 'cargo c'
+      run: 'cargo check'
 
     - name: 'push changes to main'
       env:
