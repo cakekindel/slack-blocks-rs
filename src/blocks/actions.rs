@@ -3,7 +3,8 @@ use std::convert::{TryFrom, TryInto};
 use validator::Validate;
 
 use crate::block_elements;
-use crate::impl_from_contents;
+use crate::block_elements::{select, Button};
+use crate::convert;
 use crate::val_helpr::ValidationResult;
 
 /// # Actions Block
@@ -15,16 +16,16 @@ use crate::val_helpr::ValidationResult;
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
 /// [elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct Contents {
+pub struct Contents<'a> {
     #[validate(length(max = 5))]
-    elements: Vec<BlockElement>,
+    elements: Vec<BlockElement<'a>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[validate(length(max = 255))]
     block_id: Option<String>,
 }
 
-impl Contents {
+impl<'a> Contents<'a> {
     /// Create an empty Actions block (shorthand for `Default::default()`)
     ///
     /// # Example
@@ -81,7 +82,7 @@ impl Contents {
     /// Errors if the `block_elements::BlockElement` is one that is not supported by
     /// `Actions` blocks.
     ///
-    /// For a list of `BlockElement` types that are, see `BlockElement`.
+    /// For a list of `BlockElement` types that are supported, see `::blocks::actions::BlockElement`.
     ///
     /// # Runtime Validation
     ///
@@ -103,7 +104,7 @@ impl Contents {
     /// # }
     /// ```
     pub fn from_elements(
-        elements: impl IntoIterator<Item = block_elements::BlockElement>,
+        elements: impl IntoIterator<Item = block_elements::BlockElement<'a>>,
     ) -> Result<Self, ()> {
         elements.into_iter().collect::<Vec<_>>().try_into()
     }
@@ -120,8 +121,12 @@ impl Contents {
     /// - `elements` - An array of interactive [element objects 🔗]
     ///     For a list of `BlockElement` types that are supported, see `BlockElement`.
     ///     There is a maximum of 5 elements in each action block.
+    ///     Note that if you only ever want 1 item you can choose to pass it `Some(element)` OR `std::iter::once(element)`
+    ///     instead of a `Vec`, bypassing an expensive allocation.
+    ///     [Iterator and Option implement IntoIterator 🔗].
     ///
     /// [element objects 🔗]: https://api.slack.com/reference/messaging/block-elements
+    /// [Iterator and Option implement IntoIterator 🔗]: https://doc.rust-lang.org/std/iter/trait.IntoIterator.html#impl-IntoIterator-28
     ///
     /// # Errors
     /// Errors if the `block_elements::BlockElement` is one that is not supported by
@@ -145,7 +150,9 @@ impl Contents {
     /// // < send block to slack's API >
     /// # }
     /// ```
-    pub fn from_action_elements(elements: impl IntoIterator<Item = self::BlockElement>) -> Self {
+    pub fn from_action_elements(
+        elements: impl IntoIterator<Item = self::BlockElement<'a>>,
+    ) -> Self {
         elements
             .into_iter()
             .map(Into::<self::BlockElement>::into)
@@ -187,54 +194,54 @@ impl Contents {
 ///
 /// [block elements 🔗]: https://api.slack.com/reference/block-kit/block-elements
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub enum BlockElement {
-    Button(block_elements::Button),
+pub enum BlockElement<'a> {
+    Button(Button),
     Checkboxes,
     DatePicker,
     OverflowMenu,
     PlainInput,
     RadioButtons,
     /// All Select types are supported.
-    Select(block_elements::select::Contents),
+    SelectPublicChannel(select::PublicChannel<'a>),
 }
 
-impl From<Vec<self::BlockElement>> for Contents {
-    fn from(elements: Vec<self::BlockElement>) -> Self {
-        Self {
-            elements,
-            ..Default::default()
-        }
+convert!(impl<'a> From<Vec<self::BlockElement<'a>>> for Contents<'a>
+    => |elements| Self {
+        elements,
+        ..Default::default()
     }
-}
+);
 
-impl TryFrom<Vec<block_elements::BlockElement>> for Contents {
+impl<'a> TryFrom<Vec<block_elements::BlockElement<'a>>> for Contents<'a> {
     type Error = ();
-    fn try_from(elements: Vec<block_elements::BlockElement>) -> Result<Self, Self::Error> {
+    fn try_from(elements: Vec<block_elements::BlockElement<'a>>) -> Result<Self, Self::Error> {
         elements
             .into_iter()
-            .map(TryInto::<self::BlockElement>::try_into)
+            .map(TryInto::<self::BlockElement<'a>>::try_into)
             .collect::<Result<Vec<_>, _>>()
-            .map(Into::<self::Contents>::into)
+            .map(Into::<self::Contents<'a>>::into)
     }
 }
 
-impl TryFrom<block_elements::BlockElement> for self::BlockElement {
+impl<'a> TryFrom<block_elements::BlockElement<'a>> for self::BlockElement<'a> {
     type Error = ();
-    fn try_from(el: block_elements::BlockElement) -> Result<Self, Self::Error> {
+    fn try_from(el: block_elements::BlockElement<'a>) -> Result<Self, Self::Error> {
         use self::BlockElement::*;
         use block_elements::BlockElement as El;
 
         match el {
             El::Button(cts) => Ok(Button(cts)),
+            El::SelectPublicChannel(sel) => Ok(SelectPublicChannel(sel)),
             El::Checkboxes => Ok(Checkboxes),
             El::DatePicker => Ok(DatePicker),
             El::OverflowMenu => Ok(OverflowMenu),
             El::PlainInput => Ok(PlainInput),
             El::RadioButtons => Ok(RadioButtons),
-            El::Select(contents) => Ok(Select(contents)),
             _ => Err(()),
         }
     }
 }
 
-impl_from_contents!(BlockElement, Button, block_elements::Button);
+use select::PublicChannel as SelectPublicChannel;
+convert!(impl<'_> From<SelectPublicChannel> for BlockElement => |s| self::BlockElement::SelectPublicChannel(s));
+convert!(impl     From<Button> for BlockElement<'static> => |b| self::BlockElement::Button(b));

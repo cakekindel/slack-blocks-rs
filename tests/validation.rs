@@ -1,3 +1,5 @@
+use select::PublicChannel;
+use slack_blocks::block_elements::select;
 use slack_blocks::{
     block_elements, block_elements::BlockElement, blocks::actions, blocks::context, blocks::file,
     blocks::image, blocks::input, blocks::section, blocks::Block, compose,
@@ -134,7 +136,8 @@ should_fail!(
         input::Contents
             ::from_label_and_element(
                 common::string_of_len(2001),
-                block_elements::select::Static {}
+                block_elements::select::PublicChannel
+                    ::from_placeholder_and_action_id("fart", "")
             )
     )
 );
@@ -145,7 +148,8 @@ should_fail!(
         input::Contents
             ::from_label_and_element(
                 "",
-                block_elements::select::Static {}
+                block_elements::select::PublicChannel
+                    ::from_placeholder_and_action_id("fart", "")
             )
             .with_hint(common::string_of_len(2001))
     )
@@ -157,7 +161,8 @@ should_fail!(
         input::Contents
             ::from_label_and_element(
                 "",
-                block_elements::select::Static {}
+                block_elements::select::PublicChannel
+                    ::from_placeholder_and_action_id("fart", "")
             )
             .with_block_id(common::string_of_len(256))
     )
@@ -311,5 +316,26 @@ should_fail!(
         block_elements::Button
             ::from_text_and_action_id("", "")
             .with_value(common::string_of_len(2001))
+    )
+);
+
+// ## Public Channel Select Validation
+should_fail!(
+    public_channel_select_with_long_placeholder:
+    BlockElement::from(
+        select::PublicChannel::from_placeholder_and_action_id(
+            common::string_of_len(151),
+            ""
+        )
+    )
+);
+
+should_fail!(
+    public_channel_select_with_long_action_id:
+    BlockElement::from(
+        select::PublicChannel::from_placeholder_and_action_id(
+            "",
+            common::string_of_len(256),
+        )
     )
 );

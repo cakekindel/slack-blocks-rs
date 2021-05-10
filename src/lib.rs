@@ -68,4 +68,38 @@ macro_rules! convert {
             }
         }
     };
+    (impl<'_> From<$source:ident> for $dest:ident => $closure:expr) => {
+        impl<'a> From<$source<'a>> for $dest<'a> {
+            fn from(src: $source<'a>) -> $dest<'a> {
+                $closure(src)
+            }
+        }
+    };
+    (impl<'a> From<$source:ty> for $dest:ty => $closure:expr) => {
+        impl<'a> From<$source> for $dest {
+            fn from(src: $source) -> $dest {
+                $closure(src)
+            }
+        }
+    };
+    (impl From<impl $trait_:ident<$source:ty>> for $dest:ty => $closure:expr) => {
+        impl<T> From<T> for $dest
+        where
+            T: $trait_<$source>,
+        {
+            fn from(src: T) -> Self {
+                $closure(src)
+            }
+        }
+    };
+    (impl<'_> From<impl $trait_:ident<$source:ident>> for $dest:ident => |$param:ident| $body:expr) => {
+        impl<'a, T> From<T> for $dest<'a>
+        where
+            T: $trait_<$source<'a>>,
+        {
+            fn from($param: T) -> Self {
+                $body
+            }
+        }
+    };
 }

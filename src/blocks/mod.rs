@@ -1,20 +1,30 @@
 use serde::{Deserialize, Serialize};
 
-use crate::impl_from_contents;
+use crate::convert;
 
 pub mod actions;
+pub use actions::Contents as Actions;
+
 pub mod context;
+pub use context::Contents as Context;
+
 pub mod file;
+pub use file::Contents as File;
+
 pub mod image;
+pub use image::Contents as Image;
+
 pub mod input;
+pub use input::Contents as Input;
+
 pub mod section;
+pub use section::Contents as Section;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
 
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(tag = "type")]
-pub enum Block {
-    #[serde(rename = "section")]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum Block<'a> {
     Section(section::Contents),
 
     /// # Divider Block
@@ -27,28 +37,22 @@ pub enum Block {
     /// The divider block is nice and neat, requiring no fields.
     ///
     /// [divider_docs]: https://api.slack.com/reference/block-kit/blocks#divider
-    #[serde(rename = "divider")]
     Divider,
 
-    #[serde(rename = "image")]
     Image(image::Contents),
 
-    #[serde(rename = "actions")]
-    Actions(actions::Contents),
+    Actions(actions::Contents<'a>),
 
-    #[serde(rename = "context")]
     Context(context::Contents),
 
-    #[serde(rename = "input")]
-    Input(input::Contents),
+    Input(input::Contents<'a>),
 
-    #[serde(rename = "file")]
     File(file::Contents),
 }
 
 use std::fmt;
 
-impl fmt::Display for Block {
+impl fmt::Display for Block<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let kind = match self {
             Block::Section { .. } => "Section",
@@ -64,7 +68,7 @@ impl fmt::Display for Block {
     }
 }
 
-impl Block {
+impl<'a> Block<'a> {
     pub fn validate(&self) -> ValidationResult {
         use Block::*;
 
@@ -75,14 +79,14 @@ impl Block {
             Context(contents) => contents.validate(),
             Input(contents) => contents.validate(),
             File(contents) => contents.validate(),
-            other => todo!("validation not implemented for {}", other),
+            Divider => Ok(()),
         }
     }
 }
 
-impl_from_contents!(Block, Section, section::Contents);
-impl_from_contents!(Block, Image, image::Contents);
-impl_from_contents!(Block, Actions, actions::Contents);
-impl_from_contents!(Block, Context, context::Contents);
-impl_from_contents!(Block, Input, input::Contents);
-impl_from_contents!(Block, File, file::Contents);
+convert!(impl<'_> From<Actions> for Block => |a| Block::Actions(a));
+convert!(impl<'_> From<Input>   for Block => |a| Block::Input(a));
+convert!(impl From<section::Contents> for Block<'static> => |a| Block::Section(a));
+convert!(impl From<image::Contents>   for Block<'static> => |a| Block::Image(a));
+convert!(impl From<context::Contents> for Block<'static> => |a| Block::Context(a));
+convert!(impl From<file::Contents>    for Block<'static> => |a| Block::File(a));

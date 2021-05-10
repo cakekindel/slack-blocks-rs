@@ -1,12 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-use crate::impl_from_contents;
+use crate::convert;
 use crate::val_helpr::ValidationResult;
 
 pub mod button;
-pub mod select;
-
 pub use button::Contents as Button;
+
+pub mod select;
+pub use select::Select;
 
 /// # Block Elements - interactive components
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements)
@@ -24,25 +25,38 @@ pub use button::Contents as Button;
 /// [layout blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-pub enum BlockElement {
+pub enum BlockElement<'a> {
     Button(Button),
     Checkboxes,
     DatePicker,
     Image,
     MultiSelect,
     OverflowMenu,
-    Select(select::Contents),
     PlainInput,
     RadioButtons,
+    // Select
+    #[serde(rename = "channels_select")]
+    SelectPublicChannel(select::PublicChannel<'a>),
 }
 
-impl BlockElement {
+impl<'a> BlockElement<'a> {
     pub fn validate(&self) -> ValidationResult {
         match self {
             Self::Button(cts) => cts.validate(),
+            Self::SelectPublicChannel(cts) => cts.validate(),
             rest => todo!("validation not implemented for {:?}", rest),
         }
     }
 }
 
-impl_from_contents!(BlockElement, Button, Button);
+convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button(b));
+
+convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
+    => |s| match s {
+        Select::PublicChannel(s) => s.into(),
+        _ => todo!()
+    }
+);
+
+use select::PublicChannel as SelectPublicChannel;
+convert!(impl<'a> From<SelectPublicChannel<'a>> for BlockElement<'a> => |s| BlockElement::SelectPublicChannel(s));
