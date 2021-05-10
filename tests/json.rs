@@ -1,21 +1,10 @@
-use slack_blocks::block_elements::BlockElement;
-use slack_blocks::block_elements::select;
-use slack_blocks::blocks::Block;
-use slack_blocks::compose;
-
 mod util {
     pub fn ensure_nones_omitted(json: &serde_json::Value) {
         use serde_json::Value;
 
-        let check_many = |vec: Vec<&Value>| {
-            vec
-                .into_iter()
-                .for_each(ensure_nones_omitted)
-        };
-
         match json {
-            Value::Object(map) => check_many(map.values().collect()),
-            Value::Array(arr) => check_many(arr.iter().collect()),
+            Value::Object(map) => map.values().into_iter().for_each(ensure_nones_omitted),
+            Value::Array(arr) => arr.iter().for_each(ensure_nones_omitted),
             Value::Null => panic!("contained nulls"),
             _ => (),
         }
@@ -23,18 +12,18 @@ mod util {
 }
 
 macro_rules! json_test {
-    (fn $name:ident($test_data:expr) -> $matches:pat) => {
+    (fn $name:ident() { deserialize($test_data:expr) => $matches:pat }) => {
         #[test]
-        #[allow(non_snake_case)]
         pub fn $name() {
             // arrange
 
             // act
-            let actual = serde_json::from_value($test_data.clone()).unwrap();
+            let actual = serde_json::from_value($test_data.clone()).expect("test data should deserialize");
 
             // assert
             assert_eq!(matches!(actual, $matches), true);
 
+            // TODO(orion): is this necessary? hmm..
             // roundtrip JSON to ensure no nulls were introduced
             let serialized = serde_json::to_string(&actual).unwrap();
             let deserialized = serde_json::from_str(&serialized).unwrap();
@@ -44,23 +33,43 @@ macro_rules! json_test {
     };
 }
 
-json_test!(fn image(test_data::IMAGE_JSON)     -> Block::Image { .. });
-json_test!(fn actions(test_data::ACTIONS_JSON) -> Block::Actions { .. } );
-json_test!(fn context(test_data::CONTEXT_JSON) -> Block::Context { .. } );
-json_test!(fn section(test_data::SECTION_JSON) -> Block::Section { .. } );
-json_test!(fn divider(test_data::DIVIDER_JSON) -> Block::Divider { .. } );
-json_test!(fn input(test_data::INPUT_JSON)     -> Block::Input { .. });
-json_test!(fn file(test_data::FILE_JSON)       -> Block::File { .. });
+// TODO(orion): Refactor tests to _serialize_ items into JSON, not deserialize. The crate shouldn't even be used for deserialization
 
-json_test!(fn option(test_data::OPT_JSON)              -> compose::Opt::<()> { .. });
-json_test!(fn text(test_data::MRKDWN_TEXT_JSON)        -> compose::Text::Mrkdwn { .. });
-json_test!(fn confirm(test_data::CONFIRM_DIALOG)       -> compose::Confirm { .. });
-json_test!(fn option_group(test_data::OPT_GROUP_JSON)  -> compose::OptGroup::<()> { .. });
-json_test!(fn conv_filter(test_data::CONV_FILTER_JSON) -> compose::ConversationFilter { .. });
+mod block_tests {
+  use super::*;
+  use test_data::*;
+  use slack_blocks::blocks::Block;
 
-json_test!(fn button(test_data::BUTTON_JSON) -> BlockElement::Button { .. });
+  json_test!(fn image()   { deserialize(IMAGE_JSON)   => Block::Image {..}   });
+  json_test!(fn actions() { deserialize(ACTIONS_JSON) => Block::Actions {..} });
+  json_test!(fn context() { deserialize(CONTEXT_JSON) => Block::Context {..} });
+  json_test!(fn section() { deserialize(SECTION_JSON) => Block::Section {..} });
+  json_test!(fn divider() { deserialize(DIVIDER_JSON) => Block::Divider {..} });
+  json_test!(fn input()   { deserialize(INPUT_JSON)   => Block::Input {..}   });
+  json_test!(fn file()    { deserialize(FILE_JSON)    => Block::File {..}    });
+}
 
-json_test!(fn public_channel_select(test_data::PUB_CHAN_SELECT_JSON) -> BlockElement::SelectPublicChannel(_));
+mod compose {
+  use super::*;
+  use test_data::*;
+  use slack_blocks::compose;
+
+  json_test!(fn option()       { deserialize(OPT_JSON)         => compose::Opt::<()> {..}          });
+  json_test!(fn text()         { deserialize(MRKDWN_TEXT_JSON) => compose::Text::Mrkdwn {..}       });
+  json_test!(fn confirm()      { deserialize(CONFIRM_DIALOG)   => compose::Confirm {..}            });
+  json_test!(fn option_group() { deserialize(OPT_GROUP_JSON)   => compose::OptGroup::<()> {..}     });
+  json_test!(fn conv_filter()  { deserialize(CONV_FILTER_JSON) => compose::ConversationFilter {..} });
+}
+
+mod block_elements {
+  use super::*;
+  use test_data::*;
+  use slack_blocks::block_elements::*;
+
+  json_test!(fn button() { deserialize(BUTTON_JSON) => BlockElement::Button { .. } });
+
+  json_test!(fn public_channel_select() { deserialize(PUB_CHAN_SELECT_JSON) => BlockElement::SelectPublicChannel(_) });
+}
 
 mod test_data {
     use slack_blocks::compose::text;
@@ -82,7 +91,7 @@ mod test_data {
             }
         });
 
-        // FIX: add element objects to json here when implemented
+        // TODO(orion): add element objects to json here when implemented
         pub static ref CONTEXT_JSON: serde_json::Value = serde_json::json!({
             "type": "context",
             "elements": []
@@ -95,7 +104,7 @@ mod test_data {
             "title": SAMPLE_TEXT_PLAIN.clone(),
         });
 
-        // FIX: add element objects to json here when implemented
+        // TODO(orion): add element objects to json here when implemented
         pub static ref ACTIONS_JSON: serde_json::Value = serde_json::json!({
             "type": "actions",
             "elements": [],
@@ -111,7 +120,7 @@ mod test_data {
             "source": "123"
         });
 
-        // FIX: add element objects to json here when implemented
+        // TODO(orion): add element objects to json here when implemented
         pub static ref INPUT_JSON: serde_json::Value = serde_json::json!({
             "type": "input",
             "label": SAMPLE_TEXT_PLAIN.clone(),

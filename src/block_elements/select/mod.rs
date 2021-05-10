@@ -47,7 +47,7 @@ impl<'a> Select<'a> {
     /// [text objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
     /// # Example
     /// ```
-    /// use slack_blocks::{block_elements as element, compose::text};
+    /// use slack_blocks::{blocks, blocks::actions::Contents as ActionsBlock, block_elements as element, compose::text};
     ///
     /// # use std::error::Error;
     /// # pub fn main() -> Result<(), Box<dyn Error>> {
@@ -56,10 +56,11 @@ impl<'a> Select<'a> {
     ///     text::Plain::from("Right column"),
     /// ];
     ///
-    /// let select = element::Select::from_placeholder_and_action_id("Pick a channel!", "1234")
-    ///                              .choose_from_public_channels();
+    /// let select: element::BlockElement = element::Select::from_placeholder_and_action_id("Pick a channel!", "1234")
+    ///                                                     .choose_from_public_channels()
+    ///                                                     .into();
     ///
-    /// let block = blocks::actions::Contents::from_elements(&[select.into()]);
+    /// let block = ActionsBlock::from_elements(Some(select));
     ///
     /// // < send `block` to slack API >
     /// # Ok(())

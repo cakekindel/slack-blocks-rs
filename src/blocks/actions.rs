@@ -82,7 +82,7 @@ impl<'a> Contents<'a> {
     /// Errors if the `block_elements::BlockElement` is one that is not supported by
     /// `Actions` blocks.
     ///
-    /// For a list of `BlockElement` types that are, see `BlockElement`.
+    /// For a list of `BlockElement` types that are supported, see `::blocks::actions::BlockElement`.
     ///
     /// # Runtime Validation
     ///
@@ -121,8 +121,12 @@ impl<'a> Contents<'a> {
     /// - `elements` - An array of interactive [element objects 🔗]
     ///     For a list of `BlockElement` types that are supported, see `BlockElement`.
     ///     There is a maximum of 5 elements in each action block.
+    ///     Note that if you only ever want 1 item you can choose to pass it `Some(element)` OR `std::iter::once(element)`
+    ///     instead of a `Vec`, bypassing an expensive allocation.
+    ///     [Iterator and Option implement IntoIterator 🔗].
     ///
     /// [element objects 🔗]: https://api.slack.com/reference/messaging/block-elements
+    /// [Iterator and Option implement IntoIterator 🔗]: https://doc.rust-lang.org/std/iter/trait.IntoIterator.html#impl-IntoIterator-28
     ///
     /// # Errors
     /// Errors if the `block_elements::BlockElement` is one that is not supported by

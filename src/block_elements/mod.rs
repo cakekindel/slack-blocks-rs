@@ -51,7 +51,7 @@ impl<'a> BlockElement<'a> {
 
 convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button(b));
 
-convert!(impl<'_> From<Select> for BlockElement
+convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {
         Select::PublicChannel(s) => s.into(),
         _ => todo!()
@@ -59,6 +59,4 @@ convert!(impl<'_> From<Select> for BlockElement
 );
 
 use select::PublicChannel as SelectPublicChannel;
-convert!(impl<'_> From<SelectPublicChannel> for BlockElement
-    => |s| BlockElement::SelectPublicChannel(s)
-);
+convert!(impl<'a> From<SelectPublicChannel<'a>> for BlockElement<'a> => |s| BlockElement::SelectPublicChannel(s));
