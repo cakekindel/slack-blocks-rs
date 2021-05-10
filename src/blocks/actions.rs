@@ -3,8 +3,8 @@ use std::convert::{TryFrom, TryInto};
 use validator::Validate;
 
 use crate::block_elements;
+use crate::block_elements::{select, Button};
 use crate::convert;
-use crate::block_elements::{Button, select};
 use crate::val_helpr::ValidationResult;
 
 /// # Actions Block
@@ -150,7 +150,9 @@ impl<'a> Contents<'a> {
     /// // < send block to slack's API >
     /// # }
     /// ```
-    pub fn from_action_elements(elements: impl IntoIterator<Item = self::BlockElement<'a>>) -> Self {
+    pub fn from_action_elements(
+        elements: impl IntoIterator<Item = self::BlockElement<'a>>,
+    ) -> Self {
         elements
             .into_iter()
             .map(Into::<self::BlockElement>::into)

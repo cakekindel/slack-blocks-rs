@@ -23,7 +23,7 @@
 //! - ~~Implement Composition Objects ([#63](https://github.com/cakekindel/slack-blocks-rs/issues/63))~~
 //! - Remove the `validator` crate from the public API ([#9](https://github.com/cakekindel/slack-blocks-rs/issues/9))
 //! - Add a `validation` crate feature ([#8](https://github.com/cakekindel/slack-blocks-rs/issues/8))
-//! 
+//!
 //! And this doesn't block a v1.0.0, but is definitely something I'm interested in doing for this crate,
 //! that will make it a lot nicer to interact with:
 //! - Add a proc-macro of some kind that allows easy creation of block messages (#??)
@@ -85,7 +85,7 @@ macro_rules! convert {
     (impl From<impl $trait_:ident<$source:ty>> for $dest:ty => $closure:expr) => {
         impl<T> From<T> for $dest
         where
-            T: $trait_<$source>
+            T: $trait_<$source>,
         {
             fn from(src: T) -> Self {
                 $closure(src)
@@ -95,7 +95,7 @@ macro_rules! convert {
     (impl<'_> From<impl $trait_:ident<$source:ident>> for $dest:ident => |$param:ident| $body:expr) => {
         impl<'a, T> From<T> for $dest<'a>
         where
-            T: $trait_<$source<'a>>
+            T: $trait_<$source<'a>>,
         {
             fn from($param: T) -> Self {
                 $body

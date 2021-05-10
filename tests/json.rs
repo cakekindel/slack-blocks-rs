@@ -18,7 +18,8 @@ macro_rules! json_test {
             // arrange
 
             // act
-            let actual = serde_json::from_value($test_data.clone()).expect("test data should deserialize");
+            let actual =
+                serde_json::from_value($test_data.clone()).expect("test data should deserialize");
 
             // assert
             assert_eq!(matches!(actual, $matches), true);
@@ -36,39 +37,39 @@ macro_rules! json_test {
 // TODO(orion): Refactor tests to _serialize_ items into JSON, not deserialize. The crate shouldn't even be used for deserialization
 
 mod block_tests {
-  use super::*;
-  use test_data::*;
-  use slack_blocks::blocks::Block;
+    use super::*;
+    use slack_blocks::blocks::Block;
+    use test_data::*;
 
-  json_test!(fn image()   { deserialize(IMAGE_JSON)   => Block::Image {..}   });
-  json_test!(fn actions() { deserialize(ACTIONS_JSON) => Block::Actions {..} });
-  json_test!(fn context() { deserialize(CONTEXT_JSON) => Block::Context {..} });
-  json_test!(fn section() { deserialize(SECTION_JSON) => Block::Section {..} });
-  json_test!(fn divider() { deserialize(DIVIDER_JSON) => Block::Divider {..} });
-  json_test!(fn input()   { deserialize(INPUT_JSON)   => Block::Input {..}   });
-  json_test!(fn file()    { deserialize(FILE_JSON)    => Block::File {..}    });
+    json_test!(fn image()   { deserialize(IMAGE_JSON)   => Block::Image {..}   });
+    json_test!(fn actions() { deserialize(ACTIONS_JSON) => Block::Actions {..} });
+    json_test!(fn context() { deserialize(CONTEXT_JSON) => Block::Context {..} });
+    json_test!(fn section() { deserialize(SECTION_JSON) => Block::Section {..} });
+    json_test!(fn divider() { deserialize(DIVIDER_JSON) => Block::Divider {..} });
+    json_test!(fn input()   { deserialize(INPUT_JSON)   => Block::Input {..}   });
+    json_test!(fn file()    { deserialize(FILE_JSON)    => Block::File {..}    });
 }
 
 mod compose {
-  use super::*;
-  use test_data::*;
-  use slack_blocks::compose;
+    use super::*;
+    use slack_blocks::compose;
+    use test_data::*;
 
-  json_test!(fn option()       { deserialize(OPT_JSON)         => compose::Opt::<()> {..}          });
-  json_test!(fn text()         { deserialize(MRKDWN_TEXT_JSON) => compose::Text::Mrkdwn {..}       });
-  json_test!(fn confirm()      { deserialize(CONFIRM_DIALOG)   => compose::Confirm {..}            });
-  json_test!(fn option_group() { deserialize(OPT_GROUP_JSON)   => compose::OptGroup::<()> {..}     });
-  json_test!(fn conv_filter()  { deserialize(CONV_FILTER_JSON) => compose::ConversationFilter {..} });
+    json_test!(fn option()       { deserialize(OPT_JSON)         => compose::Opt::<()> {..}          });
+    json_test!(fn text()         { deserialize(MRKDWN_TEXT_JSON) => compose::Text::Mrkdwn {..}       });
+    json_test!(fn confirm()      { deserialize(CONFIRM_DIALOG)   => compose::Confirm {..}            });
+    json_test!(fn option_group() { deserialize(OPT_GROUP_JSON)   => compose::OptGroup::<()> {..}     });
+    json_test!(fn conv_filter()  { deserialize(CONV_FILTER_JSON) => compose::ConversationFilter {..} });
 }
 
 mod block_elements {
-  use super::*;
-  use test_data::*;
-  use slack_blocks::block_elements::*;
+    use super::*;
+    use slack_blocks::block_elements::*;
+    use test_data::*;
 
-  json_test!(fn button() { deserialize(BUTTON_JSON) => BlockElement::Button { .. } });
+    json_test!(fn button() { deserialize(BUTTON_JSON) => BlockElement::Button { .. } });
 
-  json_test!(fn public_channel_select() { deserialize(PUB_CHAN_SELECT_JSON) => BlockElement::SelectPublicChannel(_) });
+    json_test!(fn public_channel_select() { deserialize(PUB_CHAN_SELECT_JSON) => BlockElement::SelectPublicChannel(_) });
 }
 
 mod test_data {

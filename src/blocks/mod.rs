@@ -79,7 +79,7 @@ impl<'a> Block<'a> {
             Context(contents) => contents.validate(),
             Input(contents) => contents.validate(),
             File(contents) => contents.validate(),
-            Divider => Ok(())
+            Divider => Ok(()),
         }
     }
 }

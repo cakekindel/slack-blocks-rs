@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 
-use crate::text;
 use crate::convert;
+use crate::text;
 
 mod builder;
 pub use builder::SelectBuilder;
@@ -68,7 +68,7 @@ impl<'a> Select<'a> {
     /// ```
     pub fn from_placeholder_and_action_id(
         placeholder: impl Into<text::Plain>,
-        action_id: impl Into<Cow<'a, str>>
+        action_id: impl Into<Cow<'a, str>>,
     ) -> SelectBuilder<'a> {
         SelectBuilder::from_placeholder_and_action_id(placeholder, action_id)
     }

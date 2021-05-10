@@ -1,9 +1,9 @@
+use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use validator::Validate;
-use serde::{Deserialize, Serialize};
 
-use crate::text;
 use crate::compose::Confirm;
+use crate::text;
 use crate::val_helpr::ValidationResult;
 
 /// # Public Channel Select
@@ -40,7 +40,7 @@ impl<'a> PublicChannel<'a> {
     ///     You can use this when you receive an interaction payload to [identify the source of the action 🔗].
     ///     Should be unique among all other `action_id`s used elsewhere by your app.
     ///     Maximum length for this field is 255 characters.
-    /// 
+    ///
     /// [`plain_text` only text object 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/composition-objects#text
     /// [identify the source of the action 🔗]: https://api.slack.comhttps://api.slack.com/interactivity/handling#payloads
     ///
@@ -66,7 +66,7 @@ impl<'a> PublicChannel<'a> {
     /// ```
     pub fn from_placeholder_and_action_id(
         placeholder: impl Into<text::Plain>,
-        action_id: impl Into<Cow<'a, str>>
+        action_id: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             placeholder: placeholder.into().into(),
@@ -84,7 +84,7 @@ impl<'a> PublicChannel<'a> {
     /// - `confirm` - A [confirm object 🔗] that defines an
     ///     optional confirmation dialog that appears after
     ///     a menu item is selected.
-    /// 
+    ///
     /// [confirm object 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/composition-objects#confirm
     ///
     /// # Example
@@ -162,10 +162,7 @@ impl<'a> PublicChannel<'a> {
     ///
     /// // <send to slack's API>
     /// ```
-    pub fn with_initial_channel(
-        mut self,
-        channel_id: impl Into<Cow<'a, str>>
-    ) -> Self {
+    pub fn with_initial_channel(mut self, channel_id: impl Into<Cow<'a, str>>) -> Self {
         self.initial_channel = Some(channel_id.into());
         self
     }
