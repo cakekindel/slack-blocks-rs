@@ -20,6 +20,7 @@ pub struct PublicChannel<'a> {
     action_id: Cow<'a, str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate]
     confirm: Option<Confirm>,
 
     #[serde(skip_serializing_if = "Option::is_none")]

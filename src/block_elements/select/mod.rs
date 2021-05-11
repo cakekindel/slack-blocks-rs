@@ -10,6 +10,9 @@ pub use builder::SelectBuilder;
 mod public_channel;
 pub use public_channel::PublicChannel;
 
+mod conversation;
+pub use conversation::Conversation;
+
 /// # Select Menu Element
 ///
 /// A select menu, just as with a standard HTML `<select>` tag,
@@ -23,13 +26,12 @@ pub use public_channel::PublicChannel;
 ///
 /// [Select Menu Element 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, Hash, PartialEq)]
 pub enum Select<'a> {
     Static(Static),
     External(External),
     User(User),
-    Conversation(Conversation),
-    #[serde(rename = "channels_select")]
+    Conversation(Conversation<'a>),
     PublicChannel(PublicChannel<'a>),
 }
 
@@ -77,7 +79,7 @@ impl<'a> Select<'a> {
 convert!(impl From<User> for Select<'static> => |u| Select::User(u));
 convert!(impl From<Static> for Select<'static> => |s| Select::Static(s));
 convert!(impl From<External> for Select<'static> => |e| Select::External(e));
-convert!(impl From<Conversation> for Select<'static> => |e| Select::Conversation(e));
+convert!(impl<'a> From<Conversation<'a>> for Select<'a> => |e| Select::Conversation(e));
 convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicChannel(e));
 
 /// ## Select menu with static options
@@ -109,14 +111,6 @@ pub struct External {}
 /// Slack users visible to the current user in the active workspace.
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct User {}
-
-/// ## Select menu with conversations list
-/// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#conversation_select)
-///
-/// This select menu will populate its options with a list of public and private channels,
-/// DMs, and MPIMs visible to the current user in the active workspace.
-#[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct Conversation {}
 
 mod validate {
     use crate::text;

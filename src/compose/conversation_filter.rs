@@ -70,10 +70,15 @@ impl ConversationFilter {
         kinds: impl IntoIterator<Item = ConversationKind>,
     ) -> Self {
         let mut kinds: Vec<_> = kinds.into_iter().collect();
-        kinds.dedup();
-
-        self.include = Some(kinds);
-        self
+        match kinds.len() {
+          0 => self,
+          _ => {
+            kinds.dedup();
+    
+            self.include = Some(kinds);
+            self
+          },
+        }
     }
 
     /// Chainable setter method that allows cross-org
@@ -124,9 +129,7 @@ impl ConversationFilter {
     /// with Bot Users to appear in the conversation
     /// select menu.
     ///
-    /// Note that this setting is the default, and that
-    /// calling this method is a no-op. It exists purely
-    /// as declarative sugar for filter construction.
+    /// This is the default behavior.
     ///
     /// For excluding bot user DMs, see `exclude_bot_users`.
     ///
@@ -164,11 +167,13 @@ impl ConversationFilter {
     }
 
     /// Validate that this Conversation Filter object
-    /// agrees with Slack's model requirements
+    /// agrees with Slack's model requirements.
+    ///
+    /// This type has runtime checks that prevent it from
+    /// failing validation.
     ///
     /// # Errors
-    /// - If `include_conversation_kinds` was called
-    ///     with an empty collection
+    /// - Never
     ///
     /// # Example
     /// ```
@@ -177,7 +182,7 @@ impl ConversationFilter {
     /// let filter = ConversationFilter::new()
     ///     .include_conversation_kinds(vec![]);
     ///
-    /// assert_eq!(true, matches!(filter.validate(), Err(_)));
+    /// assert_eq!(false, matches!(filter.validate(), Err(_)));
     /// ```
     pub fn validate(&self) -> ValidationResult {
         Validate::validate(self)

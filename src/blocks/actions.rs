@@ -201,8 +201,12 @@ pub enum BlockElement<'a> {
     OverflowMenu,
     PlainInput,
     RadioButtons,
+
     /// All Select types are supported.
     SelectPublicChannel(select::PublicChannel<'a>),
+
+    /// All Select types are supported.
+    SelectConversation(select::Conversation<'a>),
 }
 
 convert!(impl<'a> From<Vec<self::BlockElement<'a>>> for Contents<'a>
@@ -212,14 +216,22 @@ convert!(impl<'a> From<Vec<self::BlockElement<'a>>> for Contents<'a>
     }
 );
 
+impl<'a> TryFrom<block_elements::BlockElement<'a>> for Contents<'a> {
+    type Error = ();
+    fn try_from(element: block_elements::BlockElement<'a>) -> Result<Self, Self::Error> {
+        self::BlockElement::<'a>::try_from(element)
+          .map(|el| Self::from_action_elements(std::iter::once(el)))
+    }
+}
+
 impl<'a> TryFrom<Vec<block_elements::BlockElement<'a>>> for Contents<'a> {
     type Error = ();
     fn try_from(elements: Vec<block_elements::BlockElement<'a>>) -> Result<Self, Self::Error> {
         elements
             .into_iter()
-            .map(TryInto::<self::BlockElement<'a>>::try_into)
+            .map(self::BlockElement::<'a>::try_from)
             .collect::<Result<Vec<_>, _>>()
-            .map(Into::<self::Contents<'a>>::into)
+            .map(self::Contents::<'a>::from)
     }
 }
 
@@ -230,18 +242,21 @@ impl<'a> TryFrom<block_elements::BlockElement<'a>> for self::BlockElement<'a> {
         use block_elements::BlockElement as El;
 
         match el {
-            El::Button(cts) => Ok(Button(cts)),
             El::SelectPublicChannel(sel) => Ok(SelectPublicChannel(sel)),
+            El::SelectConversation(sel) => Ok(SelectConversation(sel)),
+            El::OverflowMenu => Ok(OverflowMenu),
+            El::RadioButtons => Ok(RadioButtons),
+            El::Button(cts) => Ok(Button(cts)),
+            El::PlainInput => Ok(PlainInput),
             El::Checkboxes => Ok(Checkboxes),
             El::DatePicker => Ok(DatePicker),
-            El::OverflowMenu => Ok(OverflowMenu),
-            El::PlainInput => Ok(PlainInput),
-            El::RadioButtons => Ok(RadioButtons),
             _ => Err(()),
         }
     }
 }
 
 use select::PublicChannel as SelectPublicChannel;
-convert!(impl<'_> From<SelectPublicChannel> for BlockElement => |s| self::BlockElement::SelectPublicChannel(s));
+use select::Conversation as SelectConversation;
+convert!(impl<'a> From<SelectPublicChannel<'a>> for BlockElement<'a> => |s| self::BlockElement::SelectPublicChannel(s));
+convert!(impl<'a> From<SelectConversation<'a>> for BlockElement<'a>  => |s| self::BlockElement::SelectConversation(s));
 convert!(impl     From<Button> for BlockElement<'static> => |b| self::BlockElement::Button(b));
