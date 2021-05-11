@@ -47,7 +47,7 @@ jobs:
     - name: 'Update our own version in Cargo.lock'
       run: 'cargo check'
 
-    - run: 'git add -A; git commit --amend'
+    - run: 'git add -A; git commit --no-edit --amend'
 
     - name: 'push changes to main'
       env:
