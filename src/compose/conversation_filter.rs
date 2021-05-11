@@ -71,13 +71,13 @@ impl ConversationFilter {
     ) -> Self {
         let mut kinds: Vec<_> = kinds.into_iter().collect();
         match kinds.len() {
-          0 => self,
-          _ => {
-            kinds.dedup();
-    
-            self.include = Some(kinds);
-            self
-          },
+            0 => self,
+            _ => {
+                kinds.dedup();
+
+                self.include = Some(kinds);
+                self
+            }
         }
     }
 

@@ -3,8 +3,8 @@ use std::borrow::Cow;
 use crate::compose::Confirm;
 use crate::text;
 
-use super::PublicChannel;
 use super::Conversation;
+use super::PublicChannel;
 
 /// # Select Element Builder
 /// Use to construct a Select element

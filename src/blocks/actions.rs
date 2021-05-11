@@ -220,7 +220,7 @@ impl<'a> TryFrom<block_elements::BlockElement<'a>> for Contents<'a> {
     type Error = ();
     fn try_from(element: block_elements::BlockElement<'a>) -> Result<Self, Self::Error> {
         self::BlockElement::<'a>::try_from(element)
-          .map(|el| Self::from_action_elements(std::iter::once(el)))
+            .map(|el| Self::from_action_elements(std::iter::once(el)))
     }
 }
 
@@ -255,8 +255,8 @@ impl<'a> TryFrom<block_elements::BlockElement<'a>> for self::BlockElement<'a> {
     }
 }
 
-use select::PublicChannel as SelectPublicChannel;
 use select::Conversation as SelectConversation;
+use select::PublicChannel as SelectPublicChannel;
 convert!(impl<'a> From<SelectPublicChannel<'a>> for BlockElement<'a> => |s| self::BlockElement::SelectPublicChannel(s));
 convert!(impl<'a> From<SelectConversation<'a>> for BlockElement<'a>  => |s| self::BlockElement::SelectConversation(s));
 convert!(impl     From<Button> for BlockElement<'static> => |b| self::BlockElement::Button(b));
