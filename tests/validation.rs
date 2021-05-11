@@ -7,6 +7,8 @@ use slack_blocks::{
     compose::Opt, compose::OptGroup,
 };
 
+use text::ToSlackPlaintext;
+
 mod common;
 
 macro_rules! should_fail {
@@ -212,12 +214,6 @@ should_fail!(
 );
 
 // ## Conversation Filter
-should_fail!(
-    conv_filter_with_no_include:
-    ConversationFilter::new()
-        .include_conversation_kinds(vec![])
-);
-
 // NOTE: this can't fail because there are
 //       only 4 variants of the enum, and
 //       the input collection gets deduped.
@@ -321,6 +317,21 @@ should_fail!(
 
 // ## Public Channel Select Validation
 should_fail!(
+    public_channel_select_with_invalid_confirm:
+    BlockElement::from(
+        select::PublicChannel::from_placeholder_and_action_id("", "")
+                              .with_confirm(
+                                  compose::Confirm::from_parts(
+                                      common::string_of_len(101),
+                                      "".plaintext(),
+                                      "",
+                                      ""
+                                  )
+                              )
+    )
+);
+
+should_fail!(
     public_channel_select_with_long_placeholder:
     BlockElement::from(
         select::PublicChannel::from_placeholder_and_action_id(
@@ -334,6 +345,42 @@ should_fail!(
     public_channel_select_with_long_action_id:
     BlockElement::from(
         select::PublicChannel::from_placeholder_and_action_id(
+            "",
+            common::string_of_len(256),
+        )
+    )
+);
+
+// ## Conversation Select Validation
+should_fail!(
+    conversation_select_with_invalid_confirm:
+    BlockElement::from(
+        select::Conversation::from_placeholder_and_action_id("", "")
+                              .with_confirm(
+                                  compose::Confirm::from_parts(
+                                      common::string_of_len(101),
+                                      "".plaintext(),
+                                      "",
+                                      ""
+                                  )
+                              )
+    )
+);
+
+should_fail!(
+    conversation_select_with_long_placeholder:
+    BlockElement::from(
+        select::Conversation::from_placeholder_and_action_id(
+            common::string_of_len(151),
+            ""
+        )
+    )
+);
+
+should_fail!(
+    conversation_select_with_long_action_id:
+    BlockElement::from(
+        select::Conversation::from_placeholder_and_action_id(
             "",
             common::string_of_len(256),
         )

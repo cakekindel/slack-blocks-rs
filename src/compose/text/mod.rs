@@ -7,6 +7,24 @@ pub mod plain;
 pub use mrkdwn::Contents as Mrkdwn;
 pub use plain::Contents as Plain;
 
+pub trait ToSlackPlaintext: Sized + Into<Plain> {
+    /// Convert to slack plain_text
+    fn plaintext(self) -> Plain {
+        self.into()
+    }
+}
+
+impl<T: Into<Plain>> ToSlackPlaintext for T {}
+
+pub trait ToSlackMarkdown: Sized + Into<Mrkdwn> {
+    /// Convert to slack plain_text
+    fn markdown(self) -> Mrkdwn {
+        self.into()
+    }
+}
+
+impl<T: Into<Mrkdwn>> ToSlackMarkdown for T {}
+
 /// # Text Object
 /// [_slack api docs 🔗_](https://api.slack.com/reference/block-kit/composition-objects#text)
 ///

@@ -37,6 +37,8 @@ pub enum BlockElement<'a> {
     // Select
     #[serde(rename = "channels_select")]
     SelectPublicChannel(select::PublicChannel<'a>),
+    #[serde(rename = "channels_select")]
+    SelectConversation(select::Conversation<'a>),
 }
 
 impl<'a> BlockElement<'a> {
@@ -44,6 +46,7 @@ impl<'a> BlockElement<'a> {
         match self {
             Self::Button(cts) => cts.validate(),
             Self::SelectPublicChannel(cts) => cts.validate(),
+            Self::SelectConversation(cts) => cts.validate(),
             rest => todo!("validation not implemented for {:?}", rest),
         }
     }
@@ -54,9 +57,13 @@ convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button
 convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {
         Select::PublicChannel(s) => s.into(),
+        Select::Conversation(s) => s.into(),
         _ => todo!()
     }
 );
 
 use select::PublicChannel as SelectPublicChannel;
 convert!(impl<'a> From<SelectPublicChannel<'a>> for BlockElement<'a> => |s| BlockElement::SelectPublicChannel(s));
+
+use select::Conversation as SelectConversation;
+convert!(impl<'a> From<SelectConversation<'a>> for BlockElement<'a> => |s| BlockElement::SelectConversation(s));
