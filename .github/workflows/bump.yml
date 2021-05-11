@@ -45,7 +45,9 @@ jobs:
     - run: 'sleep 5s'
 
     - name: 'Update our own version in Cargo.lock'
-      run: 'cargo update -p slack-blocks'
+      run: 'cargo check'
+
+    - run: 'git add -A; git commit --amend'
 
     - name: 'push changes to main'
       env:
