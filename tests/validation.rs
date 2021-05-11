@@ -386,3 +386,39 @@ should_fail!(
         )
     )
 );
+
+// ## User Select Validation
+should_fail!(
+    user_select_with_invalid_confirm:
+    BlockElement::from(
+        select::User::from_placeholder_and_action_id("", "")
+                     .with_confirm(
+                         compose::Confirm::from_parts(
+                             common::string_of_len(101),
+                             "".plaintext(),
+                             "",
+                             ""
+                         )
+                     )
+    )
+);
+
+should_fail!(
+    user_select_with_long_placeholder:
+    BlockElement::from(
+        select::User::from_placeholder_and_action_id(
+            common::string_of_len(151),
+            ""
+        )
+    )
+);
+
+should_fail!(
+    user_select_with_long_action_id:
+    BlockElement::from(
+        select::User::from_placeholder_and_action_id(
+            "",
+            common::string_of_len(256),
+        )
+    )
+);

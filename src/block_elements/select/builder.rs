@@ -3,6 +3,7 @@ use std::borrow::Cow;
 use crate::compose::Confirm;
 use crate::text;
 
+use super::User;
 use super::Conversation;
 use super::PublicChannel;
 
@@ -151,6 +152,37 @@ impl<'a> SelectBuilder<'a> {
     /// ```
     pub fn choose_from_all_channels(self) -> Conversation<'a> {
         let sel = Conversation::from_placeholder_and_action_id(self.placeholder, self.action_id);
+
+        match self.confirm {
+            Some(confirm) => sel.with_confirm(confirm),
+            None => sel,
+        }
+    }
+
+    /// Set the data source to "users". See docs for `select::User` for more info.
+    ///
+    /// # Example
+    /// ```
+    /// use std::iter;
+    /// use std::convert::TryFrom;
+    ///
+    /// use slack_blocks::{
+    ///   text,
+    ///   text::ToSlackPlaintext,
+    ///   blocks::{Block, Section, Actions},
+    ///   block_elements::{BlockElement, select::Select},
+    /// };
+    ///
+    /// let select: BlockElement = Select::from_placeholder_and_action_id("Choose a user to ban!!", "ban_chosen")
+    ///                                   .choose_from_users()
+    ///                                   .into();
+    ///
+    /// let blocks: Block = Actions::try_from(select).unwrap().into();
+    ///
+    /// // <send `blocks` to slack's API>
+    /// ```
+    pub fn choose_from_users(self) -> User<'a> {
+        let sel = User::from_placeholder_and_action_id(self.placeholder, self.action_id);
 
         match self.confirm {
             Some(confirm) => sel.with_confirm(confirm),

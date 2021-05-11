@@ -13,6 +13,9 @@ pub use public_channel::PublicChannel;
 mod conversation;
 pub use conversation::Conversation;
 
+mod user;
+pub use user::User;
+
 /// # Select Menu Element
 ///
 /// A select menu, just as with a standard HTML `<select>` tag,
@@ -30,7 +33,7 @@ pub use conversation::Conversation;
 pub enum Select<'a> {
     Static(Static),
     External(External),
-    User(User),
+    User(User<'a>),
     Conversation(Conversation<'a>),
     PublicChannel(PublicChannel<'a>),
 }
@@ -76,7 +79,7 @@ impl<'a> Select<'a> {
     }
 }
 
-convert!(impl From<User> for Select<'static> => |u| Select::User(u));
+convert!(impl<'a> From<User<'a>> for Select<'a> => |u| Select::User(u));
 convert!(impl From<Static> for Select<'static> => |s| Select::Static(s));
 convert!(impl From<External> for Select<'static> => |e| Select::External(e));
 convert!(impl<'a> From<Conversation<'a>> for Select<'a> => |e| Select::Conversation(e));
@@ -103,14 +106,6 @@ pub struct Static {}
 ///
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct External {}
-
-/// ## Select menu with user list
-/// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#users_select)
-///
-/// This select menu will populate its options with a list of
-/// Slack users visible to the current user in the active workspace.
-#[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct User {}
 
 mod validate {
     use crate::text;
