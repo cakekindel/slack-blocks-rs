@@ -4,62 +4,15 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## 0.14.0 (2021-05-11)
 
-
 ### ⚠ BREAKING CHANGES
-
-* select public channels
-
-### Features
-
-* select public channels ([4f90d7a](https://github.com/cakekindel/slack-blocks-rs/commit/4f90d7ac5dc324dc8fe76cd00e4b82ff3efe1f18))
-
-## 0.13.0 (2021-05-10)
-
-
-### ⚠ BREAKING CHANGES
-
-* select public channels
-
-### Features
-
-* select public channels ([35d2d90](https://github.com/cakekindel/slack-blocks-rs/commit/35d2d9007d49895695b94daeb4d7e0a60b056907))
-
-## 0.12.0 (2021-05-10)
-
-
-### ⚠ BREAKING CHANGES
-
-* select public channels
-
-### Features
-
-* select public channels ([0abc4e7](https://github.com/cakekindel/slack-blocks-rs/commit/0abc4e7e7e902a42545f91a82d3d03c374a396fe))
-
-## 0.11.0 (2021-05-10)
-
-
-### ⚠ BREAKING CHANGES
-
-* select public channels
-
-### Features
-
-* select public channels ([00350cd](https://github.com/cakekindel/slack-blocks-rs/commit/00350cde5a08c82d03aeb418b70ca4bdff346c43))
-
-### 0.10.2 (2021-05-10)
-
-### 0.10.1 (2021-05-10)
-
-## 0.10.0 (2021-05-10)
-
-
-### ⚠ BREAKING CHANGES
-
-* select public channels
 
 ### Features
 
 * select public channels ([6c87d02](https://github.com/cakekindel/slack-blocks-rs/commit/6c87d02baca43e3751cc42f980e534d41422e242))
+
+## 0.10 - 0.13
+
+* Working out CICD bugs
 
 ### 0.9.19 (2021-05-10)
 
