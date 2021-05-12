@@ -34,11 +34,15 @@ pub enum BlockElement<'a> {
     OverflowMenu,
     PlainInput,
     RadioButtons,
-    // Select
+
     #[serde(rename = "channels_select")]
     SelectPublicChannel(select::PublicChannel<'a>),
-    #[serde(rename = "channels_select")]
+
+    #[serde(rename = "conversations_select")]
     SelectConversation(select::Conversation<'a>),
+
+    #[serde(rename = "users_select")]
+    SelectUser(select::User<'a>),
 }
 
 impl<'a> BlockElement<'a> {
@@ -47,6 +51,7 @@ impl<'a> BlockElement<'a> {
             Self::Button(cts) => cts.validate(),
             Self::SelectPublicChannel(cts) => cts.validate(),
             Self::SelectConversation(cts) => cts.validate(),
+            Self::SelectUser(cts) => cts.validate(),
             rest => todo!("validation not implemented for {:?}", rest),
         }
     }
@@ -58,12 +63,11 @@ convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {
         Select::PublicChannel(s) => s.into(),
         Select::Conversation(s) => s.into(),
+        Select::User(s) => s.into(),
         _ => todo!()
     }
 );
 
-use select::PublicChannel as SelectPublicChannel;
-convert!(impl<'a> From<SelectPublicChannel<'a>> for BlockElement<'a> => |s| BlockElement::SelectPublicChannel(s));
-
-use select::Conversation as SelectConversation;
-convert!(impl<'a> From<SelectConversation<'a>> for BlockElement<'a> => |s| BlockElement::SelectConversation(s));
+convert!(impl<'a> From<select::PublicChannel<'a>> for BlockElement<'a> => |s| BlockElement::SelectPublicChannel(s));
+convert!(impl<'a> From<select::Conversation<'a>> for BlockElement<'a> => |s| BlockElement::SelectConversation(s));
+convert!(impl<'a> From<select::User<'a>> for BlockElement<'a> => |s| BlockElement::SelectUser(s));

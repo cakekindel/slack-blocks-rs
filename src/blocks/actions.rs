@@ -207,6 +207,9 @@ pub enum BlockElement<'a> {
 
     /// All Select types are supported.
     SelectConversation(select::Conversation<'a>),
+
+    /// All Select types are supported.
+    SelectUser(select::User<'a>),
 }
 
 convert!(impl<'a> From<Vec<self::BlockElement<'a>>> for Contents<'a>
@@ -244,6 +247,7 @@ impl<'a> TryFrom<block_elements::BlockElement<'a>> for self::BlockElement<'a> {
         match el {
             El::SelectPublicChannel(sel) => Ok(SelectPublicChannel(sel)),
             El::SelectConversation(sel) => Ok(SelectConversation(sel)),
+            El::SelectUser(sel) => Ok(SelectUser(sel)),
             El::OverflowMenu => Ok(OverflowMenu),
             El::RadioButtons => Ok(RadioButtons),
             El::Button(cts) => Ok(Button(cts)),
@@ -255,8 +259,7 @@ impl<'a> TryFrom<block_elements::BlockElement<'a>> for self::BlockElement<'a> {
     }
 }
 
-use select::Conversation as SelectConversation;
-use select::PublicChannel as SelectPublicChannel;
-convert!(impl<'a> From<SelectPublicChannel<'a>> for BlockElement<'a> => |s| self::BlockElement::SelectPublicChannel(s));
-convert!(impl<'a> From<SelectConversation<'a>> for BlockElement<'a>  => |s| self::BlockElement::SelectConversation(s));
-convert!(impl     From<Button> for BlockElement<'static> => |b| self::BlockElement::Button(b));
+convert!(impl<'a> From<select::PublicChannel<'a>> for self::BlockElement<'a> => |s| self::BlockElement::SelectPublicChannel(s));
+convert!(impl<'a> From<select::Conversation<'a>> for self::BlockElement<'a>  => |s| self::BlockElement::SelectConversation(s));
+convert!(impl<'a> From<select::User<'a>> for self::BlockElement<'a>  => |s| self::BlockElement::SelectUser(s));
+convert!(impl     From<Button> for self::BlockElement<'static> => |b| self::BlockElement::Button(b));

@@ -34,7 +34,8 @@ macro_rules! json_test {
     };
 }
 
-// TODO(orion): Refactor tests to _serialize_ items into JSON, not deserialize. The crate shouldn't even be used for deserialization
+// TODO(orion): Refactor tests to _serialize_ items into JSON, not deserialize.
+// The crate shouldn't even be used for deserialization
 
 mod block_tests {
     use super::*;
