@@ -3,9 +3,9 @@ use std::borrow::Cow;
 use crate::compose::Confirm;
 use crate::text;
 
-use super::User;
 use super::Conversation;
 use super::PublicChannel;
+use super::User;
 
 /// # Select Element Builder
 /// Use to construct a Select element
