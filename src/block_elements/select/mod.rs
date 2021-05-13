@@ -16,6 +16,9 @@ pub use conversation::Conversation;
 mod user;
 pub use user::User;
 
+mod external;
+pub use external::External;
+
 /// # Select Menu Element
 ///
 /// A select menu, just as with a standard HTML `<select>` tag,
@@ -32,7 +35,7 @@ pub use user::User;
 #[derive(Clone, Debug, Hash, PartialEq)]
 pub enum Select<'a> {
     Static(Static),
-    External(External),
+    External(External<'a>),
     User(User<'a>),
     Conversation(Conversation<'a>),
     PublicChannel(PublicChannel<'a>),
@@ -81,7 +84,7 @@ impl<'a> Select<'a> {
 
 convert!(impl<'a> From<User<'a>> for Select<'a> => |u| Select::User(u));
 convert!(impl From<Static> for Select<'static> => |s| Select::Static(s));
-convert!(impl From<External> for Select<'static> => |e| Select::External(e));
+convert!(impl<'a> From<External<'a>> for Select<'a> => |e| Select::External(e));
 convert!(impl<'a> From<Conversation<'a>> for Select<'a> => |e| Select::Conversation(e));
 convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicChannel(e));
 
@@ -93,19 +96,6 @@ convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicCh
 ///
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Static {}
-
-/// ## Select menu with external data source
-/// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#external_select)
-///
-/// This select menu will load its options from an external data source,
-/// allowing for a dynamic list of options.
-///
-/// ### Setup
-/// For a guide to set up your app to use this element type, go to the Slack
-/// API section for [Select menu with external data source 🔗].
-///
-#[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct External {}
 
 mod validate {
     use crate::text;

@@ -4,6 +4,7 @@ use crate::compose::Confirm;
 use crate::text;
 
 use super::Conversation;
+use super::External;
 use super::PublicChannel;
 use super::User;
 
@@ -183,6 +184,37 @@ impl<'a> SelectBuilder<'a> {
     /// ```
     pub fn choose_from_users(self) -> User<'a> {
         let sel = User::from_placeholder_and_action_id(self.placeholder, self.action_id);
+
+        match self.confirm {
+            Some(confirm) => sel.with_confirm(confirm),
+            None => sel,
+        }
+    }
+
+    /// Users will choose from an external data source. See docs for `select::External` for more info.
+    ///
+    /// # Example
+    /// ```
+    /// use std::iter;
+    /// use std::convert::TryFrom;
+    ///
+    /// use slack_blocks::{
+    ///   text,
+    ///   text::ToSlackPlaintext,
+    ///   blocks::{Block, Section, Actions},
+    ///   block_elements::{BlockElement, select::Select},
+    /// };
+    ///
+    /// let select: BlockElement = Select::from_placeholder_and_action_id("Pick your favorite cheese", "cheese_chosen")
+    ///                                   .choose_from_external()
+    ///                                   .into();
+    ///
+    /// let blocks: Block = Actions::try_from(select).unwrap().into();
+    ///
+    /// // <send `blocks` to slack's API>
+    /// ```
+    pub fn choose_from_external(self) -> External<'a> {
+        let sel = External::from_placeholder_and_action_id(self.placeholder, self.action_id);
 
         match self.confirm {
             Some(confirm) => sel.with_confirm(confirm),
