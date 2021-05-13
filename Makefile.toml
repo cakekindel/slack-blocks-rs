@@ -36,3 +36,6 @@ args = ["clippy"]
 
 [tasks.ci]
 dependencies = ["test", "check-fmt", "check-clippy"]
+
+[tasks.update-readme]
+script = "cargo install cargo-readme && cargo readme > README.md"
