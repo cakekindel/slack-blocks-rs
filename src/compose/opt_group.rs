@@ -4,6 +4,7 @@ use validator::Validate;
 use super::text;
 use super::Opt;
 use crate::val_helpr::ValidationResult;
+
 /// # Option Group
 /// [slack api docs 🔗]
 ///

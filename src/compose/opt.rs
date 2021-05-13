@@ -10,15 +10,16 @@ use crate::val_helpr::ValidationResult;
 /// - whether or not it has `url` set
 pub mod marker {
     use crate::text;
+    use serde::{Deserialize as De, Serialize as Ser};
 
     /// Marker struct used to restrict / indicate
     /// `Opt`s created from Mrkdwn or Plain text.
-    #[derive(Clone, Debug, Hash, PartialEq)]
+    #[derive(Ser, De, Clone, Debug, Hash, PartialEq)]
     pub struct FromText<T: Into<text::Text>>(std::marker::PhantomData<T>);
 
     /// Marker struct used to restrict / indicate
     /// `Opt`s created from Plain text + has `url` set.
-    #[derive(Clone, Debug, Hash, PartialEq)]
+    #[derive(Ser, De, Clone, Debug, Hash, PartialEq)]
     pub struct FromPlainTextWithUrl;
 }
 
@@ -58,10 +59,6 @@ pub struct Opt<Marker = ()> {
     #[validate(length(max = 3000))]
     url: Option<String>,
 
-    // This does not actually use any
-    // data in memory, just asserts
-    // "hey, i promise this Marker thing
-    //  is used in some fashion"
     #[serde(skip)]
     __phantom: std::marker::PhantomData<Marker>,
 }

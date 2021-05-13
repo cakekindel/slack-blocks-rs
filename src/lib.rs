@@ -78,6 +78,13 @@ macro_rules! convert {
             }
         }
     };
+    (impl<$ty_var:ident> From<$source:ty> for $dest:ty => $closure:expr) => {
+        impl<$ty_var> From<$source> for $dest {
+            fn from(src: $source) -> Self {
+                $closure(src)
+            }
+        }
+    };
     (impl<'_> From<$source:ident> for $dest:ident => $closure:expr) => {
         impl<'a> From<$source<'a>> for $dest<'a> {
             fn from(src: $source<'a>) -> $dest<'a> {

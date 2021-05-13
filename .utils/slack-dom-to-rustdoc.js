@@ -1,3 +1,14 @@
+/*
+  What this script does: Convert slack documentation HTML to rustdoc comments.
+
+  How to use this script:
+  - In Slack API Docs, e.g. https://api.slack.com/reference/block-kit/composition-objects#option
+    1. right click > inspect element on description, e.g. for `text` (A text object that defines...)
+    2. select <td> wrapping the paragraph, right click > copy inner HTML
+    3. in shell, do `echo 'PASTE HTML' | node .utils/slack-dom-to-rustdoc.js`
+    4. Rustdoc comments are printed to standard output
+*/
+
 // Slack raw HTML string from stdin
 let contents = '';
 
@@ -5,11 +16,15 @@ let contents = '';
 process.stdin.setEncoding('utf8');
 
 process.stdin.on('readable', () => {
-    let chunk = process.stdin.read();
-    while (chunk) {
-        contents += chunk;
-        chunk = process.stdin.read();
-    }
+    const storeNextChunk = () => {
+      const chunk = process.stdin.read();
+
+      if (chunk) { contents += chunk; }
+
+      return chunk ? storeNextChunk() : {};
+    };
+
+    storeNextChunk();
 });
 
 process.stdin.on('end', () => {
@@ -28,7 +43,7 @@ process.stdin.on('end', () => {
 
         // ex. <a src="/link">Text</a> -> [Text 🔗] [Text 🔗]: https://api.slack.com/link
         escapeLinks,
-        
+
         // Move MD link definitions to the bottom
         moveLinkDefsToBottom,
 
@@ -37,6 +52,8 @@ process.stdin.on('end', () => {
 
         // ex. <strong>blah</strong> -> **blah**
         escapeStrong,
+
+        removeEmptyLines,
 
         // Prepend each line with ///
         docComment,
@@ -57,30 +74,26 @@ const ord = {
 };
 
 const helpers = {
-// Test if a string is a markdown link definition,
-// for example: '[Test]: ...' would return true.
-    
-//  isLink :: String -> Boolean
+    // Test if a string is a markdown link definition,
+    // for example: '[Test]: ...' would return true.
+    // isLink :: String -> Boolean
     isLink: str => (/\[.*?\]\:/i).test(str),
 
-// Accepts a Regex pattern, replacement string, and input String
-// Returns the input string with String#replace applied.
-    
-//  replace :: (RegExp, String) -> String -> String
+    // Accepts a Regex pattern, replacement string, and input String
+    // Returns the input string with String#replace applied.
+    // replace :: (RegExp, String) -> String -> String
     replace:   (pat,   replace) => contents => {
         const output = contents.replace(pat, replace);
         return output;
     },
 
-// Accepts an input String and String -> String fn,
-// Returns the input string with the mapping fn applied to each line.
-    
-//  eachLine :: (String -> String) -> String -> String
-    eachLine:   map                => contents =>
-        contents
-            .split('\n')
-            .map(map)
-            .join('\n'),
+    // Accepts an input String and String -> String fn,
+    // Returns the input string with the mapping fn applied to each line.
+    // eachLine :: (String -> String) -> String -> String
+    eachLine: map => contents => contents
+                                   .split('\n')
+                                   .map(map)
+                                   .join('\n'),
 }
 
 // # Transformers
@@ -110,7 +123,7 @@ const escapeCode = helpers.replace(/<code>(.*?)<\/code>/gi, '`$1`');
 const escapeStrong = helpers.replace(/<strong>(.*?)<\/strong>/gi, '**$1**');
 
 //    appendNewlineToPeriods :: String -> String
-const appendNewlineToPeriods = helpers.replace(/\./gi, '.\n');
+const appendNewlineToPeriods = helpers.replace(/\. /gi, '.\n');
 
 //    moveLinkDefsToBottom :: String -> String
 const moveLinkDefsToBottom = c =>
@@ -122,6 +135,9 @@ const moveLinkDefsToBottom = c =>
                   : ord.equal
         )
         .join('');
+
+//    removeEmptyLines :: String -> String
+const removeEmptyLines = contents => contents.split('\n').filter(s => s !== '').join('\n');
 
 //    docComment :: String -> String
 const docComment = helpers.eachLine(c => '/// ' + c);
