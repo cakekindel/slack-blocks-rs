@@ -1,10 +1,21 @@
 [env]
 RUST_BACKTRACE = "1"
 
+[tasks.install-nightly]
+script = '''
+if [ -z "$(rustup toolchain list | grep 'nightly')" ];
+then
+  rustup toolchain install nightly
+else
+  echo "nightly is already installed."
+fi
+'''
+
 [tasks.fmt]
 toolchain = "nightly"
 command = "cargo"
 args = ["fmt"]
+dependencies = ["install-nightly"]
 
 [tasks.doctest]
 command = "cargo"
@@ -29,6 +40,7 @@ args = [ "watch"
 toolchain = "nightly"
 command = "cargo"
 args = ["fmt", "--", "--check"]
+dependencies = ["install-nightly"]
 
 [tasks.check-clippy]
 command = "cargo"
