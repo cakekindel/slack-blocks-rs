@@ -1,0 +1,26 @@
+# General
+max_width = 80
+newline_style = "Unix"
+tab_spaces = 2
+indent_style = "Visual"
+format_code_in_doc_comments = true
+
+# Match statements
+match_arm_leading_pipes = "Always"
+match_block_trailing_comma = true
+
+# Structs
+use_field_init_shorthand = true
+struct_field_align_threshold = 0
+
+# Enums
+enum_discrim_align_threshold = 0
+
+# Imports
+group_imports = "StdExternalCrate"
+imports_granularity = "Crate"
+imports_indent = "Visual"
+imports_layout = "HorizontalVertical"
+
+# Other
+report_fixme = "Unnumbered"
