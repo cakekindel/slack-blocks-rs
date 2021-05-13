@@ -1,6 +1,6 @@
 [package]
 name = "slack-blocks"
-version = "0.14.3"
+version = "0.14.4"
 description = "Models + clientside validation for Slack's JSON Block Kit"
 
 edition = "2018"

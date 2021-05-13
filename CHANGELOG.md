@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.14.4 (2021-05-13)
+
+
+### Features
+
+* select external ([#118](https://github.com/cakekindel/slack-blocks-rs/issues/118)) ([ab2bbda](https://github.com/cakekindel/slack-blocks-rs/commit/ab2bbda4a8f175c1d475fba269eeb69a8a8bfa07))
+
 ### 0.14.3 (2021-05-12)
 
 
