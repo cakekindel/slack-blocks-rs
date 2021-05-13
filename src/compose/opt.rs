@@ -9,8 +9,8 @@ use crate::val_helpr::ValidationResult;
 /// - being created from plaintext
 /// - whether or not it has `url` set
 pub mod marker {
-    use serde::{Deserialize as De, Serialize as Ser};
     use crate::text;
+    use serde::{Deserialize as De, Serialize as Ser};
 
     /// Marker struct used to restrict / indicate
     /// `Opt`s created from Mrkdwn or Plain text.

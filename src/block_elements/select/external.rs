@@ -2,8 +2,8 @@ use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use validator::Validate;
 
+use crate::compose::{opt::marker::FromText, Confirm, OptOrOptGroup};
 use crate::text;
-use crate::compose::{OptOrOptGroup, Confirm, opt::marker::FromText};
 use crate::val_helpr::ValidationResult;
 
 /// ## Select menu with external data source
@@ -212,7 +212,10 @@ impl<'a> External<'a> {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn with_initial_option(mut self, option: impl Into<OptOrOptGroup<FromText<text::Plain>>>) -> Self {
+    pub fn with_initial_option(
+        mut self,
+        option: impl Into<OptOrOptGroup<FromText<text::Plain>>>,
+    ) -> Self {
         self.initial_option = Some(option.into());
         self
     }
@@ -242,6 +245,6 @@ impl<'a> External<'a> {
     /// assert!(matches!(select.validate(), Err(_)))
     /// ```
     pub fn validate(&self) -> ValidationResult {
-      Validate::validate(self)
+        Validate::validate(self)
     }
 }

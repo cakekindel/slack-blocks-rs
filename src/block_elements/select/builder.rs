@@ -4,9 +4,9 @@ use crate::compose::Confirm;
 use crate::text;
 
 use super::Conversation;
+use super::External;
 use super::PublicChannel;
 use super::User;
-use super::External;
 
 /// # Select Element Builder
 /// Use to construct a Select element
