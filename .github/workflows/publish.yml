@@ -8,7 +8,6 @@ jobs:
   publish:
     runs-on: 'ubuntu-latest'
     steps:
-    # Setup
     - uses: 'actions/checkout@v2'
 
     - uses: actions/cache@v2
@@ -17,12 +16,8 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-
+        key: ${{ runner.os }}-cargo
 
-    # Push changes to crates.io
-    - name: 'Publish'
-      env:
+    - env:
         CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
       run: 'cargo publish'
