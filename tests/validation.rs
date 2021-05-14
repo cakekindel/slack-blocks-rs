@@ -1,33 +1,40 @@
 use select::PublicChannel;
-use slack_blocks::block_elements::select;
-use slack_blocks::{
-    block_elements, block_elements::BlockElement, blocks::actions, blocks::context, blocks::file,
-    blocks::image, blocks::input, blocks::section, blocks::Block, compose,
-    compose::conversation_filter::ConversationKind, compose::text, compose::ConversationFilter,
-    compose::Opt, compose::OptGroup,
-};
-
+use slack_blocks::{block_elements,
+                   block_elements::{select, BlockElement},
+                   blocks::{actions,
+                            context,
+                            file,
+                            image,
+                            input,
+                            section,
+                            Block},
+                   compose,
+                   compose::{conversation_filter::ConversationKind,
+                             text,
+                             ConversationFilter,
+                             Opt,
+                             OptGroup}};
 use text::ToSlackPlaintext;
 
 mod common;
 
 macro_rules! should_fail {
-    ($test_name:ident: $data:expr) => {
-        #[test]
-        pub fn $test_name() {
-            // arrange
-            let data = $data;
+  ($test_name:ident: $data:expr) => {
+    #[test]
+    pub fn $test_name() {
+      // arrange
+      let data = $data;
 
-            // act
-            let val_result = data.validate();
+      // act
+      let val_result = data.validate();
 
-            // assert
-            match val_result {
-                Ok(_) => panic!("validation didn't fail!"),
-                Err(_) => (),
-            }
-        }
-    };
+      // assert
+      match val_result {
+        | Ok(_) => panic!("validation didn't fail!"),
+        | Err(_) => (),
+      }
+    }
+  };
 }
 
 // # Blocks
@@ -47,10 +54,12 @@ should_fail!(
 );
 
 should_fail!(
-    section_with_long_field:
-        Block::Section(
-            section::Contents::from_fields(vec![text::Plain::from(common::string_of_len(2001))]),
-        )
+  section_with_long_field:
+    Block::Section(
+      section::Contents::from_fields(
+        vec![text::Plain::from(common::string_of_len(2001))],
+      ),
+    )
 );
 
 should_fail!(

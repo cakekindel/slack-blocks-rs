@@ -19,8 +19,8 @@ pub use conversation_filter::ConversationFilter;
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(untagged)]
 pub enum OptOrOptGroup<M> {
-    Opt(Opt<M>),
-    OptGroup(OptGroup<M>),
+  Opt(Opt<M>),
+  OptGroup(OptGroup<M>),
 }
 
 crate::convert!(impl<M> From<Opt<M>> for OptOrOptGroup<M> => |o| OptOrOptGroup::Opt(o));

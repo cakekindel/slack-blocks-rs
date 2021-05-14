@@ -25,63 +25,63 @@ type ValidationResult = Result<(), validator::ValidationErrors>;
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Block<'a> {
-    Section(section::Contents),
+  Section(section::Contents),
 
-    /// # Divider Block
-    ///
-    /// _[slack api docs 🔗][divider_docs]_
-    ///
-    /// A content divider, like an `<hr>`,
-    /// to split up different blocks inside of a message.
-    ///
-    /// The divider block is nice and neat, requiring no fields.
-    ///
-    /// [divider_docs]: https://api.slack.com/reference/block-kit/blocks#divider
-    Divider,
+  /// # Divider Block
+  ///
+  /// _[slack api docs 🔗][divider_docs]_
+  ///
+  /// A content divider, like an `<hr>`,
+  /// to split up different blocks inside of a message.
+  ///
+  /// The divider block is nice and neat, requiring no fields.
+  ///
+  /// [divider_docs]: https://api.slack.com/reference/block-kit/blocks#divider
+  Divider,
 
-    Image(image::Contents),
+  Image(image::Contents),
 
-    Actions(actions::Contents<'a>),
+  Actions(actions::Contents<'a>),
 
-    Context(context::Contents),
+  Context(context::Contents),
 
-    Input(input::Contents<'a>),
+  Input(input::Contents<'a>),
 
-    File(file::Contents),
+  File(file::Contents),
 }
 
 use std::fmt;
 
 impl fmt::Display for Block<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let kind = match self {
-            Block::Section { .. } => "Section",
-            Block::Divider => "Divider",
-            Block::Image { .. } => "Image",
-            Block::Actions { .. } => "Actions",
-            Block::Context { .. } => "Context",
-            Block::Input { .. } => "Input",
-            Block::File { .. } => "File",
-        };
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    let kind = match self {
+      | Block::Section { .. } => "Section",
+      | Block::Divider => "Divider",
+      | Block::Image { .. } => "Image",
+      | Block::Actions { .. } => "Actions",
+      | Block::Context { .. } => "Context",
+      | Block::Input { .. } => "Input",
+      | Block::File { .. } => "File",
+    };
 
-        write!(f, "{}", kind)
-    }
+    write!(f, "{}", kind)
+  }
 }
 
 impl<'a> Block<'a> {
-    pub fn validate(&self) -> ValidationResult {
-        use Block::*;
+  pub fn validate(&self) -> ValidationResult {
+    use Block::*;
 
-        match self {
-            Section(contents) => contents.validate(),
-            Image(contents) => contents.validate(),
-            Actions(contents) => contents.validate(),
-            Context(contents) => contents.validate(),
-            Input(contents) => contents.validate(),
-            File(contents) => contents.validate(),
-            Divider => Ok(()),
-        }
+    match self {
+      | Section(contents) => contents.validate(),
+      | Image(contents) => contents.validate(),
+      | Actions(contents) => contents.validate(),
+      | Context(contents) => contents.validate(),
+      | Input(contents) => contents.validate(),
+      | File(contents) => contents.validate(),
+      | Divider => Ok(()),
     }
+  }
 }
 
 convert!(impl<'_> From<Actions> for Block => |a| Block::Actions(a));

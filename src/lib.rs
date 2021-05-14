@@ -59,64 +59,60 @@ pub use compose::text;
 #[doc(hidden)]
 #[deprecated]
 macro_rules! impl_from_contents {
-    ($enum_name:ident, $variant:ident, $contents_type:ty) => {
-        impl From<$contents_type> for $enum_name {
-            fn from(contents: $contents_type) -> Self {
-                $enum_name::$variant(contents)
-            }
-        }
-    };
+  ($enum_name:ident, $variant:ident, $contents_type:ty) => {
+    impl From<$contents_type> for $enum_name {
+      fn from(contents: $contents_type) -> Self {
+        $enum_name::$variant(contents)
+      }
+    }
+  };
 }
 
 #[macro_export]
 #[doc(hidden)]
 macro_rules! convert {
-    (impl From<$source:ty> for $dest:ty => $closure:expr) => {
-        impl From<$source> for $dest {
-            fn from(src: $source) -> Self {
-                $closure(src)
-            }
-        }
-    };
-    (impl<$ty_var:ident> From<$source:ty> for $dest:ty => $closure:expr) => {
-        impl<$ty_var> From<$source> for $dest {
-            fn from(src: $source) -> Self {
-                $closure(src)
-            }
-        }
-    };
-    (impl<'_> From<$source:ident> for $dest:ident => $closure:expr) => {
-        impl<'a> From<$source<'a>> for $dest<'a> {
-            fn from(src: $source<'a>) -> $dest<'a> {
-                $closure(src)
-            }
-        }
-    };
-    (impl<'a> From<$source:ty> for $dest:ty => $closure:expr) => {
-        impl<'a> From<$source> for $dest {
-            fn from(src: $source) -> $dest {
-                $closure(src)
-            }
-        }
-    };
-    (impl From<impl $trait_:ident<$source:ty>> for $dest:ty => $closure:expr) => {
-        impl<T> From<T> for $dest
-        where
-            T: $trait_<$source>,
-        {
-            fn from(src: T) -> Self {
-                $closure(src)
-            }
-        }
-    };
-    (impl<'_> From<impl $trait_:ident<$source:ident>> for $dest:ident => |$param:ident| $body:expr) => {
-        impl<'a, T> From<T> for $dest<'a>
-        where
-            T: $trait_<$source<'a>>,
-        {
-            fn from($param: T) -> Self {
-                $body
-            }
-        }
-    };
+  (impl From<$source:ty> for $dest:ty => $closure:expr) => {
+    impl From<$source> for $dest {
+      fn from(src: $source) -> Self {
+        $closure(src)
+      }
+    }
+  };
+  (impl<$ty_var:ident> From<$source:ty> for $dest:ty => $closure:expr) => {
+    impl<$ty_var> From<$source> for $dest {
+      fn from(src: $source) -> Self {
+        $closure(src)
+      }
+    }
+  };
+  (impl<'_> From<$source:ident> for $dest:ident => $closure:expr) => {
+    impl<'a> From<$source<'a>> for $dest<'a> {
+      fn from(src: $source<'a>) -> $dest<'a> {
+        $closure(src)
+      }
+    }
+  };
+  (impl<'a> From<$source:ty> for $dest:ty => $closure:expr) => {
+    impl<'a> From<$source> for $dest {
+      fn from(src: $source) -> $dest {
+        $closure(src)
+      }
+    }
+  };
+  (impl From<impl $trait_:ident<$source:ty>> for $dest:ty => $closure:expr) => {
+    impl<T> From<T> for $dest where T: $trait_<$source>
+    {
+      fn from(src: T) -> Self {
+        $closure(src)
+      }
+    }
+  };
+  (impl<'_> From<impl $trait_:ident<$source:ident>> for $dest:ident => |$param:ident| $body:expr) => {
+    impl<'a, T> From<T> for $dest<'a> where T: $trait_<$source<'a>>
+    {
+      fn from($param: T) -> Self {
+        $body
+      }
+    }
+  };
 }
