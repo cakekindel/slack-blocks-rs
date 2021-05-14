@@ -16,12 +16,10 @@ jobs:
       with:
         path: |
           ~/.rustup
-          ~/.cargo
-          target
-        key: ${{ runner.os }}-cargo
-
-    - run: 'ls -A ~/.cargo'
-    - run: 'ls -A ~/.cargo/bin'
+          ~/.cargo/bin
+          ~/.cargo/registry
+          ~/.cargo/git
+        key: rust-${{ runner.os }}
 
     - run: '[ ! -f ~/.cargo/bin/cargo-make ] && cargo install cargo-make'
     - run: 'cargo make ci'
