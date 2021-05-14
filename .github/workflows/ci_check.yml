@@ -20,5 +20,5 @@ jobs:
           target
         key: ${{ runner.os }}-cargo
 
-    - run: 'cargo install cargo-make'
+    - run: '[ ! -f ~/.cargo/bin/cargo-make ] && cargo install cargo-make'
     - run: 'cargo make ci'
