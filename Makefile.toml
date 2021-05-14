@@ -18,6 +18,7 @@ args = ["toolchain", "install", "nightly", "--component", "rustup"]
 [tasks.install-fmt]
 command = "rustup"
 args = ["component", "add", "rustfmt", "--toolchain", "nightly"]
+dependencies = ["install-nightly"]
 
 [tasks.fmt]
 toolchain = "nightly"
