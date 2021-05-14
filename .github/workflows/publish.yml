@@ -13,8 +13,8 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: |
-          ~/.cargo/registry
-          ~/.cargo/git
+          ~/.rustup
+          ~/.cargo
           target
         key: ${{ runner.os }}-cargo
 
