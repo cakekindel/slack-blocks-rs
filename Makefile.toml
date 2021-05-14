@@ -5,16 +5,19 @@ RUST_BACKTRACE = "1"
 script = '''
 if [ -z "$(rustup toolchain list | grep 'nightly')" ];
 then
-  rustup toolchain install nightly
+  rustup toolchain install nightly --component rustup
 else
   echo "nightly is already installed."
 fi
 '''
 
+[tasks.install-nightly.windows]
+command = "rustup"
+args = ["toolchain", "install", "nightly", "--component", "rustup"]
+
 [tasks.install-fmt]
-toolchain = "nightly"
-install_crate = { rustup_component_name = "rustfmt" }
-dependencies = ["install-nightly"]
+command = "rustup"
+args = ["component", "add", "rustfmt", "--toolchain", "nightly"]
 
 [tasks.fmt]
 toolchain = "nightly"
