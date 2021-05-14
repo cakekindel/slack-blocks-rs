@@ -19,6 +19,7 @@ jobs:
           ~/.cargo/bin
           ~/.cargo/registry
           ~/.cargo/git
+          target
         key: rust-${{ runner.os }}
 
     - run: '[ ! -f ~/.cargo/bin/cargo-make ] && cargo install cargo-make'
