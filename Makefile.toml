@@ -1,0 +1,62 @@
+[env]
+RUST_BACKTRACE = "1"
+
+[tasks.install-nightly]
+script = '''
+if [ -z "$(rustup toolchain list | grep 'nightly')" ];
+then
+  rustup toolchain install nightly --component rustfmt
+else
+  echo "nightly is already installed."
+fi
+'''
+
+[tasks.install-nightly.windows]
+command = "rustup"
+args = ["toolchain", "install", "nightly", "--component", "rustfmt"]
+
+[tasks.install-fmt]
+command = "rustup"
+args = ["component", "add", "rustfmt", "--toolchain", "nightly"]
+dependencies = ["install-nightly"]
+
+[tasks.fmt]
+toolchain = "nightly"
+command = "cargo"
+args = ["fmt"]
+dependencies = ["install-fmt"]
+
+[tasks.doctest]
+command = "cargo"
+args = ["--locked", "test", "--doc", "--", "--quiet"]
+
+[tasks.test]
+command = "cargo"
+args = ["--locked", "test", "--tests", "--", "--quiet"]
+dependencies = ["doctest"]
+
+[tasks.tdd]
+install_crate = "cargo-watch"
+command = "cargo"
+args = [ "watch"
+       , "--watch", "./src"
+       , "--watch", "./tests"
+       , "--delay", "0"
+       , "-x", "make -t test"
+       ]
+
+[tasks.check-fmt]
+toolchain = "nightly"
+command = "cargo"
+args = ["fmt", "--", "--check"]
+dependencies = ["install-fmt"]
+
+[tasks.check-clippy]
+command = "cargo"
+args = ["clippy"]
+
+[tasks.ci]
+dependencies = ["test", "check-fmt", "check-clippy"]
+
+[tasks.update-readme]
+script = "cargo install cargo-readme && cargo readme > README.md"
