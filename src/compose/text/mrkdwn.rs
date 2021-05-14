@@ -51,77 +51,75 @@ use serde::{Deserialize, Serialize};
 /// </details>
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Contents {
-    text: String,
+  text: String,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    verbatim: Option<bool>,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  verbatim: Option<bool>,
 }
 
 impl Contents {
-    /// Construct some markdown text from a string or string-like
-    /// value
-    ///
-    /// # Arguments
-    /// - `text` - The text contents to render for this `Text` object.
-    ///     For some basic formatting examples, see the docs above for
-    ///     the Contents struct itself, or [Slack's markdown docs 🔗].
-    ///     There are no intrinsic length limits on this, those are usually
-    ///     requirements of the context the text will be used in.
-    ///
-    /// [Slack's markdown docs 🔗]: https://api.slack.com/reference/surfaces/formatting
-    ///
-    /// # Example
-    /// ```
-    /// use slack_blocks::compose::text::{mrkdwn, Text};
-    ///
-    /// let text = mrkdwn::Contents::from_text("This link doesn't work! :tada: https://www.cheese.com")
-    ///     .with_verbatim(true);
-    /// ```
-    pub fn from_text(text: impl ToString) -> Self {
-        Into::<Self>::into(text.to_string())
-    }
+  /// Construct some markdown text from a string or string-like
+  /// value
+  ///
+  /// # Arguments
+  /// - `text` - The text contents to render for this `Text` object.
+  ///     For some basic formatting examples, see the docs above for
+  ///     the Contents struct itself, or [Slack's markdown docs 🔗].
+  ///     There are no intrinsic length limits on this, those are usually
+  ///     requirements of the context the text will be used in.
+  ///
+  /// [Slack's markdown docs 🔗]: https://api.slack.com/reference/surfaces/formatting
+  ///
+  /// # Example
+  /// ```
+  /// use slack_blocks::compose::text::{mrkdwn, Text};
+  ///
+  /// let text = mrkdwn::Contents::from_text("This link doesn't work! :tada: https://www.cheese.com")
+  ///     .with_verbatim(true);
+  /// ```
+  pub fn from_text(text: impl ToString) -> Self {
+    Into::<Self>::into(text.to_string())
+  }
 
-    /// Sets the `verbatim` flag
-    ///
-    /// # Arguments
-    /// - `verbatim` - When set to false (as is default)
-    ///     URLs will be auto-converted into links,
-    ///     conversation names will be link-ified,
-    ///     and certain mentions will be automatically parsed.
-    ///     Using a value of true will skip any preprocessing
-    ///     of this nature, although you can
-    ///     still include manual parsing strings.
-    ///
-    /// # Example
-    /// ```
-    /// use slack_blocks::compose::text::{mrkdwn, Text};
-    ///
-    /// let text = mrkdwn::Contents::from_text("This link doesn't work! :tada: https://www.cheese.com")
-    ///     .with_verbatim(true);
-    /// ```
-    pub fn with_verbatim(mut self, verbatim: bool) -> Self {
-        self.verbatim = Some(verbatim);
-        self
-    }
+  /// Sets the `verbatim` flag
+  ///
+  /// # Arguments
+  /// - `verbatim` - When set to false (as is default)
+  ///     URLs will be auto-converted into links,
+  ///     conversation names will be link-ified,
+  ///     and certain mentions will be automatically parsed.
+  ///     Using a value of true will skip any preprocessing
+  ///     of this nature, although you can
+  ///     still include manual parsing strings.
+  ///
+  /// # Example
+  /// ```
+  /// use slack_blocks::compose::text::{mrkdwn, Text};
+  ///
+  /// let text = mrkdwn::Contents::from_text("This link doesn't work! :tada: https://www.cheese.com")
+  ///     .with_verbatim(true);
+  /// ```
+  pub fn with_verbatim(mut self, verbatim: bool) -> Self {
+    self.verbatim = Some(verbatim);
+    self
+  }
 }
 
 impl AsRef<str> for Contents {
-    fn as_ref(&self) -> &str {
-        &self.text
-    }
+  fn as_ref(&self) -> &str {
+    &self.text
+  }
 }
 
 impl From<String> for Contents {
-    fn from(text: String) -> Self {
-        Self {
-            text,
-            verbatim: None,
-        }
-    }
+  fn from(text: String) -> Self {
+    Self { text,
+           verbatim: None }
+  }
 }
 
 impl From<&str> for Contents {
-    fn from(text: &str) -> Self {
-        Self::from_text(text)
-    }
+  fn from(text: &str) -> Self {
+    Self::from_text(text)
+  }
 }

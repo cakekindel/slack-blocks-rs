@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 
-use crate::convert;
-use crate::text;
+use serde::{Deserialize, Serialize};
+
+use crate::{convert, text};
 
 mod builder;
 pub use builder::SelectBuilder;
@@ -34,52 +34,51 @@ pub use external::External;
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 #[derive(Clone, Debug, Hash, PartialEq)]
 pub enum Select<'a> {
-    Static(Static),
-    External(External<'a>),
-    User(User<'a>),
-    Conversation(Conversation<'a>),
-    PublicChannel(PublicChannel<'a>),
+  Static(Static),
+  External(External<'a>),
+  User(User<'a>),
+  Conversation(Conversation<'a>),
+  PublicChannel(PublicChannel<'a>),
 }
 
 impl<'a> Select<'a> {
-    /// Construct a Select block element from required parts
-    ///
-    /// # Arguments
-    /// - `placeholder`: A plain_text [text object 🔗] that defines the placeholder text shown on the menu.
-    ///                  Maximum length for the text in this field is 150 characters.
-    /// - `action_id`: An identifier for the action triggered when a menu option is selected.
-    ///                You can use this when you receive an interaction payload to identify the source of the action.
-    ///                Should be unique among all other action_ids in the containing block.
-    ///                Maximum length for this field is 255 characters.
-    ///
-    /// [text objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
-    /// # Example
-    /// ```
-    /// use slack_blocks::{blocks, blocks::actions::Contents as ActionsBlock, block_elements as element, compose::text};
-    ///
-    /// # use std::error::Error;
-    /// # pub fn main() -> Result<(), Box<dyn Error>> {
-    /// let fields = vec![
-    ///     text::Plain::from("Left column"),
-    ///     text::Plain::from("Right column"),
-    /// ];
-    ///
-    /// let select: element::BlockElement = element::Select::from_placeholder_and_action_id("Pick a channel!", "1234")
-    ///                                                     .choose_from_public_channels()
-    ///                                                     .into();
-    ///
-    /// let block = ActionsBlock::from_elements(Some(select));
-    ///
-    /// // < send `block` to slack API >
-    /// # Ok(())
-    /// # }
-    /// ```
-    pub fn from_placeholder_and_action_id(
-        placeholder: impl Into<text::Plain>,
-        action_id: impl Into<Cow<'a, str>>,
-    ) -> SelectBuilder<'a> {
-        SelectBuilder::from_placeholder_and_action_id(placeholder, action_id)
-    }
+  /// Construct a Select block element from required parts
+  ///
+  /// # Arguments
+  /// - `placeholder`: A plain_text [text object 🔗] that defines the placeholder text shown on the menu.
+  ///                  Maximum length for the text in this field is 150 characters.
+  /// - `action_id`: An identifier for the action triggered when a menu option is selected.
+  ///                You can use this when you receive an interaction payload to identify the source of the action.
+  ///                Should be unique among all other action_ids in the containing block.
+  ///                Maximum length for this field is 255 characters.
+  ///
+  /// [text objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
+  /// # Example
+  /// ```
+  /// use slack_blocks::{blocks, blocks::actions::Contents as ActionsBlock, block_elements as element, compose::text};
+  ///
+  /// # use std::error::Error;
+  /// # pub fn main() -> Result<(), Box<dyn Error>> {
+  /// let fields = vec![
+  ///     text::Plain::from("Left column"),
+  ///     text::Plain::from("Right column"),
+  /// ];
+  ///
+  /// let select: element::BlockElement = element::Select::from_placeholder_and_action_id("Pick a channel!", "1234")
+  ///                                                     .choose_from_public_channels()
+  ///                                                     .into();
+  ///
+  /// let block = ActionsBlock::from_elements(Some(select));
+  ///
+  /// // < send `block` to slack API >
+  /// # Ok(())
+  /// # }
+  /// ```
+  pub fn from_placeholder_and_action_id(placeholder: impl Into<text::Plain>,
+                                        action_id: impl Into<Cow<'a, str>>)
+                                        -> SelectBuilder<'a> {
+    SelectBuilder::from_placeholder_and_action_id(placeholder, action_id)
+  }
 }
 
 convert!(impl<'a> From<User<'a>> for Select<'a> => |u| Select::User(u));
@@ -93,15 +92,13 @@ convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicCh
 ///
 /// This is the simplest form of select menu,
 /// with a static list of options passed in when defining the element.
-///
 #[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Static {}
 
 mod validate {
-    use crate::text;
-    use crate::val_helpr::*;
+  use crate::{text, val_helpr::*};
 
-    pub fn placeholder(text: &text::Text) -> ValidatorResult {
-        below_len("Select Placeholder text", 150, text.as_ref())
-    }
+  pub fn placeholder(text: &text::Text) -> ValidatorResult {
+    below_len("Select Placeholder text", 150, text.as_ref())
+  }
 }
