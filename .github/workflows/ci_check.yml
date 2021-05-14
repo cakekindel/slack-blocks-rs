@@ -23,7 +23,8 @@ jobs:
         key: rust-${{ runner.os }}
 
     - run: |
-        if [ ! -f ~/.cargo/bin/cargo-make ] then
+        if [ ! -f ~/.cargo/bin/cargo-make ];
+        then
           cargo install cargo-make
         else
           echo 'cargo-make already available.'
