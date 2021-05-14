@@ -21,7 +21,7 @@ macro_rules! json_test {
 
       // act
       let actual = serde_json::from_value($test_data.clone())
-                                .expect("test data should deserialize");
+                                    .expect("test data should deserialize");
 
       // assert
       assert_eq!(matches!(actual, $matches), true);
