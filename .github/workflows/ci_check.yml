@@ -15,7 +15,7 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: |
-          ~/.rustup
+          ~/.rustup/toolchains
           ~/.cargo/bin
           ~/.cargo/registry
           ~/.cargo/git
