@@ -22,5 +22,11 @@ jobs:
           target
         key: rust-${{ runner.os }}
 
-    - run: '[ ! -f ~/.cargo/bin/cargo-make ] && cargo install cargo-make'
+    - run: |
+        if [ ! -f ~/.cargo/bin/cargo-make ];
+        then
+          cargo install cargo-make
+        else
+          echo 'cargo-make already available.'
+        fi
     - run: 'cargo make ci'
