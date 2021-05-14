@@ -11,11 +11,16 @@ else
 fi
 '''
 
+[tasks.install-fmt]
+toolchain = "nightly"
+install_crate = { rustup_component_name = "rustfmt" }
+dependencies = ["install-nightly"]
+
 [tasks.fmt]
 toolchain = "nightly"
 command = "cargo"
 args = ["fmt"]
-dependencies = ["install-nightly"]
+dependencies = ["install-fmt"]
 
 [tasks.doctest]
 command = "cargo"
@@ -40,7 +45,7 @@ args = [ "watch"
 toolchain = "nightly"
 command = "cargo"
 args = ["fmt", "--", "--check"]
-dependencies = ["install-nightly"]
+dependencies = ["install-fmt"]
 
 [tasks.check-clippy]
 command = "cargo"
