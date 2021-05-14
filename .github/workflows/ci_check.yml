@@ -20,5 +20,8 @@ jobs:
           target
         key: ${{ runner.os }}-cargo
 
+    - run: 'ls -A ~/.cargo'
+    - run: 'ls -A ~/.cargo/bin'
+
     - run: '[ ! -f ~/.cargo/bin/cargo-make ] && cargo install cargo-make'
     - run: 'cargo make ci'
