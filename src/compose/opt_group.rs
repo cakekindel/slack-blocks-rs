@@ -154,7 +154,7 @@ impl<'a> OptGroup<'a> {
   ///     ),
   /// ];
   /// ```
-  #[deprecated(since = "0.15", note = "Use OptGroup::builder instead")]
+  #[deprecated(since = "0.15.0", note = "Use OptGroup::builder instead")]
   pub fn from_label_and_opts<M>(label: impl Into<text::Plain>,
                                 options: impl IntoIterator<Item = Opt<'a, M>>)
                                 -> OptGroup<'a, M> {

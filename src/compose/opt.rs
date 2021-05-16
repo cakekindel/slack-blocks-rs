@@ -160,7 +160,7 @@ impl<'a> Opt<'a> {
   ///
   /// // < send block to slack's API >
   /// ```
-  #[deprecated(since = "0.15", note = "Use Opt::builder instead")]
+  #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
   pub fn from_plain_text_and_value(
     text: impl Into<text::Plain>,
     value: impl Into<Cow<'a, str>>)
@@ -223,7 +223,7 @@ impl<'a> Opt<'a> {
   ///
   /// // < send block to slack's API >
   /// ```
-  #[deprecated(since = "0.15", note = "Use Opt::builder instead")]
+  #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
   pub fn from_mrkdwn_and_value(text: impl Into<text::Mrkdwn>,
                                value: impl Into<Cow<'a, str>>)
                                -> Opt<'a, marker::FromText<text::Mrkdwn>> {
@@ -280,7 +280,7 @@ impl<'a, M> Opt<'a, M> {
   ///
   /// // < send block to slack's API >
   /// ```
-  #[deprecated(since = "0.15", note = "Use Opt::builder instead")]
+  #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
   pub fn with_description(mut self, desc: impl Into<text::Plain>) -> Self {
     self.description = Some(desc.into().into());
     self
@@ -361,7 +361,7 @@ impl<'a> Opt<'a, marker::FromText<text::Plain>> {
   ///
   /// // < send block to slack's API >
   /// ```
-  #[deprecated(since = "0.15", note = "Use Opt::builder instead")]
+  #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
   pub fn with_url(self,
                   url: impl Into<Cow<'a, str>>)
                   -> Opt<'a, marker::FromPlainTextWithUrl> {
