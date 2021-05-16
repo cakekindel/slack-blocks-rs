@@ -45,6 +45,9 @@ pub enum BlockElement<'a> {
 
   #[serde(rename = "external_select")]
   SelectExternal(select::External<'a>),
+
+  #[serde(rename = "static_select")]
+  SelectStatic(select::Static<'a>),
 }
 
 impl<'a> BlockElement<'a> {
@@ -55,6 +58,7 @@ impl<'a> BlockElement<'a> {
       | Self::SelectConversation(cts) => cts.validate(),
       | Self::SelectUser(cts) => cts.validate(),
       | Self::SelectExternal(cts) => cts.validate(),
+      | Self::SelectStatic(cts) => cts.validate(),
       | rest => todo!("validation not implemented for {:?}", rest),
     }
   }
@@ -68,10 +72,11 @@ convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
         Select::Conversation(s) => s.into(),
         Select::User(s) => s.into(),
         Select::External(s) => s.into(),
-        _ => todo!()
+        Select::Static(s) => s.into(),
     }
 );
 
+convert!(impl<'a> From<select::Static<'a>> for BlockElement<'a> => |s| BlockElement::SelectStatic(s));
 convert!(impl<'a> From<select::External<'a>> for BlockElement<'a> => |s| BlockElement::SelectExternal(s));
 convert!(impl<'a> From<select::PublicChannel<'a>> for BlockElement<'a> => |s| BlockElement::SelectPublicChannel(s));
 convert!(impl<'a> From<select::Conversation<'a>> for BlockElement<'a> => |s| BlockElement::SelectConversation(s));

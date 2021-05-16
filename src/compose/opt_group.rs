@@ -14,15 +14,15 @@ use crate::val_helpr::ValidationResult;
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option_group
 /// [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct OptGroup<M = ()> {
+pub struct OptGroup<'a, M = ()> {
   #[validate(custom = "validate::label")]
   label: text::Text,
 
   #[validate(length(max = 100))]
-  options: Vec<Opt<M>>,
+  options: Vec<Opt<'a, M>>,
 }
 
-impl OptGroup<()> {
+impl<'a> OptGroup<'a> {
   /// Construct an Option Group from a label and
   /// collection of options in the group
   ///
@@ -70,14 +70,14 @@ impl OptGroup<()> {
   /// ];
   /// ```
   pub fn from_label_and_opts<M>(label: impl Into<text::Plain>,
-                                options: impl IntoIterator<Item = Opt<M>>)
-                                -> OptGroup<M> {
-    OptGroup::<M> { label: label.into().into(),
-                    options: options.into_iter().collect() }
+                                options: impl IntoIterator<Item = Opt<'a, M>>)
+                                -> OptGroup<'a, M> {
+    OptGroup::<'a, M> { label: label.into().into(),
+                        options: options.into_iter().collect() }
   }
 }
 
-impl<M> OptGroup<M> {
+impl<'a, M> OptGroup<'a, M> {
   /// Validate that this Option Group object
   /// agrees with Slack's model requirements
   ///

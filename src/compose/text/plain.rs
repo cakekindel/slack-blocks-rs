@@ -63,6 +63,12 @@ impl From<String> for Contents {
   }
 }
 
+impl From<&String> for Contents {
+  fn from(text: &String) -> Self {
+    text.as_str().into()
+  }
+}
+
 impl From<&str> for Contents {
   fn from(text: &str) -> Self {
     Self::from_text(text)

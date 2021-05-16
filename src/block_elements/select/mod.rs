@@ -1,23 +1,26 @@
 use std::borrow::Cow;
 
-use serde::{Deserialize, Serialize};
-
 use crate::{convert, text};
 
 mod builder;
+pub mod conversation;
+pub mod external;
+pub mod public_channel;
+pub mod static_;
+pub mod user;
+
+#[doc(inline)]
 pub use builder::SelectBuilder;
-
-mod public_channel;
-pub use public_channel::PublicChannel;
-
-mod conversation;
+#[doc(inline)]
 pub use conversation::Conversation;
-
-mod user;
-pub use user::User;
-
-mod external;
+#[doc(inline)]
 pub use external::External;
+#[doc(inline)]
+pub use public_channel::PublicChannel;
+#[doc(inline)]
+pub use static_::Static;
+#[doc(inline)]
+pub use user::User;
 
 /// # Select Menu Element
 ///
@@ -34,7 +37,7 @@ pub use external::External;
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 #[derive(Clone, Debug, Hash, PartialEq)]
 pub enum Select<'a> {
-  Static(Static),
+  Static(Static<'a>),
   External(External<'a>),
   User(User<'a>),
   Conversation(Conversation<'a>),
@@ -82,18 +85,10 @@ impl<'a> Select<'a> {
 }
 
 convert!(impl<'a> From<User<'a>> for Select<'a> => |u| Select::User(u));
-convert!(impl From<Static> for Select<'static> => |s| Select::Static(s));
+convert!(impl<'a> From<Static<'a>> for Select<'a> => |s| Select::Static(s));
 convert!(impl<'a> From<External<'a>> for Select<'a> => |e| Select::External(e));
 convert!(impl<'a> From<Conversation<'a>> for Select<'a> => |e| Select::Conversation(e));
 convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicChannel(e));
-
-/// ## Select menu with static options
-/// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_select)
-///
-/// This is the simplest form of select menu,
-/// with a static list of options passed in when defining the element.
-#[derive(Clone, Default, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct Static {}
 
 mod validate {
   use crate::{text, val_helpr::*};
