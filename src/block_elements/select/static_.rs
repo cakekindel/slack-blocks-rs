@@ -315,8 +315,14 @@ pub mod build {
   impl<'a, O> StaticBuilder<'a, Set<Placeholder>, Set<ActionId>, Set<O>> {
     /// All done building, now give me a darn select element!
     ///
-    /// > `no method name 'build' found for struct 'select::r#static::build::StaticBuilder<...>'`?
+    /// > `no method name 'build' found for struct 'select::static_::build::StaticBuilder<...>'`?
     /// Make sure all required setter methods have been called. See docs for `StaticBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::block_elements::select::Static;
+    ///
+    /// let sel = Static::builder().build(); // Won't compile!
+    /// ```
     ///
     /// ```
     /// use slack_blocks::block_elements::select::Static;

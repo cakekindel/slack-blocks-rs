@@ -385,7 +385,7 @@ pub mod build {
 
   /// Option builder
   ///
-  /// Allows you to construct a Option composition ojbect safely, with compile-time checks
+  /// Allows you to construct a Option composition object safely, with compile-time checks
   /// on required setter methods.
   ///
   /// # Required Methods
@@ -582,6 +582,12 @@ pub mod build {
     ///
     /// Make sure all required setter methods have been called. See docs for `OptBuilder`.
     ///
+    /// ```compile_fail
+    /// use slack_blocks::compose::Opt;
+    ///
+    /// let sel = Opt::builder().build(); // Won't compile!
+    /// ```
+    ///
     /// ```
     /// use slack_blocks::compose::Opt;
     ///
@@ -601,6 +607,12 @@ pub mod build {
     /// > `no method name 'build' found for struct 'compose::opt::build::OptBuilder<...>'`?
     ///
     /// Make sure all required setter methods have been called. See docs for `OptBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::compose::Opt;
+    ///
+    /// let sel = Opt::builder().build(); // Won't compile!
+    /// ```
     ///
     /// ```
     /// use slack_blocks::compose::Opt;
