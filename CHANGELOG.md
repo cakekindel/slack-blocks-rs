@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.15.0 (2021-05-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* static select (#124)
+
+### Features
+
+* static select ([#124](https://github.com/cakekindel/slack-blocks-rs/issues/124)) ([7013c3a](https://github.com/cakekindel/slack-blocks-rs/commit/7013c3ac6da26dc8d5046a67c6dea328e6d5e097))
+
 ### 0.14.4 (2021-05-13)
 
 
