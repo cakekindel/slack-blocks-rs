@@ -24,7 +24,7 @@ pub struct External<'a> {
   #[validate(length(max = 255))]
   action_id: Cow<'a, str>,
 
-  initial_option: Option<OptOrOptGroup<FromText<text::Plain>>>,
+  initial_option: Option<OptOrOptGroup<'a, FromText<text::Plain>>>,
 
   min_query_length: Option<u64>,
 
@@ -207,7 +207,7 @@ impl<'a> External<'a> {
   /// # }
   /// ```
   pub fn with_initial_option(mut self,
-                             option: impl Into<OptOrOptGroup<FromText<text::Plain>>>)
+                             option: impl Into<OptOrOptGroup<'a, FromText<text::Plain>>>)
                              -> Self {
     self.initial_option = Some(option.into());
     self

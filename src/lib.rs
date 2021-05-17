@@ -50,6 +50,7 @@ extern crate validator_derive;
 
 pub mod block_elements;
 pub mod blocks;
+pub mod build;
 pub mod compose;
 mod val_helpr;
 
@@ -80,6 +81,13 @@ macro_rules! convert {
   };
   (impl<$ty_var:ident> From<$source:ty> for $dest:ty => $closure:expr) => {
     impl<$ty_var> From<$source> for $dest {
+      fn from(src: $source) -> Self {
+        $closure(src)
+      }
+    }
+  };
+  (impl<'a, $ty_var:ident> From<$source:ty> for $dest:ty => $closure:expr) => {
+    impl<'a, $ty_var> From<$source> for $dest {
       fn from(src: $source) -> Self {
         $closure(src)
       }

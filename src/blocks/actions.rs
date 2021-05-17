@@ -111,8 +111,9 @@ impl<'a> Contents<'a> {
   /// # Ok(())
   /// # }
   /// ```
-  pub fn from_elements(elements: impl IntoIterator<Item = block_elements::BlockElement<'a>>)
-                       -> Result<Self, ()> {
+  pub fn from_elements<Iter>(elements: Iter) -> Result<Self, ()>
+    where Iter: IntoIterator<Item = block_elements::BlockElement<'a>>
+  {
     elements.into_iter().collect::<Vec<_>>().try_into()
   }
 
@@ -157,12 +158,10 @@ impl<'a> Contents<'a> {
   /// // < send block to slack's API >
   /// # }
   /// ```
-  pub fn from_action_elements(elements: impl IntoIterator<Item = self::BlockElement<'a>>)
-                              -> Self {
-    elements.into_iter()
-            .map(Into::<self::BlockElement>::into)
-            .collect::<Vec<_>>()
-            .into()
+  pub fn from_action_elements<Iter>(elements: Iter) -> Self
+    where Iter: IntoIterator<Item = self::BlockElement<'a>>
+  {
+    elements.into_iter().collect::<Vec<_>>().into()
   }
 
   /// Validate that this Section block agrees with Slack's model requirements
@@ -217,6 +216,9 @@ pub enum BlockElement<'a> {
 
   /// All Select types are supported.
   SelectExternal(select::External<'a>),
+
+  /// All Select types are supported.
+  SelectStatic(select::Static<'a>),
 }
 
 convert!(impl<'a> From<Vec<self::BlockElement<'a>>> for Contents<'a>
@@ -258,6 +260,7 @@ impl<'a> TryFrom<block_elements::BlockElement<'a>> for self::BlockElement<'a> {
       | El::SelectPublicChannel(sel) => Ok(SelectPublicChannel(sel)),
       | El::SelectConversation(sel) => Ok(SelectConversation(sel)),
       | El::SelectExternal(sel) => Ok(SelectExternal(sel)),
+      | El::SelectStatic(sel) => Ok(SelectStatic(sel)),
       | El::SelectUser(sel) => Ok(SelectUser(sel)),
       | El::OverflowMenu => Ok(OverflowMenu),
       | El::RadioButtons => Ok(RadioButtons),
@@ -274,4 +277,5 @@ convert!(impl<'a> From<select::PublicChannel<'a>> for self::BlockElement<'a> => 
 convert!(impl<'a> From<select::Conversation<'a>> for self::BlockElement<'a>  => |s| self::BlockElement::SelectConversation(s));
 convert!(impl<'a> From<select::User<'a>> for self::BlockElement<'a>  => |s| self::BlockElement::SelectUser(s));
 convert!(impl<'a> From<select::External<'a>> for self::BlockElement<'a>  => |s| self::BlockElement::SelectExternal(s));
+convert!(impl<'a> From<select::Static<'a>> for self::BlockElement<'a>  => |s| self::BlockElement::SelectStatic(s));
 convert!(impl     From<Button> for self::BlockElement<'static> => |b| self::BlockElement::Button(b));
