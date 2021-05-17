@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.15.1 (2021-05-17)
+
+
+### Bug Fixes
+
+* improve diagnostics of new builder pattern ([#126](https://github.com/cakekindel/slack-blocks-rs/issues/126)) ([bd81a69](https://github.com/cakekindel/slack-blocks-rs/commit/bd81a690b5bd2503439208c61ccbb0cbdb130e4d))
+
 ## 0.15.0 (2021-05-17)
 
 
