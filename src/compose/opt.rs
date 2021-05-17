@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use super::text;
-use crate::val_helpr::ValidationResult;
+use crate::{build::*, val_helpr::ValidationResult};
 
 /// Used to statically denote what kind of text the Opt contains and whether Url has been set.
 pub mod marker {
@@ -106,8 +106,8 @@ impl<'a> Opt<'a> {
   ///
   /// let block = Actions::try_from(select);
   /// ```
-  pub fn builder() -> build::OptBuilder<'a> {
-    build::OptBuilder::new()
+  pub fn builder() -> build::OptBuilderInit<'a> {
+    build::OptBuilderInit::new()
   }
 
   /// Create an Option composition object from its label and
@@ -378,10 +378,19 @@ pub mod build {
   use std::marker::PhantomData;
 
   use super::*;
-  use crate::build::*;
 
-  pub struct Value;
-  pub struct Url;
+  #[allow(non_camel_case_types)]
+  pub mod method {
+    pub struct value;
+    pub struct text;
+    pub struct url;
+  }
+
+  pub type OptBuilderInit<'a> =
+    OptBuilder<'a,
+               RequiredMethodNotCalled<method::text>,
+               RequiredMethodNotCalled<method::value>,
+               OptionalMethodNotCalled<method::url>>;
 
   /// Option builder
   ///
@@ -420,25 +429,22 @@ pub mod build {
   ///
   /// // <send block to API>
   /// ```
-  pub struct OptBuilder<'a,
-   T = Unset<text::Text>,
-   V = Unset<Value>,
-   U = Unset<Url>> {
+  pub struct OptBuilder<'a, Text, Value, Url> {
     text: Option<text::Text>,
     value: Option<Cow<'a, str>>,
     description: Option<text::Text>,
     url: Option<Cow<'a, str>>,
-    state: PhantomData<(T, V, U)>,
+    state: PhantomData<(Text, Value, Url)>,
   }
 
-  impl OptBuilder<'static> {
+  impl<T, V, U> OptBuilder<'static, T, V, U> {
     /// Construct a new OptBuilder
-    pub fn new() -> Self {
-      Self { text: None,
-             value: None,
-             description: None,
-             url: None,
-             state: PhantomData::<_> }
+    pub fn new() -> OptBuilderInit<'static> {
+      OptBuilderInit { text: None,
+                       value: None,
+                       description: None,
+                       url: None,
+                       state: PhantomData::<_> }
     }
   }
 
@@ -467,7 +473,9 @@ pub mod build {
     /// when this option is chosen.
     ///
     /// Maximum length for this field is 75 characters.
-    pub fn value<S>(mut self, value: S) -> OptBuilder<'a, T, Set<Value>, U>
+    pub fn value<S>(mut self,
+                    value: S)
+                    -> OptBuilder<'a, T, Set<method::value>, U>
       where S: Into<Cow<'a, str>>
     {
       self.value = Some(value.into());
@@ -492,7 +500,7 @@ pub mod build {
     }
   }
 
-  impl<'a, T, V, U> OptBuilder<'a, Unset<T>, V, U> {
+  impl<'a, T, V, U> OptBuilder<'a, RequiredMethodNotCalled<T>, V, U> {
     /// Set `text` (**Required**)
     ///
     /// A [text object 🔗] that defines the text shown in the option on the menu.
@@ -504,9 +512,10 @@ pub mod build {
     /// Maximum length for the `text` in this field is 75 characters.
     ///
     /// [text object 🔗]: https://api.slack.com#text
-    pub fn text_plain<Txt>(self,
-                           text: Txt)
-                           -> OptBuilder<'a, Set<text::Plain>, V, U>
+    pub fn text_plain<Txt>(
+      self,
+      text: Txt)
+      -> OptBuilder<'a, Set<(method::text, text::Plain)>, V, U>
       where Txt: Into<text::Plain>
     {
       self.text(text.into())
@@ -523,9 +532,10 @@ pub mod build {
     /// Maximum length for the `text` in this field is 75 characters.
     ///
     /// [text object 🔗]: https://api.slack.com#text
-    pub fn text_md<Txt>(self,
-                        text: Txt)
-                        -> OptBuilder<'a, Set<text::Mrkdwn>, V, U>
+    pub fn text_md<Txt>(
+      self,
+      text: Txt)
+      -> OptBuilder<'a, Set<(method::text, text::Mrkdwn)>, V, U>
       where Txt: Into<text::Mrkdwn>
     {
       self.text(text.into())
@@ -542,7 +552,9 @@ pub mod build {
     /// Maximum length for the `text` in this field is 75 characters.
     ///
     /// [text object 🔗]: https://api.slack.com#text
-    pub fn text<Txt>(mut self, text: Txt) -> OptBuilder<'a, Set<Txt>, V, U>
+    pub fn text<Txt>(mut self,
+                     text: Txt)
+                     -> OptBuilder<'a, Set<(method::text, Txt)>, V, U>
       where Txt: Into<text::Text>
     {
       self.text = Some(text.into());
@@ -550,7 +562,7 @@ pub mod build {
     }
   }
 
-  impl<'a, V, U> OptBuilder<'a, Set<text::Plain>, V, U> {
+  impl<'a, V, U> OptBuilder<'a, Set<(method::text, text::Plain)>, V, U> {
     /// Set `url` (Optional)
     ///
     /// The URL will be loaded in the user's browser when the option is clicked.
@@ -565,9 +577,10 @@ pub mod build {
     /// [overflow menus 🔗]: https://api.slack.com/reference/block-kit/block-elements#overflow
     /// [interaction payload 🔗]: https://api.slack.com/interactivity/handling#payloads
     /// [send an acknowledgement response 🔗]: https://api.slack.com/interactivity/handling#acknowledgment_response
-    pub fn url<S>(mut self,
-                  url: S)
-                  -> OptBuilder<'a, Set<text::Plain>, V, Set<Url>>
+    pub fn url<S>(
+      mut self,
+      url: S)
+      -> OptBuilder<'a, Set<(method::text, text::Plain)>, V, Set<method::url>>
       where S: Into<Cow<'a, str>>
     {
       self.url = Some(url.into());
@@ -575,7 +588,12 @@ pub mod build {
     }
   }
 
-  impl<'a> OptBuilder<'a, Set<text::Plain>, Set<Value>, Set<Url>> {
+  impl<'a>
+    OptBuilder<'a,
+               Set<(method::text, text::Plain)>,
+               Set<method::value>,
+               Set<method::url>>
+  {
     /// All done building, now give me a darn option!
     ///
     /// > `no method name 'build' found for struct 'compose::opt::build::OptBuilder<...>'`?
@@ -601,7 +619,12 @@ pub mod build {
     }
   }
 
-  impl<'a, T: Into<text::Text>> OptBuilder<'a, Set<T>, Set<Value>, Unset<Url>> {
+  impl<'a, T: Into<text::Text>>
+    OptBuilder<'a,
+               Set<(method::text, T)>,
+               Set<method::value>,
+               OptionalMethodNotCalled<method::url>>
+  {
     /// All done building, now give me a darn option!
     ///
     /// > `no method name 'build' found for struct 'compose::opt::build::OptBuilder<...>'`?
@@ -611,7 +634,11 @@ pub mod build {
     /// ```compile_fail
     /// use slack_blocks::compose::Opt;
     ///
-    /// let sel = Opt::builder().build(); // Won't compile!
+    /// let sel = Opt::builder().text_plain("foo")
+    ///                         .build();
+    /// /*                       ^^^^^ method not found in
+    ///                          `OptBuilder<'_, Set<(text, text::Plain)>, RequiredMethodNotCalled<value>>`
+    /// */
     /// ```
     ///
     /// ```
