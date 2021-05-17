@@ -104,8 +104,8 @@ impl<'a> OptGroup<'a> {
   ///
   ///  // <send block to API>
   ///  ```
-  pub fn builder() -> build::OptGroupBuilder<'a> {
-    build::OptGroupBuilder::new()
+  pub fn builder() -> build::OptGroupBuilderInit<'a> {
+    build::OptGroupBuilderInit::new()
   }
 
   /// Construct an Option Group from a label and
@@ -197,7 +197,11 @@ pub mod build {
   use super::*;
   use crate::build::*;
 
-  pub struct Label;
+  #[allow(non_camel_case_types)]
+  mod method {
+    pub struct label;
+    pub struct options;
+  }
 
   ///  Option Group builder
   ///
@@ -288,26 +292,26 @@ pub mod build {
   ///
   ///  // <send block to API>
   ///  ```
-  pub struct OptGroupBuilder<'a,
-   M = (),
-   O = Unset<Opt<'a, M>>,
-   L = Unset<Label>> {
+  pub struct OptGroupBuilder<'a, Options, Label, Marker = ()> {
     label: Option<text::Text>,
-    options: Option<Vec<Opt<'a, M>>>,
-    state: PhantomData<(O, L)>,
+    options: Option<Vec<Opt<'a, Marker>>>,
+    state: PhantomData<(Options, Label)>,
   }
 
-  impl<'a> OptGroupBuilder<'a> {
+  pub type OptGroupBuilderInit<'a> =
+    OptGroupBuilder<'a,
+                    RequiredMethodNotCalled<method::options>,
+                    RequiredMethodNotCalled<method::label>>;
+
+  impl<'a, O, L, M> OptGroupBuilder<'a, O, L, M> {
     /// Construct a new OptGroupBuilder
     pub fn new() -> Self {
       Self { label: None,
              options: None,
              state: PhantomData::<_> }
     }
-  }
 
-  impl<'a, M, O, L> OptGroupBuilder<'a, M, O, L> {
-    fn cast_state<O2, L2>(self) -> OptGroupBuilder<'a, M, O2, L2> {
+    fn cast_state<O2, L2>(self) -> OptGroupBuilder<'a, O2, L2, M> {
       OptGroupBuilder { label: self.label,
                         options: self.options,
                         state: PhantomData::<_> }
@@ -323,7 +327,7 @@ pub mod build {
     /// [option objects 🔗]: https://api.slack.comCURRENT_PAGEoption
     pub fn options<M2, I>(self,
                           options: I)
-                          -> OptGroupBuilder<'a, M2, Set<Opt<'a, M2>>, L>
+                          -> OptGroupBuilder<'a, Set<method::options>, L, M2>
       where I: IntoIterator<Item = Opt<'a, M2>>
     {
       OptGroupBuilder { label: self.label,
@@ -337,7 +341,9 @@ pub mod build {
     /// Maximum length for the `text` in this field is 75 characters.
     ///
     /// [`plain_text` only text object 🔗]: https://api.slack.comCURRENT_PAGEtext
-    pub fn label<S>(mut self, label: S) -> OptGroupBuilder<'a, M, O, Set<Label>>
+    pub fn label<S>(mut self,
+                    label: S)
+                    -> OptGroupBuilder<'a, O, Set<method::label>, M>
       where S: Into<text::Plain>
     {
       self.label = Some(label.into().into());
@@ -345,7 +351,7 @@ pub mod build {
     }
   }
 
-  impl<'a, M> OptGroupBuilder<'a, M, Set<Opt<'a, M>>, Set<Label>> {
+  impl<'a, M> OptGroupBuilder<'a, Set<method::options>, Set<method::label>, M> {
     /// All done building, now give me a darn option group!
     ///
     /// > `no method name 'build' found for struct 'compose::opt_group::build::OptGroupBuilder<...>'`?
@@ -354,7 +360,11 @@ pub mod build {
     /// ```compile_fail
     /// use slack_blocks::compose::OptGroup;
     ///
-    /// let sel = OptGroup::builder().build(); // Won't compile!
+    /// let sel = OptGroup::builder()
+    ///                    .build();
+    /// /*                  ^^^^^ method not found in
+    ///                    `OptGroupBuilder<'_, RequiredMethodNotCalled<options>, RequiredMethodNotCalled<value>, _>`
+    /// */
     /// ```
     ///
     /// ```

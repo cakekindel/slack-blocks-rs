@@ -80,8 +80,8 @@ impl<'a> Static<'a> {
   ///
   /// let block = Actions::try_from(select);
   /// ```
-  pub fn builder() -> build::StaticBuilder<'a> {
-    build::StaticBuilder::new()
+  pub fn builder() -> build::StaticBuilderInit<'a> {
+    build::StaticBuilderInit::new()
   }
 
   /// Validate that this select element agrees with Slack's model requirements
@@ -133,6 +133,13 @@ pub mod build {
   /// Type indicating whether `StaticBuilder::action_id` has been called
   pub struct ActionId;
 
+  #[allow(non_camel_case_types)]
+  pub mod method {
+    pub struct placeholder;
+    pub struct options;
+    pub struct action_id;
+  }
+
   /// Static Select builder
   ///
   /// Allows you to construct a Static Select safely, with compile-time checks
@@ -173,34 +180,35 @@ pub mod build {
   /// // <send block to API>
   /// ```
   #[derive(Default)]
-  pub struct StaticBuilder<'a,
-   P = Unset<Placeholder>,
-   A = Unset<ActionId>,
-   O = Unset<Options>> {
+  pub struct StaticBuilder<'a, Placeholder, ActionId, Options> {
     placeholder: Option<text::Text>,
     action_id: Option<Cow<'a, str>>,
     options: Option<Vec<Opt<'a>>>,
     option_groups: Option<Vec<OptGroup<'a>>>,
     confirm: Option<Confirm>,
     initial_option: Option<OptOrOptGroup<'a>>,
-    state: PhantomData<(P, A, O)>,
+    state: PhantomData<(Placeholder, ActionId, Options)>,
   }
 
-  impl<'a> StaticBuilder<'a> {
-    /// Construct a new StaticBuilder
-    pub fn new() -> Self {
-      Self { placeholder: None,
-             action_id: None,
-             options: None,
-             confirm: None,
-             initial_option: None,
-             option_groups: None,
-             state: PhantomData::<_> }
-    }
-  }
+  pub type StaticBuilderInit<'a> =
+    StaticBuilder<'a,
+                  RequiredMethodNotCalled<method::placeholder>,
+                  RequiredMethodNotCalled<method::action_id>,
+                  RequiredMethodNotCalled<method::options>>;
 
   // Methods that are always available
   impl<'a, P, A, O> StaticBuilder<'a, P, A, O> {
+    /// Construct a new StaticBuilder
+    pub fn new() -> StaticBuilderInit<'a> {
+      StaticBuilderInit { placeholder: None,
+                          action_id: None,
+                          options: None,
+                          confirm: None,
+                          initial_option: None,
+                          option_groups: None,
+                          state: PhantomData::<_> }
+    }
+
     /// Change the marker type params to some other arbitrary marker type params
     fn cast_state<P2, A2, O2>(self) -> StaticBuilder<'a, P2, A2, O2> {
       StaticBuilder::<'a, P2, A2, O2> { placeholder: self.placeholder,
@@ -280,7 +288,7 @@ pub mod build {
     }
   }
 
-  impl<'a, P, A, O> StaticBuilder<'a, P, A, Unset<O>> {
+  impl<'a, P, A, O> StaticBuilder<'a, P, A, RequiredMethodNotCalled<O>> {
     /// Set `options` (this or `Self::option_groups` is **Required**)
     ///
     /// An array of [option objects 🔗].
