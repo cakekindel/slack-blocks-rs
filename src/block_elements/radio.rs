@@ -11,13 +11,18 @@ use crate::{compose::{opt::{AnyText, UrlUnset},
 
 pub type MyOpt<'a> = Opt<'a, AnyText, UrlUnset>;
 
+/// # Radio Buttons
+///
 /// A radio button group that allows a user to choose one item from a list of possible options.
 ///
-/// Works in [blocks ]: Section, Actions, Input
-/// Works in [app surfaces ]: Home tabs, Modals, Messages
+/// [slack api docs 🔗]
 ///
-/// [blocks ]: https://api.slack.com/reference/block-kit/blocks
-/// [app surfaces ]: https://api.slack.com/surfaces
+/// Works in [blocks 🔗]: Section, Actions, Input
+/// Works in [app surfaces 🔗]: Home tabs, Modals, Messages
+///
+/// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
+/// [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
+/// [app surfaces 🔗]: https://api.slack.com/surfaces
 #[derive(Clone, Debug, Hash, PartialEq, Ser, De, Validate)]
 pub struct Radio<'a> {
   #[validate(length(max = 255))]
@@ -37,10 +42,42 @@ pub struct Radio<'a> {
 }
 
 impl<'a> Radio<'a> {
+  /// Build a new Radio Button Group
+  ///
+  /// # Example
+  /// See docs for `RadioBuilder`.
   pub fn builder() -> build::RadioBuilderInit<'a> {
     build::RadioBuilderInit::new()
   }
 
+  /// Validate that this select element agrees with Slack's model requirements
+  ///
+  /// # Errors
+  /// - length of `action_id` greater than 255
+  /// - length of `options` greater than 10
+  /// - one or more of `options` is invalid
+  /// - `initial_option` is set and an invalid `Opt`
+  /// - `confirm` is set and an invalid `Confirm`
+  ///
+  /// # Example
+  /// ```
+  /// use slack_blocks::{block_elements::Radio, compose::Opt};
+  ///
+  /// fn repeat<T: Copy>(el: T, n: usize) -> impl Iterator<Item = T> {
+  ///   std::iter::repeat(el).take(n)
+  /// }
+  ///
+  /// let long_string: String = repeat('a', 256).collect();
+  /// let opt = Opt::builder().text_md("foo").value("bar").build();
+  ///
+  /// let opts = repeat(&opt, 11).map(|o| o.clone()).collect::<Vec<_>>();
+  ///
+  /// let input = Radio::builder().action_id(long_string)
+  ///                             .options(opts)
+  ///                             .build();
+  ///
+  /// assert!(matches!(input.validate(), Err(_)))
+  /// ```
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
@@ -101,6 +138,7 @@ pub mod build {
   }
 
   impl<'a, T, A, O> RadioBuilder<'a, T, A, O> {
+    /// Construct a new RadioBuilder
     pub fn new() -> Self {
       Self { action_id: None,
              options: None,
@@ -201,6 +239,26 @@ pub mod build {
   }
 
   impl<'a, T> RadioBuilder<'a, T, Set<method::action_id>, Set<method::options>> {
+    /// All done building, now give me a darn radio button group!
+    ///
+    /// > `no method name 'build' found for struct 'RadioBuilder<...>'`?
+    /// Make sure all required setter methods have been called. See docs for `RadioBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::block_elements::Radio;
+    ///
+    /// let foo = Radio::builder().build(); // Won't compile!
+    /// ```
+    ///
+    /// ```
+    /// use slack_blocks::{block_elements::Radio, compose::Opt};
+    ///
+    /// let foo = Radio::builder().action_id("bar")
+    ///                           .options(vec![Opt::builder().text_md("foo")
+    ///                                                       .value("bar")
+    ///                                                       .build()])
+    ///                           .build();
+    /// ```
     pub fn build(self) -> Radio<'a> {
       Radio { action_id: self.action_id.unwrap(),
               options: self.options.unwrap(),

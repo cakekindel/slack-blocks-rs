@@ -11,6 +11,9 @@ pub use button::Contents as Button;
 pub mod select;
 pub use select::Select;
 
+pub mod text_input;
+pub use text_input::TextInput;
+
 /// # Block Elements - interactive components
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements)
 ///
@@ -34,8 +37,10 @@ pub enum BlockElement<'a> {
   Image,
   MultiSelect,
   OverflowMenu,
-  PlainInput,
   RadioButtons(Radio<'a>),
+
+  #[serde(rename = "plain_text_input")]
+  TextInput(TextInput<'a>),
 
   #[serde(rename = "channels_select")]
   SelectPublicChannel(select::PublicChannel<'a>),
@@ -62,6 +67,7 @@ impl<'a> BlockElement<'a> {
       | Self::SelectUser(cts) => cts.validate(),
       | Self::SelectExternal(cts) => cts.validate(),
       | Self::SelectStatic(cts) => cts.validate(),
+      | Self::RadioButtons(cts) => cts.validate(),
       | rest => todo!("validation not implemented for {:?}", rest),
     }
   }
@@ -69,6 +75,7 @@ impl<'a> BlockElement<'a> {
 
 convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button(b));
 convert!(impl<'a> From<Radio<'a>> for BlockElement<'a> => |b| BlockElement::RadioButtons(b));
+convert!(impl<'a> From<TextInput<'a>> for BlockElement<'a> => |t| BlockElement::TextInput(t));
 
 convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {

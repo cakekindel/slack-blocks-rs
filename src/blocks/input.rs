@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{block_elements::select,
+use crate::{block_elements::{select, Radio, TextInput},
             compose::text,
             convert,
             val_helpr::ValidationResult};
@@ -31,6 +31,9 @@ pub struct Contents<'a> {
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(custom = "validate::hint")]
   hint: Option<text::Text>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
+  dispatch_action: Option<bool>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   optional: Option<bool>,
@@ -74,6 +77,7 @@ impl<'a> Contents<'a> {
                element: element.into(),
                block_id: None,
                hint: None,
+               dispatch_action: None,
                optional: None }
   }
 
@@ -178,6 +182,12 @@ impl<'a> Contents<'a> {
     self
   }
 
+  /// Will allow the elements in this block to dispatch block_actions payloads. Defaults to false.
+  pub fn dispatch_block_actions(mut self) -> Self {
+    self.dispatch_action = Some(true);
+    self
+  }
+
   /// Validate that this Input block agrees with Slack's model requirements
   ///
   /// # Errors
@@ -222,8 +232,8 @@ pub enum InputElement<'a> {
   Checkboxes,
   DatePicker,
   MultiSelect,
-  PlainInput,
-  RadioButtons,
+  TextInput(TextInput<'a>),
+  Radio(Radio<'a>),
 }
 
 use select::PublicChannel as SelectPublicChannel;
@@ -231,6 +241,9 @@ convert! {
     impl<'_> From<SelectPublicChannel> for InputElement
         => |contents| InputElement::SelectPublicChannel(contents)
 }
+
+convert!(impl<'a> From<Radio<'a>> for InputElement<'a> => |r| InputElement::Radio(r));
+convert!(impl<'a> From<TextInput<'a>> for InputElement<'a> => |r| InputElement::TextInput(r));
 
 mod validate {
   use crate::{compose::text,
