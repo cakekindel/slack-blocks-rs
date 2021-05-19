@@ -2,6 +2,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::{convert, val_helpr::ValidationResult};
 
+pub mod radio;
+pub use radio::Radio;
+
 pub mod button;
 pub use button::Contents as Button;
 
@@ -32,7 +35,7 @@ pub enum BlockElement<'a> {
   MultiSelect,
   OverflowMenu,
   PlainInput,
-  RadioButtons,
+  RadioButtons(Radio<'a>),
 
   #[serde(rename = "channels_select")]
   SelectPublicChannel(select::PublicChannel<'a>),
@@ -65,6 +68,7 @@ impl<'a> BlockElement<'a> {
 }
 
 convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button(b));
+convert!(impl<'a> From<Radio<'a>> for BlockElement<'a> => |b| BlockElement::RadioButtons(b));
 
 convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {

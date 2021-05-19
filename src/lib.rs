@@ -69,20 +69,6 @@ mod macros {
         }
       }
     };
-    (impl<$ty_var:ident> From<$source:ty> for $dest:ty => $closure:expr) => {
-      impl<$ty_var> From<$source> for $dest {
-        fn from(src: $source) -> Self {
-          $closure(src)
-        }
-      }
-    };
-    (impl<'a, $ty_var:ident> From<$source:ty> for $dest:ty => $closure:expr) => {
-      impl<'a, $ty_var> From<$source> for $dest {
-        fn from(src: $source) -> Self {
-          $closure(src)
-        }
-      }
-    };
     (impl<'_> From<$source:ident> for $dest:ident => $closure:expr) => {
       impl<'a> From<$source<'a>> for $dest<'a> {
         fn from(src: $source<'a>) -> $dest<'a> {
@@ -90,9 +76,19 @@ mod macros {
         }
       }
     };
-    (impl<'a> From<$source:ty> for $dest:ty => $closure:expr) => {
-      impl<'a> From<$source> for $dest {
-        fn from(src: $source) -> $dest {
+    (impl<$lifetime:lifetime> From<$source:ty> for $dest:ty => $closure:expr) => {
+      convert!(impl<$lifetime, > From<$source> for $dest => $closure);
+    };
+    (impl<$lifetime:lifetime, $($ty_var:ident),*> From<$source:ty> for $dest:ty => $closure:expr) => {
+      impl<$lifetime, $($ty_var),*> From<$source> for $dest {
+        fn from(src: $source) -> Self {
+          $closure(src)
+        }
+      }
+    };
+    (impl<$($ty_var:tt),+> From<$source:ty> for $dest:ty => $closure:expr) => {
+      impl<$($ty_var),+> From<$source> for $dest {
+        fn from(src: $source) -> Self {
           $closure(src)
         }
       }

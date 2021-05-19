@@ -20,10 +20,10 @@ pub use text::Text;
 /// An Option or Option Group
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(untagged)]
-pub enum OptOrOptGroup<'a, M> {
-  Opt(Opt<'a, M>),
-  OptGroup(OptGroup<'a, M>),
+pub enum OptOrOptGroup<'a, T, U> {
+  Opt(Opt<'a, T, U>),
+  OptGroup(OptGroup<'a, T, U>),
 }
 
-crate::convert!(impl<'a, M> From<Opt<'a, M>> for OptOrOptGroup<'a, M> => |o| OptOrOptGroup::Opt(o));
-crate::convert!(impl<'a, M> From<OptGroup<'a, M>> for OptOrOptGroup<'a, M> => |o| OptOrOptGroup::OptGroup(o));
+crate::convert!(impl<'a, T, U> From<Opt<'a, T, U>> for OptOrOptGroup<'a, T, U> => |o| OptOrOptGroup::Opt(o));
+crate::convert!(impl<'a, T, U> From<OptGroup<'a, T, U>> for OptOrOptGroup<'a, T, U> => |o| OptOrOptGroup::OptGroup(o));
