@@ -26,6 +26,10 @@ command = "cargo"
 args = ["fmt"]
 dependencies = ["install-fmt"]
 
+[tasks.doctest-slow]
+command = "cargo"
+args = ["--locked", "test", "--jobs", "1", "--doc", "--", "--quiet"]
+
 [tasks.doctest]
 command = "cargo"
 args = ["--locked", "test", "--doc", "--", "--quiet"]
