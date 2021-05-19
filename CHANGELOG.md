@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.16.0 (2021-05-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* radio buttons (#127)
+
+### Features
+
+* radio buttons ([#127](https://github.com/cakekindel/slack-blocks-rs/issues/127)) ([cc743d8](https://github.com/cakekindel/slack-blocks-rs/commit/cc743d881387f0ce24335539c0a5b4bc44914a68))
+
 ### 0.15.1 (2021-05-17)
 
 
