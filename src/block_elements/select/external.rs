@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{compose::{opt::marker::FromText, Confirm, OptOrOptGroup},
+use crate::{compose::{opt::UrlUnset, Confirm, OptOrOptGroup},
             text,
             val_helpr::ValidationResult};
 
@@ -24,7 +24,7 @@ pub struct External<'a> {
   #[validate(length(max = 255))]
   action_id: Cow<'a, str>,
 
-  initial_option: Option<OptOrOptGroup<'a, FromText<text::Plain>>>,
+  initial_option: Option<OptOrOptGroup<'a, text::Plain, UrlUnset>>,
 
   min_query_length: Option<u64>,
 
@@ -207,7 +207,9 @@ impl<'a> External<'a> {
   /// # }
   /// ```
   pub fn with_initial_option(mut self,
-                             option: impl Into<OptOrOptGroup<'a, FromText<text::Plain>>>)
+                             option: impl Into<OptOrOptGroup<'a,
+                                                text::Plain,
+                                                UrlUnset>>)
                              -> Self {
     self.initial_option = Some(option.into());
     self

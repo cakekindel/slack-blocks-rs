@@ -1,12 +1,15 @@
-use serde::{Deserialize as De, Serialize as Ser};
 use std::borrow::Cow;
+
+use serde::{Deserialize as De, Serialize as Ser};
 use validator::Validate;
 
-use crate::text;
-use crate::compose::{Confirm, opt::marker::FromText};
-use crate::val_helpr::ValidationResult;
+use crate::{compose::{opt::{AnyText, UrlUnset},
+                      Confirm,
+                      Opt},
+            text,
+            val_helpr::ValidationResult};
 
-pub type Opt<'a> = crate::compose::Opt<'a, FromText<text::Text>>;
+pub type MyOpt<'a> = Opt<'a, AnyText, UrlUnset>;
 
 /// A radio button group that allows a user to choose one item from a list of possible options.
 ///
@@ -22,11 +25,11 @@ pub struct Radio<'a> {
 
   #[validate(length(max = 10))]
   #[validate]
-  options: Vec<Opt<'a>>, // max 10, plain or md
+  options: Vec<MyOpt<'a>>, // max 10, plain or md
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate]
-  initial_option: Option<Opt<'a>>,
+  initial_option: Option<MyOpt<'a>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate]
@@ -44,9 +47,10 @@ impl<'a> Radio<'a> {
 }
 
 pub mod build {
+  use std::marker::PhantomData;
+
   use super::*;
   use crate::build::*;
-  use std::marker::PhantomData;
 
   #[allow(non_camel_case_types)]
   mod method {
@@ -54,7 +58,11 @@ pub mod build {
     pub struct options;
   }
 
-  pub type RadioBuilderInit<'a> = RadioBuilder<'a, RequiredMethodNotCalled<method::action_id>, RequiredMethodNotCalled<method::options>>;
+  pub type RadioBuilderInit<'a> =
+    RadioBuilder<'a,
+                 AnyText,
+                 RequiredMethodNotCalled<method::action_id>,
+                 RequiredMethodNotCalled<method::options>>;
 
   /// Radio Button builder
   ///
@@ -68,46 +76,45 @@ pub mod build {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{blocks::{Block, Actions}, block_elements::{Radio}, compose::Opt};
+  /// use slack_blocks::{block_elements::Radio,
+  ///                    blocks::{Actions, Block},
+  ///                    compose::Opt};
   ///
-  /// let options = vec![Opt::builder().text_md(":joy:").value("joy").build(), Opt::builder().text_md(":smirk:").value("smirk").build()];
+  /// let options = vec![Opt::builder().text_md(":joy:").value("joy").build(),
+  ///                    Opt::builder().text_md(":smirk:").value("smirk").build(),];
   ///
-  /// let radio = Radio::builder()
-  ///                   .options(options)
-  ///                   .action_id("emoji_picker")
-  ///                   .build();
+  /// let radio = Radio::builder().options(options)
+  ///                             .action_id("emoji_picker")
+  ///                             .build();
   ///
-  /// let block: Block = Actions::from_action_elements(std::iter::once(radio.into())).into();
+  /// let block: Block =
+  ///   Actions::from_action_elements(std::iter::once(radio.into())).into();
   ///
   /// // <send block to slack API>
   /// ```
-  pub struct RadioBuilder<'a, A, O> {
+  pub struct RadioBuilder<'a, T, A, O> {
     action_id: Option<Cow<'a, str>>,
-    options: Option<Vec<Opt<'a>>>,
-    initial_option: Option<Opt<'a>>,
+    options: Option<Vec<MyOpt<'a>>>,
+    initial_option: Option<MyOpt<'a>>,
     confirm: Option<Confirm>,
-    state: PhantomData<(A, O)>,
+    state: PhantomData<(T, A, O)>,
   }
 
-  impl<'a, A, O> RadioBuilder<'a, A, O> {
+  impl<'a, T, A, O> RadioBuilder<'a, T, A, O> {
     pub fn new() -> Self {
-      Self {
-        action_id: None,
-        options: None,
-        initial_option: None,
-        confirm: None,
-        state: PhantomData::<_>,
-      }
+      Self { action_id: None,
+             options: None,
+             initial_option: None,
+             confirm: None,
+             state: PhantomData::<_> }
     }
 
-    fn cast_state<A2, O2>(self) -> RadioBuilder<'a, A2, O2> {
-      RadioBuilder {
-        action_id: self.action_id,
-        options: self.options,
-        initial_option: self.initial_option,
-        confirm: self.confirm,
-        state: PhantomData::<_>,
-      }
+    fn cast_state<A2, O2>(self) -> RadioBuilder<'a, T, A2, O2> {
+      RadioBuilder { action_id: self.action_id,
+                     options: self.options,
+                     initial_option: self.initial_option,
+                     confirm: self.confirm,
+                     state: PhantomData::<_> }
     }
 
     /// Sets `action_id` (**Required**)
@@ -119,7 +126,11 @@ pub mod build {
     /// Should be unique among all other `action_id`s in the containing block.
     /// Maximum length for this field is 255 characters.
     /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
-    pub fn action_id<S>(mut self, action_id: S) -> RadioBuilder<'a, Set<method::action_id>, O> where S: Into<Cow<'a, str>> {
+    pub fn action_id<S>(mut self,
+                        action_id: S)
+                        -> RadioBuilder<'a, T, Set<method::action_id>, O>
+      where S: Into<Cow<'a, str>>
+    {
       self.action_id = Some(action_id.into());
       self.cast_state()
     }
@@ -130,21 +141,19 @@ pub mod build {
     ///
     /// A maximum of 10 options are allowed.
     /// [option objects 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option
-    pub fn options<I>(mut self, options: I) -> RadioBuilder<'a, A, Set<method::options>> where I: IntoIterator<Item = Opt<'a>> {
-      self.options = Some(options.into_iter().collect());
-      self.cast_state()
-    }
+    pub fn options<I, T2: Into<text::Text>>(
+      self,
+      options: I)
+      -> RadioBuilder<'a, T2, A, Set<method::options>>
+      where I: IntoIterator<Item = Opt<'a, T2, UrlUnset>>
+    {
+      let options = options.into_iter().map(|o| o.into()).collect();
 
-    /// Sets `initial_option` (Optional)
-    ///
-    /// An [option object 🔗] that exactly matches one of the options within `options`.
-    ///
-    /// This option will be selected when the radio button group initially loads.
-    ///
-    /// [option object 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
-    pub fn initial_option(mut self, option: &Opt<'a>) -> Self {
-      self.initial_option = Some(option.clone());
-      self
+      RadioBuilder { action_id: self.action_id,
+                     options: Some(options),
+                     initial_option: self.initial_option,
+                     confirm: self.confirm,
+                     state: PhantomData::<_> }
     }
 
     /// Sets `confirm` (Optional)
@@ -159,14 +168,44 @@ pub mod build {
     }
   }
 
-  impl<'a> RadioBuilder<'a, Set<method::action_id>, Set<method::options>> {
+  impl<'a, A> RadioBuilder<'a, text::Plain, A, Set<method::options>> {
+    /// Sets `initial_option` (Optional)
+    ///
+    /// An [option object 🔗] that exactly matches one of the options within `options`.
+    ///
+    /// This option will be selected when the radio button group initially loads.
+    ///
+    /// [option object 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
+    pub fn initial_option(mut self,
+                          option: Opt<'a, text::Plain, UrlUnset>)
+                          -> Self {
+      self.initial_option = Some(option.into());
+      self
+    }
+  }
+
+  impl<'a, A> RadioBuilder<'a, text::Mrkdwn, A, Set<method::options>> {
+    /// Sets `initial_option` (Optional)
+    ///
+    /// An [option object 🔗] that exactly matches one of the options within `options`.
+    ///
+    /// This option will be selected when the radio button group initially loads.
+    ///
+    /// [option object 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
+    pub fn initial_option(mut self,
+                          option: Opt<'a, text::Mrkdwn, UrlUnset>)
+                          -> Self {
+      self.initial_option = Some(option.into());
+      self
+    }
+  }
+
+  impl<'a, T> RadioBuilder<'a, T, Set<method::action_id>, Set<method::options>> {
     pub fn build(self) -> Radio<'a> {
-      Radio {
-        action_id: self.action_id.unwrap(),
-        options: self.options.unwrap(),
-        initial_option: self.initial_option,
-        confirm: self.confirm,
-      }
+      Radio { action_id: self.action_id.unwrap(),
+              options: self.options.unwrap(),
+              initial_option: self.initial_option,
+              confirm: self.confirm }
     }
   }
 }

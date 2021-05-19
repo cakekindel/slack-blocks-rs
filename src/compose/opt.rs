@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, marker::PhantomData};
 
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -6,22 +6,14 @@ use validator::Validate;
 use super::text;
 use crate::{build::*, val_helpr::ValidationResult};
 
-/// Used to statically denote what kind of text the Opt contains and whether Url has been set.
-pub mod marker {
-  use serde::{Deserialize as De, Serialize as Ser};
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+pub struct AnyText;
 
-  use crate::text;
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+pub struct UrlUnset;
 
-  /// Marker struct used to restrict / indicate
-  /// `Opt`s created from Mrkdwn or Plain text.
-  #[derive(Ser, De, Clone, Debug, Hash, PartialEq)]
-  pub struct FromText<T: Into<text::Text>>(std::marker::PhantomData<T>);
-
-  /// Marker struct used to restrict / indicate
-  /// `Opt`s created from Plain text + has `url` set.
-  #[derive(Ser, De, Clone, Debug, Hash, PartialEq)]
-  pub struct FromPlainTextWithUrl;
-}
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+pub struct UrlSet;
 
 /// # Option Object
 /// [slack api docs 🔗]
@@ -40,13 +32,7 @@ pub mod marker {
 /// [radio button group 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
 /// [overflow menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#overflow
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct Opt<'a, Marker = ()> {
-  // *             ~~~~~~
-  // This allows an `Opt` to _statically_
-  // identify itself as:
-  // - being created from mrkdwn
-  // - being created from plaintext
-  // - whether or not it has `url` set
+pub struct Opt<'a, T = AnyText, U = UrlUnset> {
   #[validate(custom = "validate::text")]
   text: text::Text,
 
@@ -60,7 +46,17 @@ pub struct Opt<'a, Marker = ()> {
   url: Option<Cow<'a, str>>,
 
   #[serde(skip)]
-  marker: std::marker::PhantomData<Marker>,
+  marker: PhantomData<(T, U)>,
+}
+
+impl<'a, T: Into<text::Text>, U> From<Opt<'a, T, U>> for Opt<'a, AnyText, U> {
+  fn from(o: Opt<'a, T, U>) -> Self {
+    Opt { text: o.text,
+          value: o.value,
+          description: o.description,
+          url: o.url,
+          marker: PhantomData::<(AnyText, U)> }
+  }
 }
 
 // Constructor functions
@@ -161,16 +157,14 @@ impl<'a> Opt<'a> {
   /// // < send block to slack's API >
   /// ```
   #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
-  pub fn from_plain_text_and_value(
-    text: impl Into<text::Plain>,
-    value: impl Into<Cow<'a, str>>)
-    -> Opt<'a, marker::FromText<text::Plain>> {
-    Opt::<'a, marker::FromText<text::Plain>> { text: text.into().into(),
-                                               value: value.into(),
-                                               description: None,
-                                               url: None,
-                                               marker:
-                                                 std::marker::PhantomData }
+  pub fn from_plain_text_and_value(text: impl Into<text::Plain>,
+                                   value: impl Into<Cow<'a, str>>)
+                                   -> Opt<'a, text::Plain, UrlUnset> {
+    Opt { text: text.into().into(),
+          value: value.into(),
+          description: None,
+          url: None,
+          marker: std::marker::PhantomData }
   }
 
   /// Create an Option composition object from its label and
@@ -226,18 +220,17 @@ impl<'a> Opt<'a> {
   #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
   pub fn from_mrkdwn_and_value(text: impl Into<text::Mrkdwn>,
                                value: impl Into<Cow<'a, str>>)
-                               -> Opt<'a, marker::FromText<text::Mrkdwn>> {
-    Opt::<'a, marker::FromText<text::Mrkdwn>> { text: text.into().into(),
-                                                value: value.into(),
-                                                description: None,
-                                                url: None,
-                                                marker:
-                                                  std::marker::PhantomData }
+                               -> Opt<'a, text::Mrkdwn, UrlUnset> {
+    Opt { text: text.into().into(),
+          value: value.into(),
+          description: None,
+          url: None,
+          marker: std::marker::PhantomData }
   }
 }
 
 // Methods available to all specializations
-impl<'a, M> Opt<'a, M> {
+impl<'a, T, U> Opt<'a, T, U> {
   /// Chainable setter method, that sets a description for this `Opt`.
   ///
   /// # Arguments
@@ -315,7 +308,7 @@ impl<'a, M> Opt<'a, M> {
 }
 
 // Methods available only to `Opt` created from `text::Plain`
-impl<'a> Opt<'a, marker::FromText<text::Plain>> {
+impl<'a, U> Opt<'a, text::Plain, U> {
   /// Chainable setter method, that sets a url for this `Opt`.
   ///
   /// **The `url` attribute is only available in [overflow menus 🔗]**.
@@ -364,13 +357,12 @@ impl<'a> Opt<'a, marker::FromText<text::Plain>> {
   #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
   pub fn with_url(self,
                   url: impl Into<Cow<'a, str>>)
-                  -> Opt<'a, marker::FromPlainTextWithUrl> {
-    Opt::<'a, marker::FromPlainTextWithUrl> { text: self.text,
-                                              value: self.value,
-                                              description: self.description,
-                                              url: Some(url.into()),
-                                              marker:
-                                                std::marker::PhantomData }
+                  -> Opt<'a, text::Plain, UrlSet> {
+    Opt { text: self.text,
+          value: self.value,
+          description: self.description,
+          url: Some(url.into()),
+          marker: std::marker::PhantomData }
   }
 }
 
@@ -456,15 +448,6 @@ pub mod build {
                    description: self.description,
                    url: self.url,
                    state: PhantomData::<_> }
-    }
-
-    /// Build an Opt with an inferred marker type
-    fn build_priv<M>(self) -> Opt<'a, M> {
-      Opt { text: self.text.unwrap(),
-            value: self.value.unwrap(),
-            url: self.url,
-            description: self.description,
-            marker: PhantomData::<_> }
     }
 
     /// Set `value` (**Required**)
@@ -614,8 +597,12 @@ pub mod build {
     ///                         .url("https://cheese.com")
     ///                         .build();
     /// ```
-    pub fn build(self) -> Opt<'a, marker::FromPlainTextWithUrl> {
-      self.build_priv()
+    pub fn build(self) -> Opt<'a, text::Plain, UrlSet> {
+      Opt { text: self.text.unwrap(),
+            value: self.value.unwrap(),
+            url: self.url,
+            description: self.description,
+            marker: PhantomData::<_> }
     }
   }
 
@@ -646,8 +633,12 @@ pub mod build {
     ///
     /// let opt = Opt::builder().text_md("cheese").value("cheese").build();
     /// ```
-    pub fn build(self) -> Opt<'a, marker::FromText<T>> {
-      self.build_priv()
+    pub fn build(self) -> Opt<'a, T, UrlUnset> {
+      Opt { text: self.text.unwrap(),
+            value: self.value.unwrap(),
+            url: self.url,
+            description: self.description,
+            marker: PhantomData::<_> }
     }
   }
 }

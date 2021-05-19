@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use super::{text, Opt};
+use super::{opt::{AnyText, UrlUnset},
+            text,
+            Opt};
 use crate::val_helpr::ValidationResult;
 
 /// # Option Group
@@ -14,96 +16,19 @@ use crate::val_helpr::ValidationResult;
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option_group
 /// [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct OptGroup<'a, M = ()> {
+pub struct OptGroup<'a, T = AnyText, U = UrlUnset> {
   #[validate(custom = "validate::label")]
   label: text::Text,
 
   #[validate(length(max = 100))]
-  options: Vec<Opt<'a, M>>,
+  options: Vec<Opt<'a, T, U>>,
 }
 
 impl<'a> OptGroup<'a> {
   /// Build a new option group composition object
   ///
   /// # Examples
-  ///  ```
-  ///  use std::convert::TryFrom;
-  ///
-  ///  use slack_blocks::{block_elements::{select::Static, BlockElement},
-  ///                     blocks::{Actions, Block},
-  ///                     compose::{Opt, OptGroup}};
-  ///
-  ///  #[derive(Clone, Copy, PartialEq)]
-  ///  enum LangStyle {
-  ///    Functional,
-  ///    ObjectOriented,
-  ///    SomewhereInbetween,
-  ///  }
-  ///
-  ///  use LangStyle::*;
-  ///
-  ///  #[derive(Clone, Copy)]
-  ///  struct Lang {
-  ///    name: &'static str,
-  ///    code: &'static str,
-  ///    style: LangStyle,
-  ///  }
-  ///
-  ///  impl Lang {
-  ///    fn new(name: &'static str, code: &'static str, style: LangStyle) -> Self {
-  ///      Self {
-  ///        name,
-  ///        code,
-  ///        style,
-  ///      }
-  ///    }
-  ///  }
-  ///
-  ///  let langs = vec![
-  ///    Lang::new("Rust", "rs", SomewhereInbetween),
-  ///    Lang::new("C#", "cs", ObjectOriented),
-  ///    Lang::new("Haskell", "hs", Functional),
-  ///  ];
-  ///
-  ///  let langs_of_style = |needle: LangStyle| langs.iter()
-  ///                                                .filter(|Lang {style, ..}| *style == needle)
-  ///                                                .map(|lang| Opt::builder()
-  ///                                                                .text_plain(lang.name)
-  ///                                                                .value(lang.code)
-  ///                                                                .build()
-  ///                                                )
-  ///                                                .collect::<Vec<_>>();
-  ///
-  ///  let groups = vec![
-  ///    OptGroup::builder()
-  ///             .label("Functional")
-  ///             .options(langs_of_style(Functional))
-  ///             .build(),
-  ///
-  ///    OptGroup::builder()
-  ///             .label("Object-Oriented")
-  ///             .options(langs_of_style(ObjectOriented))
-  ///             .build(),
-  ///
-  ///    OptGroup::builder()
-  ///             .label("Somewhere Inbetween")
-  ///             .options(langs_of_style(SomewhereInbetween))
-  ///             .build(),
-  ///  ];
-  ///
-  ///  let select: BlockElement =
-  ///    Static::builder().placeholder("Choose your favorite programming language!")
-  ///                     .option_groups(groups)
-  ///                     .action_id("lang_chosen")
-  ///                     .build()
-  ///                     .into();
-  ///
-  ///  let block: Block =
-  ///    Actions::try_from(select).expect("actions supports select elements")
-  ///                             .into();
-  ///
-  ///  // <send block to API>
-  ///  ```
+  /// see example for `OptGroupBuilder`
   pub fn builder() -> build::OptGroupBuilderInit<'a> {
     build::OptGroupBuilderInit::new()
   }
@@ -155,15 +80,17 @@ impl<'a> OptGroup<'a> {
   /// ];
   /// ```
   #[deprecated(since = "0.15.0", note = "Use OptGroup::builder instead")]
-  pub fn from_label_and_opts<M>(label: impl Into<text::Plain>,
-                                options: impl IntoIterator<Item = Opt<'a, M>>)
-                                -> OptGroup<'a, M> {
-    OptGroup::<'a, M> { label: label.into().into(),
-                        options: options.into_iter().collect() }
+  pub fn from_label_and_opts<T, U>(label: impl Into<text::Plain>,
+                                   options: impl IntoIterator<Item = Opt<'a,
+                                                           T,
+                                                           U>>)
+                                   -> OptGroup<'a, T, U> {
+    OptGroup { label: label.into().into(),
+               options: options.into_iter().collect() }
   }
 }
 
-impl<'a, M> OptGroup<'a, M> {
+impl<'a, T, U> OptGroup<'a, T, U> {
   /// Validate that this Option Group object
   /// agrees with Slack's model requirements
   ///
@@ -292,18 +219,20 @@ pub mod build {
   ///
   ///  // <send block to API>
   ///  ```
-  pub struct OptGroupBuilder<'a, Options, Label, Marker = ()> {
+  pub struct OptGroupBuilder<'a, T, U, Options, Label> {
     label: Option<text::Text>,
-    options: Option<Vec<Opt<'a, Marker>>>,
+    options: Option<Vec<Opt<'a, T, U>>>,
     state: PhantomData<(Options, Label)>,
   }
 
   pub type OptGroupBuilderInit<'a> =
     OptGroupBuilder<'a,
+                    AnyText,
+                    UrlUnset,
                     RequiredMethodNotCalled<method::options>,
                     RequiredMethodNotCalled<method::label>>;
 
-  impl<'a, O, L, M> OptGroupBuilder<'a, O, L, M> {
+  impl<'a, T, U, O, L> OptGroupBuilder<'a, T, U, O, L> {
     /// Construct a new OptGroupBuilder
     pub fn new() -> Self {
       Self { label: None,
@@ -311,7 +240,7 @@ pub mod build {
              state: PhantomData::<_> }
     }
 
-    fn cast_state<O2, L2>(self) -> OptGroupBuilder<'a, O2, L2, M> {
+    fn cast_state<O2, L2>(self) -> OptGroupBuilder<'a, T, U, O2, L2> {
       OptGroupBuilder { label: self.label,
                         options: self.options,
                         state: PhantomData::<_> }
@@ -325,10 +254,11 @@ pub mod build {
     /// Maximum of 100 items.
     ///
     /// [option objects 🔗]: https://api.slack.comCURRENT_PAGEoption
-    pub fn options<M2, I>(self,
-                          options: I)
-                          -> OptGroupBuilder<'a, Set<method::options>, L, M2>
-      where I: IntoIterator<Item = Opt<'a, M2>>
+    pub fn options<T2, U2, I>(
+      self,
+      options: I)
+      -> OptGroupBuilder<'a, T2, U2, Set<method::options>, L>
+      where I: IntoIterator<Item = Opt<'a, T2, U2>>
     {
       OptGroupBuilder { label: self.label,
                         options: Some(options.into_iter().collect()),
@@ -343,7 +273,7 @@ pub mod build {
     /// [`plain_text` only text object 🔗]: https://api.slack.comCURRENT_PAGEtext
     pub fn label<S>(mut self,
                     label: S)
-                    -> OptGroupBuilder<'a, O, Set<method::label>, M>
+                    -> OptGroupBuilder<'a, T, U, O, Set<method::label>>
       where S: Into<text::Plain>
     {
       self.label = Some(label.into().into());
@@ -351,7 +281,9 @@ pub mod build {
     }
   }
 
-  impl<'a, M> OptGroupBuilder<'a, Set<method::options>, Set<method::label>, M> {
+  impl<'a, T, U>
+    OptGroupBuilder<'a, T, U, Set<method::options>, Set<method::label>>
+  {
     /// All done building, now give me a darn option group!
     ///
     /// > `no method name 'build' found for struct 'compose::opt_group::build::OptGroupBuilder<...>'`?
@@ -368,13 +300,15 @@ pub mod build {
     /// ```
     ///
     /// ```
-    /// use slack_blocks::compose::OptGroup;
+    /// use slack_blocks::compose::{Opt, OptGroup};
     ///
-    /// let sel = OptGroup::builder().options::<(), _>(vec![])
+    /// let sel = OptGroup::builder().options(vec![Opt::builder().text_plain("foo")
+    ///                                                          .value("bar")
+    ///                                                          .build()])
     ///                              .label("foo")
     ///                              .build();
     /// ```
-    pub fn build(self) -> OptGroup<'a, M> {
+    pub fn build(self) -> OptGroup<'a, T, U> {
       OptGroup { label: self.label.unwrap(),
                  options: self.options.unwrap() }
     }
