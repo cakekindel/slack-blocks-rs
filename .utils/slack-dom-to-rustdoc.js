@@ -113,7 +113,7 @@ const qualifyAnchors = helpers.replace(
 //    escapeLinks :: String -> String
 const escapeLinks = helpers.replace(
   /<a href\="(.*?)">(.*?)<\/a>/gi,
-  '[$2 🔗]%%[$2 🔗]: https://api.slack.com$1\n%%'
+  '[$2 🔗]%%[$2 🔗]: $1\n%%'
 );
 
 //    escapeCode :: String -> String
@@ -128,13 +128,13 @@ const appendNewlineToPeriods = helpers.replace(/\. /gi, '.\n');
 //    moveLinkDefsToBottom :: String -> String
 const moveLinkDefsToBottom = c =>
     c.split(/%%/g)
-        .sort((a, b) => helpers.isLink(a)
-              ? ord.bFirst
-              : helpers.isLink(b)
-                  ? ord.aFirst
-                  : ord.equal
-        )
-        .join('');
+     .sort((a, b) => helpers.isLink(a)
+           ? ord.bFirst
+           : helpers.isLink(b)
+               ? ord.aFirst
+               : ord.equal
+     )
+     .join('');
 
 //    removeEmptyLines :: String -> String
 const removeEmptyLines = contents => contents.split('\n').filter(s => s !== '').join('\n');
