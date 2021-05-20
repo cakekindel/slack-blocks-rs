@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.16.2 (2021-05-20)
+
+
+### Features
+
+* overflow menu ([#129](https://github.com/cakekindel/slack-blocks-rs/issues/129)) ([6caac5a](https://github.com/cakekindel/slack-blocks-rs/commit/6caac5a14e2d40a3ae0790223c2410b9bcc75cac))
+
 ### 0.16.1 (2021-05-19)
 
 
