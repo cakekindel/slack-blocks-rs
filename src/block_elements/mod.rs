@@ -3,18 +3,20 @@ use serde::{Deserialize, Serialize};
 use crate::{convert, val_helpr::ValidationResult};
 
 pub mod radio;
-pub use radio::Radio;
-
 pub mod button;
-pub use button::Contents as Button;
-
 pub mod select;
-pub use select::Select;
-
 pub mod text_input;
-pub use text_input::TextInput;
-
 pub mod overflow;
+
+#[doc(inline)]
+pub use radio::Radio;
+#[doc(inline)]
+pub use button::Button;
+#[doc(inline)]
+pub use select::Select;
+#[doc(inline)]
+pub use text_input::TextInput;
+#[doc(inline)]
 pub use overflow::Overflow;
 
 /// # Block Elements - interactive components
