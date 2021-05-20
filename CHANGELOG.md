@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.16.4 (2021-05-20)
+
+
+### Features
+
+* date picker element ([#132](https://github.com/cakekindel/slack-blocks-rs/issues/132)) ([44e72ab](https://github.com/cakekindel/slack-blocks-rs/commit/44e72ab824ace1810f28421b6ec3594c9eeae695))
+
 ### 0.16.3 (2021-05-20)
 
 
