@@ -316,7 +316,7 @@ pub mod build {
   }
 
   impl<'a> TextInputBuilder<'a, Set<method::action_id>> {
-    /// All done building, now give me a darn select element!
+    /// All done building, now give me a darn text input!
     ///
     /// > `no method name 'build' found for struct 'text_input::build::TextInputBuilder<...>'`?
     /// Make sure all required setter methods have been called. See docs for `TextInputBuilder`.
