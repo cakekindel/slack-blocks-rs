@@ -25,7 +25,7 @@ type ValidationResult = Result<(), validator::ValidationErrors>;
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Block<'a> {
-  Section(section::Contents),
+  Section(Section),
 
   /// # Divider Block
   ///
@@ -39,15 +39,15 @@ pub enum Block<'a> {
   /// [divider_docs]: https://api.slack.com/reference/block-kit/blocks#divider
   Divider,
 
-  Image(image::Contents),
+  Image(Image),
 
-  Actions(actions::Contents<'a>),
+  Actions(Actions<'a>),
 
-  Context(context::Contents),
+  Context(Context<'a>),
 
-  Input(input::Contents<'a>),
+  Input(Input<'a>),
 
-  File(file::Contents),
+  File(File),
 }
 
 use std::fmt;
@@ -84,9 +84,9 @@ impl<'a> Block<'a> {
   }
 }
 
-convert!(impl<'_> From<Actions> for Block => |a| Block::Actions(a));
-convert!(impl<'_> From<Input>   for Block => |a| Block::Input(a));
-convert!(impl From<section::Contents> for Block<'static> => |a| Block::Section(a));
-convert!(impl From<image::Contents>   for Block<'static> => |a| Block::Image(a));
-convert!(impl From<context::Contents> for Block<'static> => |a| Block::Context(a));
-convert!(impl From<file::Contents>    for Block<'static> => |a| Block::File(a));
+convert!(impl<'a> From<Actions<'a>> for Block<'a>      => |a| Block::Actions(a));
+convert!(impl<'a> From<Input<'a>>   for Block<'a>      => |a| Block::Input(a));
+convert!(impl     From<Section>     for Block<'static> => |a| Block::Section(a));
+convert!(impl     From<Image>       for Block<'static> => |a| Block::Image(a));
+convert!(impl<'a> From<Context<'a>> for Block<'a>      => |a| Block::Context(a));
+convert!(impl     From<File>        for Block<'static> => |a| Block::File(a));
