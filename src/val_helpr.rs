@@ -7,9 +7,9 @@ use validator::ValidationError;
 pub type ValidationResult = Result<(), validator::ValidationErrors>;
 pub type ValidatorResult = Result<(), validator::ValidationError>;
 
-pub fn error<StrIsh: AsRef<str>>(kind: &'static str,
-                                 msg: StrIsh)
-                                 -> ValidationError {
+pub(crate) fn error<StrIsh: AsRef<str>>(kind: &'static str,
+                                        msg: StrIsh)
+                                        -> ValidationError {
   let mut error = ValidationError::new(kind);
   error.add_param(Cow::from("message"),
                   &serde_json::Value::String(msg.as_ref().to_string()));
@@ -17,11 +17,11 @@ pub fn error<StrIsh: AsRef<str>>(kind: &'static str,
   error
 }
 
-pub fn below_len(context: &'static str,
-                 max_len: u16,
-                 text: impl AsRef<str>)
-                 -> ValidatorResult {
-  let len = text.as_ref().len();
+pub(crate) fn below_len(context: &'static str,
+                        max_len: u16,
+                        text: impl Long)
+                        -> ValidatorResult {
+  let len = text.len();
 
   if len >= max_len.into() {
     Err(error(context,
@@ -29,5 +29,42 @@ pub fn below_len(context: &'static str,
                       context, max_len, len)))
   } else {
     Ok(())
+  }
+}
+
+pub(crate) fn len(context: &'static str,
+                  range: impl std::ops::RangeBounds<usize> + std::fmt::Debug,
+                  text: impl Long)
+                  -> ValidatorResult {
+  let len = text.len();
+
+  if !range.contains(&len) {
+    Err(error(context,
+              format!("{} must be within range {:#?}, got {}",
+                      context, range, len)))
+  } else {
+    Ok(())
+  }
+}
+
+pub(crate) trait Long {
+  fn len(&self) -> usize;
+}
+
+impl Long for &crate::text::Text {
+  fn len(&self) -> usize {
+    self.as_ref().len()
+  }
+}
+
+impl Long for &str {
+  fn len(&self) -> usize {
+    str::len(self)
+  }
+}
+
+impl<T> Long for &[T] {
+  fn len(&self) -> usize {
+    self.as_ref().len()
   }
 }

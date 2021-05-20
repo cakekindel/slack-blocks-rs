@@ -14,6 +14,9 @@ pub use select::Select;
 pub mod text_input;
 pub use text_input::TextInput;
 
+pub mod overflow;
+pub use overflow::Overflow;
+
 /// # Block Elements - interactive components
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements)
 ///
@@ -36,7 +39,7 @@ pub enum BlockElement<'a> {
   DatePicker,
   Image,
   MultiSelect,
-  OverflowMenu,
+  Overflow(Overflow<'a>),
   RadioButtons(Radio<'a>),
 
   #[serde(rename = "plain_text_input")]
@@ -68,6 +71,7 @@ impl<'a> BlockElement<'a> {
       | Self::SelectExternal(cts) => cts.validate(),
       | Self::SelectStatic(cts) => cts.validate(),
       | Self::RadioButtons(cts) => cts.validate(),
+      | Self::Overflow(cts) => cts.validate(),
       | rest => todo!("validation not implemented for {:?}", rest),
     }
   }
@@ -76,6 +80,7 @@ impl<'a> BlockElement<'a> {
 convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button(b));
 convert!(impl<'a> From<Radio<'a>> for BlockElement<'a> => |b| BlockElement::RadioButtons(b));
 convert!(impl<'a> From<TextInput<'a>> for BlockElement<'a> => |t| BlockElement::TextInput(t));
+convert!(impl<'a> From<Overflow<'a>> for BlockElement<'a> => |t| BlockElement::Overflow(t));
 
 convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {

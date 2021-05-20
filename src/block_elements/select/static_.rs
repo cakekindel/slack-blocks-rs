@@ -1,14 +1,14 @@
 use std::borrow::Cow;
 
-use compose::{opt::UrlUnset, Confirm};
+use compose::{opt::NoUrl, Confirm};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{compose, text, val_helpr::ValidationResult};
 
-type OptGroup<'a> = compose::OptGroup<'a, text::Plain, UrlUnset>;
-type Opt<'a> = compose::Opt<'a, text::Plain, UrlUnset>;
-type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, UrlUnset>;
+type OptGroup<'a> = compose::OptGroup<'a, text::Plain, NoUrl>;
+type Opt<'a> = compose::Opt<'a, text::Plain, NoUrl>;
+type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, NoUrl>;
 
 /// ## Select menu with static options
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_select)

@@ -49,6 +49,16 @@ args = [ "watch"
        , "-x", "make -t test"
        ]
 
+[tasks.cdd] # "compile" driven development?
+install_crate = "cargo-watch"
+command = "cargo"
+args = [ "watch"
+       , "--watch", "./src"
+       , "--watch", "./tests"
+       , "-x", "check"
+       , "-x", "make fmt"
+       ]
+
 [tasks.check-fmt]
 toolchain = "nightly"
 command = "cargo"
