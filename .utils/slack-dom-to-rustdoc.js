@@ -53,6 +53,9 @@ process.stdin.on('end', () => {
         // ex. <strong>blah</strong> -> **blah**
         escapeStrong,
 
+        // ex. <em>blah</em> -> _blah_
+        escapeItalic,
+
         removeEmptyLines,
 
         // Prepend each line with ///
@@ -121,6 +124,9 @@ const escapeCode = helpers.replace(/<code>(.*?)<\/code>/gi, '`$1`');
 
 //    escapeStrong :: String -> String
 const escapeStrong = helpers.replace(/<strong>(.*?)<\/strong>/gi, '**$1**');
+
+//    escapeItalic :: String -> String
+const escapeItalic = helpers.replace(/<em>(.*?)<\/em>/gi, '_$1_');
 
 //    appendNewlineToPeriods :: String -> String
 const appendNewlineToPeriods = helpers.replace(/\. /gi, '.\n');

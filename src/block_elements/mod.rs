@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::{convert, val_helpr::ValidationResult};
 
 pub mod button;
+pub mod image;
 pub mod overflow;
 pub mod radio;
 pub mod select;
@@ -10,6 +11,8 @@ pub mod text_input;
 
 #[doc(inline)]
 pub use button::Button;
+#[doc(inline)]
+pub use image::Image;
 #[doc(inline)]
 pub use overflow::Overflow;
 #[doc(inline)]
@@ -39,9 +42,12 @@ pub enum BlockElement<'a> {
   Button(Button),
   Checkboxes,
   DatePicker,
-  Image,
+  Image(Image<'a>),
   MultiSelect,
+
+  #[serde(rename = "overflow_menu")]
   Overflow(Overflow<'a>),
+
   RadioButtons(Radio<'a>),
 
   #[serde(rename = "plain_text_input")]

@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{convert, text, val_helpr::ValidationResult};
+use crate::{block_elements::Image,
+            convert,
+            text,
+            val_helpr::ValidationResult};
 
 /// # Context Block
 ///
@@ -18,16 +21,16 @@ use crate::{convert, text, val_helpr::ValidationResult};
            PartialEq,
            Serialize,
            Validate)]
-pub struct Contents {
+pub struct Contents<'a> {
   #[validate(length(max = 10))]
-  elements: Vec<Compose>,
+  elements: Vec<Compose<'a>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(length(max = 255))]
   block_id: Option<String>,
 }
 
-impl Contents {
+impl<'a> Contents<'a> {
   /// Create an empty Context block (shorthand for `Default::default()`)
   ///
   /// # Example
@@ -95,7 +98,7 @@ impl Contents {
   /// let block: Block = context.into();
   /// // < send block to slack's API >
   /// ```
-  pub fn with_element(mut self, element: impl Into<self::Compose>) -> Self {
+  pub fn with_element(mut self, element: impl Into<self::Compose<'a>>) -> Self {
     self.elements.push(element.into());
     self
   }
@@ -125,10 +128,10 @@ impl Contents {
   ///   // < send block to slack's API >
   /// }
   /// ```
-  pub fn from_context_elements(elements: impl IntoIterator<Item = impl Into<Compose>>)
+  pub fn from_context_elements(elements: impl IntoIterator<Item = impl Into<Compose<'a>>>)
                                -> Self {
     elements.into_iter()
-            .map(Into::<self::Compose>::into)
+            .map(|i| i.into())
             .collect::<Vec<_>>()
             .into()
   }
@@ -156,8 +159,8 @@ impl Contents {
   }
 }
 
-impl From<Vec<Compose>> for Contents {
-  fn from(elements: Vec<Compose>) -> Self {
+impl<'a> From<Vec<Compose<'a>>> for Contents<'a> {
+  fn from(elements: Vec<Compose<'a>>) -> Self {
     Self { elements,
            ..Default::default() }
   }
@@ -165,21 +168,12 @@ impl From<Vec<Compose>> for Contents {
 
 /// The Composition objects supported by this block
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub enum Compose {
+pub enum Compose<'a> {
   Text(text::Text),
-  Image,
+  Image(Image<'a>),
 }
 
-convert!(impl From<text::Text> for Compose => |txt| Compose::Text(txt));
-
-impl From<text::plain::Contents> for Compose {
-  fn from(text: text::plain::Contents) -> Self {
-    Into::<text::Text>::into(text).into()
-  }
-}
-
-impl From<text::Mrkdwn> for Compose {
-  fn from(text: text::Mrkdwn) -> Self {
-    Into::<text::Text>::into(text).into()
-  }
-}
+convert!(impl From<text::Text> for Compose<'static> => |txt| Compose::Text(txt));
+convert!(impl<'a> From<Image<'a>> for Compose<'a> => |i| Compose::Image(i));
+convert!(impl From<text::Plain> for Compose<'static> => |t| text::Text::from(t).into());
+convert!(impl From<text::Mrkdwn> for Compose<'static> => |t| text::Text::from(t).into());
