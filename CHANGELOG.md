@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.16.3 (2021-05-20)
+
+
+### Features
+
+* image element ([#131](https://github.com/cakekindel/slack-blocks-rs/issues/131)) ([2e61bf8](https://github.com/cakekindel/slack-blocks-rs/commit/2e61bf8d6805bbb8209f5ebae93cc90fcf56a929))
+
 ### 0.16.2 (2021-05-20)
 
 
