@@ -4,7 +4,12 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{block_elements,
-            block_elements::{select, Button, Overflow, Radio, TextInput},
+            block_elements::{select,
+                             Button,
+                             DatePicker,
+                             Overflow,
+                             Radio,
+                             TextInput},
             convert,
             val_helpr::ValidationResult};
 
@@ -200,7 +205,7 @@ impl<'a> Contents<'a> {
 pub enum BlockElement<'a> {
   Button(Button),
   Checkboxes,
-  DatePicker,
+  DatePicker(DatePicker<'a>),
   Overflow(Overflow<'a>),
   TextInput(TextInput<'a>),
   RadioButtons(Radio<'a>),
@@ -267,7 +272,7 @@ impl<'a> TryFrom<block_elements::BlockElement<'a>> for self::BlockElement<'a> {
       | El::Button(cts) => Ok(Button(cts)),
       | El::TextInput(t) => Ok(TextInput(t)),
       | El::Checkboxes => Ok(Checkboxes),
-      | El::DatePicker => Ok(DatePicker),
+      | El::DatePicker(d) => Ok(DatePicker(d)),
       | _ => Err(()),
     }
   }
@@ -281,3 +286,4 @@ convert!(impl<'a> From<select::Static<'a>> for self::BlockElement<'a>  => |s| se
 convert!(impl     From<Button> for self::BlockElement<'static> => |b| self::BlockElement::Button(b));
 convert!(impl<'a> From<Radio<'a>> for self::BlockElement<'a> => |b| self::BlockElement::RadioButtons(b));
 convert!(impl<'a> From<TextInput<'a>> for self::BlockElement<'a> => |t| self::BlockElement::TextInput(t));
+convert!(impl<'a> From<DatePicker<'a>> for self::BlockElement<'a> => |t| self::BlockElement::DatePicker(t));

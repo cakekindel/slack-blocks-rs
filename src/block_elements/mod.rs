@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::{convert, val_helpr::ValidationResult};
 
 pub mod button;
+pub mod date_picker;
 pub mod image;
 pub mod overflow;
 pub mod radio;
@@ -11,6 +12,8 @@ pub mod text_input;
 
 #[doc(inline)]
 pub use button::Button;
+#[doc(inline)]
+pub use date_picker::DatePicker;
 #[doc(inline)]
 pub use image::Image;
 #[doc(inline)]
@@ -41,9 +44,11 @@ pub use text_input::TextInput;
 pub enum BlockElement<'a> {
   Button(Button),
   Checkboxes,
-  DatePicker,
   Image(Image<'a>),
   MultiSelect,
+
+  #[serde(rename = "datepicker")]
+  DatePicker(DatePicker<'a>),
 
   #[serde(rename = "overflow_menu")]
   Overflow(Overflow<'a>),
@@ -89,6 +94,7 @@ convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button
 convert!(impl<'a> From<Radio<'a>> for BlockElement<'a> => |b| BlockElement::RadioButtons(b));
 convert!(impl<'a> From<TextInput<'a>> for BlockElement<'a> => |t| BlockElement::TextInput(t));
 convert!(impl<'a> From<Overflow<'a>> for BlockElement<'a> => |t| BlockElement::Overflow(t));
+convert!(impl<'a> From<DatePicker<'a>> for BlockElement<'a> => |t| BlockElement::DatePicker(t));
 
 convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {
