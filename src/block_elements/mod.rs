@@ -2,22 +2,22 @@ use serde::{Deserialize, Serialize};
 
 use crate::{convert, val_helpr::ValidationResult};
 
-pub mod radio;
 pub mod button;
+pub mod overflow;
+pub mod radio;
 pub mod select;
 pub mod text_input;
-pub mod overflow;
 
 #[doc(inline)]
-pub use radio::Radio;
-#[doc(inline)]
 pub use button::Button;
+#[doc(inline)]
+pub use overflow::Overflow;
+#[doc(inline)]
+pub use radio::Radio;
 #[doc(inline)]
 pub use select::Select;
 #[doc(inline)]
 pub use text_input::TextInput;
-#[doc(inline)]
-pub use overflow::Overflow;
 
 /// # Block Elements - interactive components
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements)
