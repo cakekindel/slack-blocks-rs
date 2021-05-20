@@ -25,7 +25,7 @@ use crate::{text, val_helpr::ValidationResult};
 /// [Actions 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 #[derive(Validate, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct Contents {
+pub struct Button {
   #[validate(custom = "validate::text")]
   text: text::Text,
 
@@ -47,7 +47,7 @@ pub struct Contents {
   confirm: Option<()>, // FIX: doesn't exist yet
 }
 
-impl Contents {
+impl Button {
   /// Create a `button::Contents` from a text label and ID for your app
   /// to be able to identify what was pressed.
   ///

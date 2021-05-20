@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{block_elements,
-            block_elements::{select, Button, Radio, TextInput},
+            block_elements::{select, Button, Overflow, Radio, TextInput},
             convert,
             val_helpr::ValidationResult};
 
@@ -201,7 +201,7 @@ pub enum BlockElement<'a> {
   Button(Button),
   Checkboxes,
   DatePicker,
-  OverflowMenu,
+  Overflow(Overflow<'a>),
   TextInput(TextInput<'a>),
   RadioButtons(Radio<'a>),
 
@@ -262,7 +262,7 @@ impl<'a> TryFrom<block_elements::BlockElement<'a>> for self::BlockElement<'a> {
       | El::SelectExternal(sel) => Ok(SelectExternal(sel)),
       | El::SelectStatic(sel) => Ok(SelectStatic(sel)),
       | El::SelectUser(sel) => Ok(SelectUser(sel)),
-      | El::OverflowMenu => Ok(OverflowMenu),
+      | El::Overflow(o) => Ok(Overflow(o)),
       | El::RadioButtons(r) => Ok(RadioButtons(r)),
       | El::Button(cts) => Ok(Button(cts)),
       | El::TextInput(t) => Ok(TextInput(t)),

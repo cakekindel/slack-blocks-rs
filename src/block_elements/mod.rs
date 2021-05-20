@@ -2,16 +2,21 @@ use serde::{Deserialize, Serialize};
 
 use crate::{convert, val_helpr::ValidationResult};
 
-pub mod radio;
-pub use radio::Radio;
-
 pub mod button;
-pub use button::Contents as Button;
-
+pub mod overflow;
+pub mod radio;
 pub mod select;
-pub use select::Select;
-
 pub mod text_input;
+
+#[doc(inline)]
+pub use button::Button;
+#[doc(inline)]
+pub use overflow::Overflow;
+#[doc(inline)]
+pub use radio::Radio;
+#[doc(inline)]
+pub use select::Select;
+#[doc(inline)]
 pub use text_input::TextInput;
 
 /// # Block Elements - interactive components
@@ -36,7 +41,7 @@ pub enum BlockElement<'a> {
   DatePicker,
   Image,
   MultiSelect,
-  OverflowMenu,
+  Overflow(Overflow<'a>),
   RadioButtons(Radio<'a>),
 
   #[serde(rename = "plain_text_input")]
@@ -68,6 +73,7 @@ impl<'a> BlockElement<'a> {
       | Self::SelectExternal(cts) => cts.validate(),
       | Self::SelectStatic(cts) => cts.validate(),
       | Self::RadioButtons(cts) => cts.validate(),
+      | Self::Overflow(cts) => cts.validate(),
       | rest => todo!("validation not implemented for {:?}", rest),
     }
   }
@@ -76,6 +82,7 @@ impl<'a> BlockElement<'a> {
 convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button(b));
 convert!(impl<'a> From<Radio<'a>> for BlockElement<'a> => |b| BlockElement::RadioButtons(b));
 convert!(impl<'a> From<TextInput<'a>> for BlockElement<'a> => |t| BlockElement::TextInput(t));
+convert!(impl<'a> From<Overflow<'a>> for BlockElement<'a> => |t| BlockElement::Overflow(t));
 
 convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {

@@ -3,13 +3,13 @@ use std::borrow::Cow;
 use serde::{Deserialize as De, Serialize as Ser};
 use validator::Validate;
 
-use crate::{compose::{opt::{AnyText, UrlUnset},
+use crate::{compose::{opt::{AnyText, NoUrl},
                       Confirm,
                       Opt},
             text,
             val_helpr::ValidationResult};
 
-pub type MyOpt<'a> = Opt<'a, AnyText, UrlUnset>;
+pub type MyOpt<'a> = Opt<'a, AnyText, NoUrl>;
 
 /// # Radio Buttons
 ///
@@ -183,7 +183,7 @@ pub mod build {
       self,
       options: I)
       -> RadioBuilder<'a, T2, A, Set<method::options>>
-      where I: IntoIterator<Item = Opt<'a, T2, UrlUnset>>
+      where I: IntoIterator<Item = Opt<'a, T2, NoUrl>>
     {
       let options = options.into_iter().map(|o| o.into()).collect();
 
@@ -215,7 +215,7 @@ pub mod build {
     ///
     /// [option object 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
     pub fn initial_option(mut self,
-                          option: Opt<'a, text::Plain, UrlUnset>)
+                          option: Opt<'a, text::Plain, NoUrl>)
                           -> Self {
       self.initial_option = Some(option.into());
       self
@@ -231,7 +231,7 @@ pub mod build {
     ///
     /// [option object 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
     pub fn initial_option(mut self,
-                          option: Opt<'a, text::Mrkdwn, UrlUnset>)
+                          option: Opt<'a, text::Mrkdwn, NoUrl>)
                           -> Self {
       self.initial_option = Some(option.into());
       self

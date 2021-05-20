@@ -10,10 +10,10 @@ use crate::{build::*, val_helpr::ValidationResult};
 pub struct AnyText;
 
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct UrlUnset;
+pub struct NoUrl;
 
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct UrlSet;
+pub struct AllowUrl;
 
 /// # Option Object
 /// [slack api docs 🔗]
@@ -32,7 +32,7 @@ pub struct UrlSet;
 /// [radio button group 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
 /// [overflow menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#overflow
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct Opt<'a, T = AnyText, U = UrlUnset> {
+pub struct Opt<'a, T = AnyText, U = NoUrl> {
   #[validate(custom = "validate::text")]
   text: text::Text,
 
@@ -159,7 +159,7 @@ impl<'a> Opt<'a> {
   #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
   pub fn from_plain_text_and_value(text: impl Into<text::Plain>,
                                    value: impl Into<Cow<'a, str>>)
-                                   -> Opt<'a, text::Plain, UrlUnset> {
+                                   -> Opt<'a, text::Plain, NoUrl> {
     Opt { text: text.into().into(),
           value: value.into(),
           description: None,
@@ -220,7 +220,7 @@ impl<'a> Opt<'a> {
   #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
   pub fn from_mrkdwn_and_value(text: impl Into<text::Mrkdwn>,
                                value: impl Into<Cow<'a, str>>)
-                               -> Opt<'a, text::Mrkdwn, UrlUnset> {
+                               -> Opt<'a, text::Mrkdwn, NoUrl> {
     Opt { text: text.into().into(),
           value: value.into(),
           description: None,
@@ -357,7 +357,7 @@ impl<'a, U> Opt<'a, text::Plain, U> {
   #[deprecated(since = "0.15.0", note = "Use Opt::builder instead")]
   pub fn with_url(self,
                   url: impl Into<Cow<'a, str>>)
-                  -> Opt<'a, text::Plain, UrlSet> {
+                  -> Opt<'a, text::Plain, AllowUrl> {
     Opt { text: self.text,
           value: self.value,
           description: self.description,
@@ -569,6 +569,14 @@ pub mod build {
       self.url = Some(url.into());
       self.cast_state()
     }
+
+    /// Flag opt as being usable in an `AllowUrl` context without setting Url explicitly.
+    pub fn no_url(
+      self)
+      -> OptBuilder<'a, Set<(method::text, text::Plain)>, V, Set<method::url>>
+    {
+      self.cast_state()
+    }
   }
 
   impl<'a>
@@ -597,7 +605,7 @@ pub mod build {
     ///                         .url("https://cheese.com")
     ///                         .build();
     /// ```
-    pub fn build(self) -> Opt<'a, text::Plain, UrlSet> {
+    pub fn build(self) -> Opt<'a, text::Plain, AllowUrl> {
       Opt { text: self.text.unwrap(),
             value: self.value.unwrap(),
             url: self.url,
@@ -633,7 +641,7 @@ pub mod build {
     ///
     /// let opt = Opt::builder().text_md("cheese").value("cheese").build();
     /// ```
-    pub fn build(self) -> Opt<'a, T, UrlUnset> {
+    pub fn build(self) -> Opt<'a, T, NoUrl> {
       Opt { text: self.text.unwrap(),
             value: self.value.unwrap(),
             url: self.url,

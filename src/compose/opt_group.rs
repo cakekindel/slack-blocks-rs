@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use super::{opt::{AnyText, UrlUnset},
+use super::{opt::{AnyText, NoUrl},
             text,
             Opt};
 use crate::val_helpr::ValidationResult;
@@ -16,7 +16,7 @@ use crate::val_helpr::ValidationResult;
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option_group
 /// [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct OptGroup<'a, T = AnyText, U = UrlUnset> {
+pub struct OptGroup<'a, T = AnyText, U = NoUrl> {
   #[validate(custom = "validate::label")]
   label: text::Text,
 
@@ -228,7 +228,7 @@ pub mod build {
   pub type OptGroupBuilderInit<'a> =
     OptGroupBuilder<'a,
                     AnyText,
-                    UrlUnset,
+                    NoUrl,
                     RequiredMethodNotCalled<method::options>,
                     RequiredMethodNotCalled<method::label>>;
 
