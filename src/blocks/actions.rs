@@ -6,6 +6,7 @@ use validator::Validate;
 use crate::{block_elements,
             block_elements::{select,
                              Button,
+                             Checkboxes,
                              DatePicker,
                              Overflow,
                              Radio,
@@ -204,7 +205,7 @@ impl<'a> Contents<'a> {
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub enum BlockElement<'a> {
   Button(Button),
-  Checkboxes,
+  Checkboxes(Checkboxes<'a>),
   DatePicker(DatePicker<'a>),
   Overflow(Overflow<'a>),
   TextInput(TextInput<'a>),
@@ -271,7 +272,7 @@ impl<'a> TryFrom<block_elements::BlockElement<'a>> for self::BlockElement<'a> {
       | El::RadioButtons(r) => Ok(RadioButtons(r)),
       | El::Button(cts) => Ok(Button(cts)),
       | El::TextInput(t) => Ok(TextInput(t)),
-      | El::Checkboxes => Ok(Checkboxes),
+      | El::Checkboxes(c) => Ok(Checkboxes(c)),
       | El::DatePicker(d) => Ok(DatePicker(d)),
       | _ => Err(()),
     }

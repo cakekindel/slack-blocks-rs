@@ -109,7 +109,13 @@ should_fail!(
     actions_with_too_many_objects:
     Block::Actions(
        common::vec_of_len(
-           actions::BlockElement::Checkboxes,
+           actions::BlockElement::SelectStatic(
+             block_elements::select::Static::builder()
+                                            .placeholder("bar")
+                                            .action_id("foo")
+                                            .options(vec![])
+                                            .build()
+             ),
            6
        ).into()
     )
