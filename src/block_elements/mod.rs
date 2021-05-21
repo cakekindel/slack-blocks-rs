@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::{convert, val_helpr::ValidationResult};
 
 pub mod button;
+pub mod checkboxes;
 pub mod date_picker;
 pub mod image;
 pub mod overflow;
@@ -12,6 +13,8 @@ pub mod text_input;
 
 #[doc(inline)]
 pub use button::Button;
+#[doc(inline)]
+pub use checkboxes::Checkboxes;
 #[doc(inline)]
 pub use date_picker::DatePicker;
 #[doc(inline)]
@@ -43,7 +46,7 @@ pub use text_input::TextInput;
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum BlockElement<'a> {
   Button(Button),
-  Checkboxes,
+  Checkboxes(Checkboxes<'a>),
   Image(Image<'a>),
   MultiSelect,
 
@@ -85,6 +88,7 @@ impl<'a> BlockElement<'a> {
       | Self::SelectStatic(cts) => cts.validate(),
       | Self::RadioButtons(cts) => cts.validate(),
       | Self::Overflow(cts) => cts.validate(),
+      | Self::Checkboxes(cts) => cts.validate(),
       | rest => todo!("validation not implemented for {:?}", rest),
     }
   }
@@ -95,6 +99,7 @@ convert!(impl<'a> From<Radio<'a>> for BlockElement<'a> => |b| BlockElement::Radi
 convert!(impl<'a> From<TextInput<'a>> for BlockElement<'a> => |t| BlockElement::TextInput(t));
 convert!(impl<'a> From<Overflow<'a>> for BlockElement<'a> => |t| BlockElement::Overflow(t));
 convert!(impl<'a> From<DatePicker<'a>> for BlockElement<'a> => |t| BlockElement::DatePicker(t));
+convert!(impl<'a> From<Checkboxes<'a>> for BlockElement<'a> => |t| BlockElement::Checkboxes(t));
 
 convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {

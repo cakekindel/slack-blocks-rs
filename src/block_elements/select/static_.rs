@@ -10,7 +10,8 @@ type OptGroup<'a> = compose::OptGroup<'a, text::Plain, NoUrl>;
 type Opt<'a> = compose::Opt<'a, text::Plain, NoUrl>;
 type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, NoUrl>;
 
-/// ## Select menu with static options
+/// # Select menu with static options
+///
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_select)
 ///
 /// This is the simplest form of select menu,
