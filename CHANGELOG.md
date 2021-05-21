@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.16.5 (2021-05-21)
+
+
+### Features
+
+* checkboxes element ([#133](https://github.com/cakekindel/slack-blocks-rs/issues/133)) ([fbf5de8](https://github.com/cakekindel/slack-blocks-rs/commit/fbf5de8406b50387060418120916e7f8f10ee11e))
+
 ### 0.16.4 (2021-05-20)
 
 
