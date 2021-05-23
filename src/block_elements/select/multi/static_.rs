@@ -4,7 +4,7 @@ use compose::{opt::NoUrl, Confirm};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{block_elements::select::static_::build,
+use crate::{elems::select::static_::build,
             compose,
             text,
             val_helpr::ValidationResult};
@@ -26,29 +26,29 @@ type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, NoUrl>;
 /// [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Static<'a> {
-  #[validate(custom = "crate::block_elements::select::validate::placeholder")]
-  pub(in crate::block_elements::select) placeholder: text::Text,
+  #[validate(custom = "crate::elems::select::validate::placeholder")]
+  pub(in crate::elems::select) placeholder: text::Text,
 
   #[validate(length(max = 255))]
-  pub(in crate::block_elements::select) action_id: Cow<'a, str>,
+  pub(in crate::elems::select) action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(length(max = 100))]
-  pub(in crate::block_elements::select) options: Option<Vec<Opt<'a>>>,
+  pub(in crate::elems::select) options: Option<Vec<Opt<'a>>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(length(max = 100))]
-  pub(in crate::block_elements::select) option_groups: Option<Vec<OptGroup<'a>>>,
+  pub(in crate::elems::select) option_groups: Option<Vec<OptGroup<'a>>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate]
-  pub(in crate::block_elements::select) confirm: Option<Confirm>,
+  pub(in crate::elems::select) confirm: Option<Confirm>,
 
-  pub(in crate::block_elements::select) initial_options:
+  pub(in crate::elems::select) initial_options:
     Option<Cow<'a, [OptOrOptGroup<'a>]>>,
 
   #[validate(range(min = 1))]
-  pub(in crate::block_elements::select) max_selected_items: Option<u32>,
+  pub(in crate::elems::select) max_selected_items: Option<u32>,
 }
 
 impl<'a> Static<'a> {
@@ -72,7 +72,7 @@ impl<'a> Static<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   ///
   /// let placeholder = r#"Hey I really would appreciate it if you chose
   /// a channel relatively soon, so that we can figure out
