@@ -74,8 +74,7 @@ impl<'a> Static<'a> {
   ///                });
   ///
   /// let select: BlockElement =
-  ///   Static::builder().select_multi()
-  ///                    .placeholder("Choose your favorite cities!")
+  ///   Static::builder().placeholder("Choose your favorite cities!")
   ///                    .action_id("fave_city")
   ///                    .options(options)
   ///                    .build()
@@ -395,14 +394,13 @@ pub mod build {
     /// ```compile_fail
     /// use slack_blocks::block_elements::select::Static;
     ///
-    /// let sel = Static::builder().select_one().build(); // Won't compile!
+    /// let sel = Static::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
     /// use slack_blocks::block_elements::select::Static;
     ///
-    /// let sel = Static::builder().select_one()
-    ///                            .placeholder("foo")
+    /// let sel = Static::builder().placeholder("foo")
     ///                            .action_id("bar")
     ///                            .options(vec![])
     ///                            .build();
@@ -432,14 +430,13 @@ pub mod build {
     /// ```compile_fail
     /// use slack_blocks::block_elements::select::Static;
     ///
-    /// let sel = Static::builder().select_one().build(); // Won't compile!
+    /// let sel = Static::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
     /// use slack_blocks::block_elements::select::Static;
     ///
-    /// let sel = Static::builder().select_one()
-    ///                            .placeholder("foo")
+    /// let sel = Static::builder().placeholder("foo")
     ///                            .action_id("bar")
     ///                            .options(vec![])
     ///                            .build();

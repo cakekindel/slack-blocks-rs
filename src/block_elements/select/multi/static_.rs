@@ -1,4 +1,4 @@
-use std::{borrow::Cow, marker::PhantomData};
+use std::borrow::Cow;
 
 use compose::{opt::NoUrl, Confirm};
 use serde::{Deserialize, Serialize};
@@ -13,12 +13,17 @@ type OptGroup<'a> = compose::OptGroup<'a, text::Plain, NoUrl>;
 type Opt<'a> = compose::Opt<'a, text::Plain, NoUrl>;
 type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, NoUrl>;
 
-/// # Select menu with static options
+/// # Multi-select menu with static options
 ///
-/// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_select)
+/// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_multi_select)
 ///
 /// This is the simplest form of select menu,
 /// with a static list of options passed in when defining the element.
+///
+/// Works in [blocks 🔗]: Section, Input
+///
+/// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
+/// [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
 pub struct Static<'a> {
   #[validate(custom = "crate::block_elements::select::validate::placeholder")]
@@ -51,43 +56,7 @@ impl<'a> Static<'a> {
   ///
   /// # Examples
   /// ```
-  /// use std::convert::TryFrom;
-  ///
-  /// use slack_blocks::{block_elements::{select::Static, BlockElement},
-  ///                    blocks::{Actions, Block},
-  ///                    compose::Opt,
-  ///                    text};
-  ///
-  /// struct City {
-  ///   name: String,
-  ///   short_code: String,
-  /// }
-  ///
-  /// impl City {
-  ///   pub fn new(name: impl ToString, short_code: impl ToString) -> Self {
-  ///     Self { name: name.to_string(),
-  ///            short_code: short_code.to_string() }
-  ///   }
-  /// }
-  ///
-  /// let cities = vec![City::new("Seattle", "SEA"),
-  ///                   City::new("Portland", "PDX"),
-  ///                   City::new("Phoenix", "PHX")];
-  ///
-  /// let options =
-  ///   cities.iter().map(|City { name, short_code }| {
-  ///                  Opt::builder().text_plain(name).value(short_code).build()
-  ///                });
-  ///
-  /// let select: BlockElement =
-  ///   Static::builder().select_multi()
-  ///                    .placeholder("Choose your favorite cities!")
-  ///                    .action_id("fave_city")
-  ///                    .options(options)
-  ///                    .build()
-  ///                    .into();
-  ///
-  /// let block: Block = Actions::try_from(select).unwrap().into();
+  /// // TODO(#130): implement once input or section can accept this
   /// ```
   pub fn builder() -> build::MultiStaticBuilderInit<'a> {
     build::MultiStaticBuilderInit::new()

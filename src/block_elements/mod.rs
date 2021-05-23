@@ -48,7 +48,6 @@ pub enum BlockElement<'a> {
   Button(Button),
   Checkboxes(Checkboxes<'a>),
   Image(Image<'a>),
-  MultiSelect,
 
   #[serde(rename = "datepicker")]
   DatePicker(DatePicker<'a>),
@@ -75,6 +74,9 @@ pub enum BlockElement<'a> {
 
   #[serde(rename = "static_select")]
   SelectStatic(select::Static<'a>),
+
+  #[serde(rename = "multi_static_select")]
+  MultiSelectStatic(select::multi::Static<'a>),
 }
 
 impl<'a> BlockElement<'a> {
@@ -116,3 +118,5 @@ convert!(impl<'a> From<select::External<'a>> for BlockElement<'a> => |s| BlockEl
 convert!(impl<'a> From<select::PublicChannel<'a>> for BlockElement<'a> => |s| BlockElement::SelectPublicChannel(s));
 convert!(impl<'a> From<select::Conversation<'a>> for BlockElement<'a> => |s| BlockElement::SelectConversation(s));
 convert!(impl<'a> From<select::User<'a>> for BlockElement<'a> => |s| BlockElement::SelectUser(s));
+
+convert!(impl<'a> From<select::multi::Static<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectStatic(s));
