@@ -324,11 +324,8 @@ pub mod build {
   ///                    blocks::{Actions, Block},
   ///                    compose::Opt};
   ///
-  /// let rust = Opt::from_plain_text_and_value("Rust", "rs");
-  ///
   /// let select: BlockElement =
   ///   External::builder().placeholder("Choose your favorite programming language!")
-  ///                    .options(vec![rust])
   ///                    .action_id("lang_chosen")
   ///                    .build()
   ///                    .into();
@@ -582,7 +579,6 @@ pub mod build {
     ///
     /// let sel = External::builder().placeholder("foo")
     ///                              .action_id("bar")
-    ///                              .options(vec![])
     ///                              .build();
     /// ```
     pub fn build(self) -> External<'a> {
@@ -617,7 +613,6 @@ pub mod build {
     ///
     /// let sel = External::builder().placeholder("foo")
     ///                              .action_id("bar")
-    ///                              .options(vec![])
     ///                              .build();
     /// ```
     pub fn build(self) -> multi::External<'a> {
