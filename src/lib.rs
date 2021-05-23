@@ -58,7 +58,6 @@ mod val_helpr;
 
 /// `block_elements` will be renamed to `elements` before 1.0.0.
 pub use block_elements as elems;
-
 #[doc(inline)]
 pub use block_elements::BlockElement;
 #[doc(inline)]

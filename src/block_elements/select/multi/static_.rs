@@ -4,8 +4,8 @@ use compose::{opt::NoUrl, Confirm};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{elems::select::static_::build,
-            compose,
+use crate::{compose,
+            elems::select::static_::build,
             text,
             val_helpr::ValidationResult};
 
