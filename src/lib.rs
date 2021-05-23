@@ -56,6 +56,11 @@ pub mod compose;
 mod build;
 mod val_helpr;
 
+#[doc(inline)]
+pub use block_elements::BlockElement;
+#[doc(inline)]
+pub use blocks::Block;
+#[doc(inline)]
 pub use compose::text;
 
 mod macros {

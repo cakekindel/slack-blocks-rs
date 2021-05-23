@@ -1,3 +1,17 @@
+//! # Select Menu Element
+//!
+//! A select menu, just as with a standard HTML `<select>` tag,
+//! creates a drop down menu with a list of options for a user to choose.
+//!
+//! The select menu also includes type-ahead functionality, where a user can type
+//! a part or all of an option string to filter the list.
+//!
+//! To use interactive components, you will need to make some changes to prepare your app.
+//! Read our [guide to enabling interactivity 🔗].
+//!
+//! [Select Menu Element 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
+//! [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
+
 use std::borrow::Cow;
 
 use crate::{convert, text};
@@ -8,6 +22,8 @@ pub mod external;
 pub mod public_channel;
 pub mod static_;
 pub mod user;
+
+pub mod multi;
 
 #[doc(inline)]
 pub use builder::SelectBuilder;
@@ -35,6 +51,8 @@ pub use user::User;
 ///
 /// [Select Menu Element 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
+#[deprecated(since = "0.16.6",
+             note = "enum doesn't really provide value as wrapper type and is confusing. use select types directly and slack_blocks::BlockElement instead.")]
 #[derive(Clone, Debug, Hash, PartialEq)]
 pub enum Select<'a> {
   Static(Static<'a>),
@@ -89,6 +107,11 @@ convert!(impl<'a> From<Static<'a>> for Select<'a> => |s| Select::Static(s));
 convert!(impl<'a> From<External<'a>> for Select<'a> => |e| Select::External(e));
 convert!(impl<'a> From<Conversation<'a>> for Select<'a> => |e| Select::Conversation(e));
 convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicChannel(e));
+
+pub mod select_kind {
+  pub struct Multi;
+  pub struct Single;
+}
 
 mod validate {
   use crate::{text, val_helpr::*};
