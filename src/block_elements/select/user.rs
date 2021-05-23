@@ -421,13 +421,11 @@ pub mod build {
     }
   }
 
-  /*
   impl<'a>
     UserBuilder<'a,
-                    select_kind::Multi,
-                    Set<method::placeholder>,
-                    Set<method::action_id>,
-                    O>
+                select_kind::Multi,
+                Set<method::placeholder>,
+                Set<method::action_id>>
   {
     /// All done building, now give me a darn select element!
     ///
@@ -435,25 +433,24 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `UserBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::select::User;
+    /// use slack_blocks::elems::select;
     ///
-    /// let sel = User::builder().build(); // Won't compile!
+    /// let sel = select::multi::User::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
     /// use slack_blocks::block_elements::select::User;
     ///
-    /// let sel = User::builder().placeholder("foo")
-    ///                              .action_id("bar")
-    ///                              .build();
+    /// let sel = select::multi::User::builder().placeholder("foo")
+    ///                                         .action_id("bar")
+    ///                                         .build();
     /// ```
     pub fn build(self) -> multi::User<'a> {
       multi::User { placeholder: self.placeholder.unwrap(),
-                        action_id: self.action_id.unwrap(),
-                        confirm: self.confirm,
-                        initial_options: self.initial_options,
-                        min_query_length: self.min_query_length,
-                        max_selected_items: self.max_selected_items }
+                    action_id: self.action_id.unwrap(),
+                    confirm: self.confirm,
+                    initial_users: self.initial_users,
+                    max_selected_items: self.max_selected_items }
     }
-  }*/
+  }
 }
