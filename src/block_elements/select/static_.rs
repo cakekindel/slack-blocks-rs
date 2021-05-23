@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, marker::PhantomData};
 
 use compose::{opt::NoUrl, Confirm};
 use serde::{Deserialize, Serialize};
@@ -32,11 +32,12 @@ pub struct Static<'a> {
   #[validate(length(max = 100))]
   option_groups: Option<Vec<OptGroup<'a>>>,
 
-  initial_option: Option<OptOrOptGroup<'a>>,
-
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate]
   confirm: Option<Confirm>,
+
+  // Select One
+  initial_option: Option<OptOrOptGroup<'a>>,
 }
 
 impl<'a> Static<'a> {
@@ -47,7 +48,7 @@ impl<'a> Static<'a> {
   /// use std::convert::TryFrom;
   ///
   /// use slack_blocks::{block_elements::{select::Static, BlockElement},
-  ///                    blocks::Actions,
+  ///                    blocks::{Actions, Block},
   ///                    compose::Opt,
   ///                    text};
   ///
@@ -73,13 +74,13 @@ impl<'a> Static<'a> {
   ///                });
   ///
   /// let select: BlockElement =
-  ///   Static::builder().placeholder("Choose your favorite city!")
+  ///   Static::builder().placeholder("Choose your favorite cities!")
   ///                    .action_id("fave_city")
   ///                    .options(options)
   ///                    .build()
   ///                    .into();
   ///
-  /// let block = Actions::try_from(select);
+  /// let block: Block = Actions::try_from(select).unwrap().into();
   /// ```
   pub fn builder() -> build::StaticBuilderInit<'a> {
     build::StaticBuilderInit::new()
@@ -117,22 +118,9 @@ impl<'a> Static<'a> {
 }
 
 pub mod build {
-  use std::marker::PhantomData;
-
   use super::*;
-  use crate::build::*;
-
-  /// Type indicating whether `StaticBuilder::placeholder` has been called
-  pub struct Placeholder;
-
-  /// Type indicating whether `StaticBuilder::option_groups` has been called
-  pub struct OptionGroups;
-
-  /// Type indicating whether `StaticBuilder::options` has been called
-  pub struct Options;
-
-  /// Type indicating whether `StaticBuilder::action_id` has been called
-  pub struct ActionId;
+  use crate::{block_elements::select::{multi, select_kind},
+              build::*};
 
   #[allow(non_camel_case_types)]
   pub mod method {
@@ -181,44 +169,58 @@ pub mod build {
   /// // <send block to API>
   /// ```
   #[derive(Default)]
-  pub struct StaticBuilder<'a, Placeholder, ActionId, Options> {
+  pub struct StaticBuilder<'a, Multi, Placeholder, ActionId, Options> {
     placeholder: Option<text::Text>,
     action_id: Option<Cow<'a, str>>,
     options: Option<Vec<Opt<'a>>>,
     option_groups: Option<Vec<OptGroup<'a>>>,
     confirm: Option<Confirm>,
     initial_option: Option<OptOrOptGroup<'a>>,
-    state: PhantomData<(Placeholder, ActionId, Options)>,
+    initial_options: Option<Cow<'a, [OptOrOptGroup<'a>]>>,
+    max_selected_items: Option<u32>,
+    state: PhantomData<(Multi, Placeholder, ActionId, Options)>,
   }
 
   pub type StaticBuilderInit<'a> =
     StaticBuilder<'a,
+                  select_kind::Single,
+                  RequiredMethodNotCalled<method::placeholder>,
+                  RequiredMethodNotCalled<method::action_id>,
+                  RequiredMethodNotCalled<method::options>>;
+
+  pub type MultiStaticBuilderInit<'a> =
+    StaticBuilder<'a,
+                  select_kind::Multi,
                   RequiredMethodNotCalled<method::placeholder>,
                   RequiredMethodNotCalled<method::action_id>,
                   RequiredMethodNotCalled<method::options>>;
 
   // Methods that are always available
-  impl<'a, P, A, O> StaticBuilder<'a, P, A, O> {
+  impl<'a, M, P, A, O> StaticBuilder<'a, M, P, A, O> {
     /// Construct a new StaticBuilder
-    pub fn new() -> StaticBuilderInit<'a> {
-      StaticBuilderInit { placeholder: None,
-                          action_id: None,
-                          options: None,
-                          confirm: None,
-                          initial_option: None,
-                          option_groups: None,
-                          state: PhantomData::<_> }
+    pub fn new() -> Self {
+      Self { placeholder: None,
+             action_id: None,
+             options: None,
+             option_groups: None,
+             initial_option: None,
+             initial_options: None,
+             max_selected_items: None,
+             confirm: None,
+             state: PhantomData::<_> }
     }
 
     /// Change the marker type params to some other arbitrary marker type params
-    fn cast_state<P2, A2, O2>(self) -> StaticBuilder<'a, P2, A2, O2> {
-      StaticBuilder::<'a, P2, A2, O2> { placeholder: self.placeholder,
-                                        action_id: self.action_id,
-                                        options: self.options,
-                                        option_groups: self.option_groups,
-                                        confirm: self.confirm,
-                                        initial_option: self.initial_option,
-                                        state: PhantomData::<_> }
+    fn cast_state<P2, A2, O2>(self) -> StaticBuilder<'a, M, P2, A2, O2> {
+      StaticBuilder { placeholder: self.placeholder,
+                      action_id: self.action_id,
+                      options: self.options,
+                      option_groups: self.option_groups,
+                      confirm: self.confirm,
+                      initial_option: self.initial_option,
+                      initial_options: self.initial_options,
+                      max_selected_items: self.max_selected_items,
+                      state: PhantomData::<_> }
     }
 
     /// Set `placeholder` (**Required**)
@@ -228,9 +230,10 @@ pub mod build {
     /// Maximum length for the `text` in this field is 150 characters.
     ///
     /// [`plain_text` only text object 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/composition-objects#text
-    pub fn placeholder(mut self,
-                       text: impl Into<text::Plain>)
-                       -> StaticBuilder<'a, Set<Placeholder>, A, O> {
+    pub fn placeholder(
+      mut self,
+      text: impl Into<text::Plain>)
+      -> StaticBuilder<'a, M, Set<method::placeholder>, A, O> {
       self.placeholder = Some(text.into().into());
       self.cast_state()
     }
@@ -245,7 +248,7 @@ pub mod build {
     /// [identify the source of the action 🔗]: https://api.slack.comhttps://api.slack.com/interactivity/handling#payloads
     pub fn action_id(mut self,
                      text: impl Into<Cow<'a, str>>)
-                     -> StaticBuilder<'a, P, Set<ActionId>, O> {
+                     -> StaticBuilder<'a, M, P, Set<method::action_id>, O> {
       self.action_id = Some(text.into());
       self.cast_state()
     }
@@ -263,7 +266,66 @@ pub mod build {
     }
   }
 
-  impl<'a, P, A> StaticBuilder<'a, P, A, Set<Options>> {
+  impl<'a, P, A, O> StaticBuilder<'a, select_kind::Multi, P, A, O> {
+    /// Set `max_selected_items` (Optional)
+    ///
+    /// Specifies the maximum number of items that can be selected in the menu.
+    ///
+    /// Minimum number is 1.
+    pub fn max_selected_items(mut self, max: u32) -> Self {
+      self.max_selected_items = Some(max);
+      self
+    }
+  }
+
+  impl<'a, P, A>
+    StaticBuilder<'a, select_kind::Multi, P, A, Set<(method::options, Opt<'a>)>>
+  {
+    /// Set `initial_options` (Optional)
+    ///
+    /// An array of [option objects 🔗] that exactly match one or more of the options within `options`.
+    ///
+    /// These options will be selected when the menu initially loads.
+    ///
+    /// [option objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
+    pub fn initial_options<I>(mut self, options: I) -> Self
+      where I: IntoIterator<Item = Opt<'a>>
+    {
+      self.initial_options = Some(options.into_iter()
+                                         .map(|o| OptOrOptGroup::<'a>::Opt(o))
+                                         .collect());
+      self
+    }
+  }
+
+  impl<'a, P, A>
+    StaticBuilder<'a, select_kind::Multi, P, A, Set<(method::options, Opt<'a>)>>
+  {
+    /// Set `initial_options` (Optional)
+    ///
+    /// An array of [option objects 🔗] that exactly match one or more of the options within `option_groups`.
+    ///
+    /// These options will be selected when the menu initially loads.
+    ///
+    /// [option objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
+    pub fn initial_option_groups<I>(mut self, option_groups: I) -> Self
+      where I: IntoIterator<Item = OptGroup<'a>>
+    {
+      self.initial_options =
+        Some(option_groups.into_iter()
+                          .map(|o| OptOrOptGroup::<'a>::OptGroup(o))
+                          .collect());
+      self
+    }
+  }
+
+  impl<'a, P, A>
+    StaticBuilder<'a,
+                  select_kind::Single,
+                  P,
+                  A,
+                  Set<(method::options, Opt<'a>)>>
+  {
     /// Set `initial_option` (Optional)
     ///
     /// A single option that exactly matches one of the options
@@ -276,7 +338,13 @@ pub mod build {
     }
   }
 
-  impl<'a, P, A> StaticBuilder<'a, P, A, Set<OptionGroups>> {
+  impl<'a, P, A>
+    StaticBuilder<'a,
+                  select_kind::Single,
+                  P,
+                  A,
+                  Set<(method::options, OptGroup<'a>)>>
+  {
     /// Set `initial_option` (Optional)
     ///
     /// A single option group that exactly matches one of the option groups
@@ -289,16 +357,17 @@ pub mod build {
     }
   }
 
-  impl<'a, P, A, O> StaticBuilder<'a, P, A, RequiredMethodNotCalled<O>> {
+  impl<'a, M, P, A, O> StaticBuilder<'a, M, P, A, RequiredMethodNotCalled<O>> {
     /// Set `options` (this or `Self::option_groups` is **Required**)
     ///
     /// An array of [option objects 🔗].
     /// Maximum number of options is 100.
     ///
     /// [option objects 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/composition-objects#option
-    pub fn options<Iter>(mut self,
-                         options: Iter)
-                         -> StaticBuilder<'a, P, A, Set<Options>>
+    pub fn options<Iter>(
+      mut self,
+      options: Iter)
+      -> StaticBuilder<'a, M, P, A, Set<(method::options, Opt<'a>)>>
       where Iter: IntoIterator<Item = Opt<'a>>
     {
       self.options = Some(options.into_iter().collect::<Vec<_>>());
@@ -311,9 +380,10 @@ pub mod build {
     /// Maximum number of option groups is 100.
     ///
     /// [option group objects 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option_group
-    pub fn option_groups<Iter>(mut self,
-                               groups: Iter)
-                               -> StaticBuilder<'a, P, A, Set<OptionGroups>>
+    pub fn option_groups<Iter>(
+      mut self,
+      groups: Iter)
+      -> StaticBuilder<'a, M, P, A, Set<(method::options, OptGroup<'a>)>>
       where Iter: IntoIterator<Item = OptGroup<'a>>
     {
       self.option_groups = Some(groups.into_iter().collect::<Vec<_>>());
@@ -321,7 +391,13 @@ pub mod build {
     }
   }
 
-  impl<'a, O> StaticBuilder<'a, Set<Placeholder>, Set<ActionId>, Set<O>> {
+  impl<'a, O>
+    StaticBuilder<'a,
+                  select_kind::Single,
+                  Set<method::placeholder>,
+                  Set<method::action_id>,
+                  Set<O>>
+  {
     /// All done building, now give me a darn select element!
     ///
     /// > `no method name 'build' found for struct 'select::static_::build::StaticBuilder<...>'`?
@@ -342,12 +418,49 @@ pub mod build {
     ///                            .build();
     /// ```
     pub fn build(self) -> Static<'a> {
-      Static::<'a> { placeholder: self.placeholder.unwrap(),
-                     action_id: self.action_id.unwrap(),
-                     options: self.options,
-                     option_groups: self.option_groups,
-                     confirm: self.confirm,
-                     initial_option: self.initial_option }
+      Static { placeholder: self.placeholder.unwrap(),
+               action_id: self.action_id.unwrap(),
+               options: self.options,
+               option_groups: self.option_groups,
+               confirm: self.confirm,
+               initial_option: self.initial_option }
+    }
+  }
+
+  impl<'a, O>
+    StaticBuilder<'a,
+                  select_kind::Multi,
+                  Set<method::placeholder>,
+                  Set<method::action_id>,
+                  Set<O>>
+  {
+    /// All done building, now give me a darn select element!
+    ///
+    /// > `no method name 'build' found for struct 'select::static_::build::StaticBuilder<...>'`?
+    /// Make sure all required setter methods have been called. See docs for `StaticBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::block_elements::select::Static;
+    ///
+    /// let sel = Static::builder().build(); // Won't compile!
+    /// ```
+    ///
+    /// ```
+    /// use slack_blocks::block_elements::select::Static;
+    ///
+    /// let sel = Static::builder().placeholder("foo")
+    ///                            .action_id("bar")
+    ///                            .options(vec![])
+    ///                            .build();
+    /// ```
+    pub fn build(self) -> multi::Static<'a> {
+      multi::Static { placeholder: self.placeholder.unwrap(),
+                      action_id: self.action_id.unwrap(),
+                      options: self.options,
+                      option_groups: self.option_groups,
+                      confirm: self.confirm,
+                      initial_options: self.initial_options,
+                      max_selected_items: self.max_selected_items }
     }
   }
 }

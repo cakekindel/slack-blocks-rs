@@ -1,3 +1,18 @@
+//! # Block Elements - interactive components
+//! [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements)
+//!
+//! Block elements can be used inside of `section`, `context`, and `actions` [layout blocks 🔗].
+//! Inputs can only be used inside of `input` blocks.
+//!
+//! Our overview of [app surfaces that support Block Kit 🔗] shows you where those blocks might be relevant.
+//!
+//! Finally, our [handling user interactivity guide 🔗] will help you prepare your app to allow
+//! for the use of the interactive components listed below.
+//!
+//! [app surfaces that support Block Kit 🔗]: https://api.slack.com/messaging/composing/layouts
+//! [handling user interactivity guide 🔗]: https://api.slack.com/interactivity/handling
+//! [layout blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
+
 use serde::{Deserialize, Serialize};
 
 use crate::{convert, val_helpr::ValidationResult};
@@ -48,7 +63,6 @@ pub enum BlockElement<'a> {
   Button(Button),
   Checkboxes(Checkboxes<'a>),
   Image(Image<'a>),
-  MultiSelect,
 
   #[serde(rename = "datepicker")]
   DatePicker(DatePicker<'a>),
@@ -75,6 +89,9 @@ pub enum BlockElement<'a> {
 
   #[serde(rename = "static_select")]
   SelectStatic(select::Static<'a>),
+
+  #[serde(rename = "multi_static_select")]
+  MultiSelectStatic(select::multi::Static<'a>),
 }
 
 impl<'a> BlockElement<'a> {
@@ -116,3 +133,5 @@ convert!(impl<'a> From<select::External<'a>> for BlockElement<'a> => |s| BlockEl
 convert!(impl<'a> From<select::PublicChannel<'a>> for BlockElement<'a> => |s| BlockElement::SelectPublicChannel(s));
 convert!(impl<'a> From<select::Conversation<'a>> for BlockElement<'a> => |s| BlockElement::SelectConversation(s));
 convert!(impl<'a> From<select::User<'a>> for BlockElement<'a> => |s| BlockElement::SelectUser(s));
+
+convert!(impl<'a> From<select::multi::Static<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectStatic(s));

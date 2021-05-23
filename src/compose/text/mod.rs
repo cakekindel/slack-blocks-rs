@@ -1,3 +1,12 @@
+//! # Text Object
+//! [_slack api docs 🔗_](https://api.slack.com/reference/block-kit/composition-objects#text)
+//!
+//! An object containing some text,
+//! formatted either as `plain_text`
+//! or using [`mrkdwn` 🔗](https://api.slack.com/reference/surfaces/formatting),
+//! our proprietary textual markup that's just different enough
+//! from Markdown to frustrate you.
+
 use serde::{Deserialize, Serialize};
 
 use crate::convert;
