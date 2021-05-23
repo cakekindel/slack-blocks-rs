@@ -76,7 +76,7 @@ impl<'a> User<'a> {
   /// use std::convert::TryFrom;
   /// use std::iter;
   ///
-  /// use slack_blocks::block_elements::{BlockElement, select};
+  /// use slack_blocks::elems::{BlockElement, select};
   /// use slack_blocks::blocks;
   /// use slack_blocks::text;
   /// use text::ToSlackPlaintext;
@@ -122,7 +122,7 @@ impl<'a> User<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Actions},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{text, Confirm, text::ToSlackPlaintext},
   /// };
   ///
@@ -165,7 +165,7 @@ impl<'a> User<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Actions, Section},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{text, Confirm, text::ToSlackPlaintext},
   /// };
   ///
@@ -201,7 +201,7 @@ impl<'a> User<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   ///
   /// let select = select::User::from_placeholder_and_action_id(
   ///         r#"Hey I really would appreciate it if you chose
@@ -252,9 +252,9 @@ pub mod build {
   /// ```
   /// use std::convert::TryFrom;
   ///
-  /// use slack_blocks::{block_elements::{select::User, BlockElement},
-  ///                    blocks::{Actions, Block},
-  ///                    compose::Opt};
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    compose::Opt,
+  ///                    elems::{select::User, BlockElement}};
   ///
   /// let select: BlockElement =
   ///   User::builder().placeholder("Choose your favorite co-worker!")
@@ -403,13 +403,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `UserBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::select::User;
+    /// use slack_blocks::elems::select::User;
     ///
     /// let sel = User::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::block_elements::select::User;
+    /// use slack_blocks::elems::select::User;
     ///
     /// let sel = User::builder().placeholder("foo").action_id("bar").build();
     /// ```
@@ -439,7 +439,7 @@ pub mod build {
     /// ```
     ///
     /// ```
-    /// use slack_blocks::block_elements::select::User;
+    /// use slack_blocks::elems::select;
     ///
     /// let sel = select::multi::User::builder().placeholder("foo")
     ///                                         .action_id("bar")
