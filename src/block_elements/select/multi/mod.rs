@@ -13,15 +13,15 @@
 
 // mod builder;
 // pub mod conversation;
-// pub mod external;
+pub mod external;
 // pub mod public_channel;
 pub mod static_;
 // pub mod user;
 
 // #[doc(inline)]
 // pub use conversation::Conversation;
-// #[doc(inline)]
-// pub use external::External;
+#[doc(inline)]
+pub use external::External;
 // #[doc(inline)]
 // pub use public_channel::PublicChannel;
 #[doc(inline)]
