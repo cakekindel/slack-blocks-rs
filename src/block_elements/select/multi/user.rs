@@ -47,8 +47,8 @@ impl<'a> User<'a> {
   /// ```
   /// // TODO(#130)
   /// ```
-  pub fn builder() -> build::UserBuilderInit<'a> {
-    build::UserBuilderInit::new()
+  pub fn builder() -> build::MultiUserBuilderInit<'a> {
+    build::MultiUserBuilderInit::new()
   }
 
   /// Validate that this user select agrees with Slack's model requirements
