@@ -267,7 +267,11 @@ pub mod build {
   }
 
   impl<'a, P, A, O> StaticBuilder<'a, select_kind::Multi, P, A, O> {
-    /// FIXME
+    /// Set `max_selected_items` (Optional)
+    ///
+    /// Specifies the maximum number of items that can be selected in the menu.
+    ///
+    /// Minimum number is 1.
     pub fn max_selected_items(mut self, max: u32) -> Self {
       self.max_selected_items = Some(max);
       self
@@ -279,7 +283,11 @@ pub mod build {
   {
     /// Set `initial_options` (Optional)
     ///
-    /// FIXME
+    /// An array of [option objects 🔗] that exactly match one or more of the options within `options`.
+    ///
+    /// These options will be selected when the menu initially loads.
+    ///
+    /// [option objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
     pub fn initial_options<I>(mut self, options: I) -> Self
       where I: IntoIterator<Item = Opt<'a>>
     {
@@ -295,7 +303,11 @@ pub mod build {
   {
     /// Set `initial_options` (Optional)
     ///
-    /// FIXME
+    /// An array of [option objects 🔗] that exactly match one or more of the options within `option_groups`.
+    ///
+    /// These options will be selected when the menu initially loads.
+    ///
+    /// [option objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
     pub fn initial_option_groups<I>(mut self, option_groups: I) -> Self
       where I: IntoIterator<Item = OptGroup<'a>>
     {
