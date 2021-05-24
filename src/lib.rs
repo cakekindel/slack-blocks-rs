@@ -47,11 +47,12 @@
 
 // #![warn(missing_docs)]
 // #![warn(missing_doc_code_examples)]
-#![forbid(missing_copy_implementations,
-          missing_debug_implementations,
-          unreachable_pub,
-          unsafe_code,
-          unused_crate_dependencies)]
+#![cfg_attr(not(test),
+            forbid(missing_copy_implementations,
+                   missing_debug_implementations,
+                   unreachable_pub,
+                   unsafe_code,
+                   unused_crate_dependencies))]
 #![allow(deprecated)] // temporary
 
 #[macro_use]

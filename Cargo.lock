@@ -133,9 +133,9 @@ dependencies = [
 name = "slack-blocks"
 version = "0.16.10"
 dependencies = [
+ "lazy_static",
  "serde",
  "serde_json",
- "test-case",
  "validator",
  "validator_derive",
 ]
@@ -149,18 +149,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-xid",
-]
-
-[[package]]
-name = "test-case"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "199464148b42bcf3da8b2a56f6ee87ca68f47402496d1268849291ec9fb463c8"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
- "version_check",
 ]
 
 [[package]]
@@ -242,9 +230,3 @@ dependencies = [
  "syn",
  "validator",
 ]
-
-[[package]]
-name = "version_check"
-version = "0.9.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5a972e5669d67ba988ce3dc826706fb0a8b01471c088cb0b6110b805cc36aed"
