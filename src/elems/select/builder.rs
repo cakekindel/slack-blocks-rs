@@ -7,10 +7,11 @@ use crate::{compose::Confirm, text};
 /// Use to construct a Select element
 /// and easily choose a data source
 #[derive(Debug)]
+#[deprecated(since = "0.17.2", note = "use individual select builders instead")]
 pub struct SelectBuilder<'a> {
-  pub placeholder: text::Plain,
-  pub action_id: Cow<'a, str>,
-  pub confirm: Option<Confirm>,
+  placeholder: text::Plain,
+  action_id: Cow<'a, str>,
+  confirm: Option<Confirm>,
 }
 
 impl<'a> SelectBuilder<'a> {

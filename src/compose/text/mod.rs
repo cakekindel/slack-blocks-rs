@@ -11,12 +11,18 @@ use serde::{Deserialize, Serialize};
 
 use crate::convert;
 
+#[doc(inline)]
 pub mod mrkdwn;
+#[doc(inline)]
 pub mod plain;
 
+#[doc(inline)]
 pub use mrkdwn::Contents as Mrkdwn;
+#[doc(inline)]
 pub use plain::Contents as Plain;
 
+/// Convenience trait to provide a little more meaning than
+/// a call to `"foo".into()`, and shorter than `text::Plain::from("foo")`
 pub trait ToSlackPlaintext: Sized + Into<Plain> {
   /// Convert to slack plain_text
   fn plaintext(self) -> Plain {
@@ -26,6 +32,8 @@ pub trait ToSlackPlaintext: Sized + Into<Plain> {
 
 impl<T: Into<Plain>> ToSlackPlaintext for T {}
 
+/// Convenience trait to provide a little more meaning than
+/// a call to `"foo".into()`, and shorter than `text::Mrkdwn::from("foo")`
 pub trait ToSlackMarkdown: Sized + Into<Mrkdwn> {
   /// Convert to slack plain_text
   fn markdown(self) -> Mrkdwn {
@@ -46,7 +54,9 @@ impl<T: Into<Mrkdwn>> ToSlackMarkdown for T {}
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Text {
+  /// Markdown text
   Mrkdwn(mrkdwn::Contents),
+  /// Plain text
   #[serde(rename = "plain_text")]
   Plain(plain::Contents),
 }

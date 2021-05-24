@@ -1,3 +1,17 @@
+//! # Image Element
+//!
+//! An element to insert an image as part of a larger block of content.
+//!
+//! If you want a block with _only_ an image in it, you're looking for the [`image` block 🔗].
+//!
+//! [slack api docs 🔗]
+//!
+//! Works in [blocks 🔗]: Section, Context
+//!
+//! [`image` block 🔗]: https://api.slack.com/reference/block-kit/blocks#image
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
+//! [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
+
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
@@ -41,20 +55,25 @@ impl<'a> Image<'a> {
   }
 }
 
+/// Image element builder
 pub mod build {
   use std::marker::PhantomData;
 
   use super::*;
   use crate::build::*;
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// ImageBuilder.image_url
     #[derive(Copy, Clone, Debug)]
     pub struct image_url;
+    /// ImageBuilder.alt_text
     #[derive(Copy, Clone, Debug)]
     pub struct alt_text;
   }
 
+  /// Initial state for Image Builder
   pub type ImageBuilderInit<'a> =
     ImageBuilder<'a,
                  RequiredMethodNotCalled<method::image_url>,

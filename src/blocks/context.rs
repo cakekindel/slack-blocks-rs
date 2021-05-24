@@ -1,3 +1,11 @@
+//! # Context Block
+//!
+//! _[slack api docs 🔗][context_docs]_
+//!
+//! Displays message context, which can include both images and text.
+//!
+//! [context_docs]: https://api.slack.com/reference/block-kit/blocks#context
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
@@ -165,6 +173,7 @@ impl<'a> From<Vec<Compose<'a>>> for Contents<'a> {
 
 /// The Composition objects supported by this block
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[allow(missing_docs)]
 pub enum Compose<'a> {
   Text(text::Text),
   Image(Image<'a>),

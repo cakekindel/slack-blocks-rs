@@ -1,3 +1,11 @@
+//! # Image Block
+//!
+//! _[slack api docs 🔗]_
+//!
+//! A simple image block, designed to make those cat photos really pop.
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#image
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 

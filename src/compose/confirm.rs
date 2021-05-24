@@ -1,3 +1,11 @@
+//! # Confirm Dialog
+//! [slack api docs 🔗]
+//!
+//! An object that defines a dialog that provides a confirmation step to any interactive element.
+//! This dialog will ask the user to confirm their action by offering a confirm and deny buttons.
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#confirm
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 

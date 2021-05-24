@@ -1,3 +1,6 @@
+//! ## Markdown text
+//! [_for more info, check out the slack api docs 🔗_](https://api.slack.com/reference/surfaces/formatting)
+
 use serde::{Deserialize, Serialize};
 
 /// ## Markdown text

@@ -45,8 +45,8 @@
 //! [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/
 //! [Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
 
-// #![warn(missing_docs)]
-// #![warn(missing_doc_code_examples)]
+#![warn(missing_doc_code_examples)]
+#![deny(missing_docs)]
 #![cfg_attr(not(test),
             forbid(missing_copy_implementations,
                    missing_debug_implementations,
@@ -58,8 +58,11 @@
 #[macro_use]
 extern crate validator_derive;
 
+#[doc(inline)]
 pub mod blocks;
+#[doc(inline)]
 pub mod compose;
+#[doc(inline)]
 pub mod elems;
 
 mod build;

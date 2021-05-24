@@ -1,3 +1,20 @@
+//! # Overflow Menu
+//!
+//! This is like a cross between a button and a select menu -
+//! when a user clicks on this overflow button,
+//! they will be presented with a list of options to choose from.
+//!
+//! Unlike the select menu, there is no typeahead field,
+//! and the button always appears with an ellipsis ("…"),
+//! rather than customisable text.
+//!
+//! [slack api docs 🔗]
+//!
+//! Works in [blocks 🔗]: Section, Actions
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#overflow
+//! [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
+
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
@@ -87,16 +104,20 @@ fn validate_options<'a>(options: &Cow<'a, [MyOpt<'a>]>) -> ValidatorResult {
   len("Overflow.options", 2..=5, options.as_ref())
 }
 
+/// Overflow menu builder
 pub mod build {
   use std::marker::PhantomData;
 
   use super::*;
   use crate::build::*;
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// OverflowBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
+    /// OverflowBuilder.options
     #[derive(Copy, Clone, Debug)]
     pub struct options;
   }

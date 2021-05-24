@@ -1,3 +1,13 @@
+//! # Option Group
+//! [slack api docs 🔗]
+//!
+//! Provides a way to group options in a [select menu 🔗] or [multi-select menu 🔗].
+//!
+//! [select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
+//! [multi-select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#multi_select
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option_group
+//! [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
@@ -118,16 +128,20 @@ impl<'a, T, U> OptGroup<'a, T, U> {
   }
 }
 
+/// OptGroup builder
 pub mod build {
   use std::marker::PhantomData;
 
   use super::*;
   use crate::build::*;
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   mod method {
+    /// OptGroupBuilder.label
     #[derive(Copy, Clone, Debug)]
     pub struct label;
+    /// OptGroupBuilder.options
     #[derive(Copy, Clone, Debug)]
     pub struct options;
   }
@@ -228,6 +242,7 @@ pub mod build {
     state: PhantomData<(Options, Label)>,
   }
 
+  /// Initial state for OptGroupBuilder
   pub type OptGroupBuilderInit<'a> =
     OptGroupBuilder<'a,
                     AnyText,

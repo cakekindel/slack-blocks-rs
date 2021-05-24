@@ -286,6 +286,7 @@ impl<'a> External<'a> {
   }
 }
 
+/// External Select Builder
 pub mod build {
   use std::marker::PhantomData;
 
@@ -293,12 +294,16 @@ pub mod build {
   use crate::{build::*,
               elems::select::{multi, select_kind}};
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// PublicChannelBuilder.placeholder
     #[derive(Copy, Clone, Debug)]
     pub struct placeholder;
+    /// PublicChannelBuilder.initial_option(s) or initial_option_group(s)
     #[derive(Copy, Clone, Debug)]
     pub struct initial_option;
+    /// PublicChannelBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
   }
@@ -351,6 +356,11 @@ pub mod build {
     state: PhantomData<(Multi, Placeholder, ActionId, Options)>,
   }
 
+  /// Initial state for ExternalBuilder.
+  ///
+  /// Users will be able to choose one of the options.
+  ///
+  /// To allow choosing many, use `slack_blocks::elems::select::multi::External::builder`.
   pub type ExternalBuilderInit<'a> =
     ExternalBuilder<'a,
                     select_kind::Single,
@@ -358,6 +368,9 @@ pub mod build {
                     RequiredMethodNotCalled<method::action_id>,
                     OptionalMethodNotCalled<method::initial_option>>;
 
+  /// Initial state for ExternalBuilder.
+  ///
+  /// Users will be able to choose many options.
   pub type MultiExternalBuilderInit<'a> =
     ExternalBuilder<'a,
                     select_kind::Multi,

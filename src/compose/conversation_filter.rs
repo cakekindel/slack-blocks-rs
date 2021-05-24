@@ -1,3 +1,14 @@
+//! # Filter for Conversations List
+//! [slack api docs 🔗]
+//!
+//! Provides a way to filter the list of options
+//! in a [conversations select menu 🔗] or
+//! [conversations multi-select menu 🔗].
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#filter_conversations
+//! [conversations select menu 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/block-elements#conversation_select
+//! [conversations multi-select menu 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/block-elements#conversation_multi_select
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
@@ -191,17 +202,22 @@ impl ConversationFilter {
 }
 
 // TODO: move this somewhere else. it is 100% gonna be used elsewhere.
+/// Type of slack "conversations"; dms and channels.
 #[derive(Copy, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub enum ConversationKind {
+  /// A direct message
   #[serde(rename = "im")]
   Dm,
 
+  /// A group DM
   #[serde(rename = "mpim")]
   GroupDm,
 
+  /// A public channel
   #[serde(rename = "public")]
   PublicChannel,
 
+  /// A private channel
   #[serde(rename = "private")]
   PrivateChannel,
 }
