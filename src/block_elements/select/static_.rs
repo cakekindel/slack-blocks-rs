@@ -1,3 +1,10 @@
+//! # Select menu with static options
+//!
+//! [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_select)
+//!
+//! This is the simplest form of select menu,
+//! with a static list of options passed in when defining the element.
+
 use std::{borrow::Cow, marker::PhantomData};
 
 use compose::{opt::NoUrl, Confirm};
@@ -74,7 +81,7 @@ impl<'a> Static<'a> {
   ///                });
   ///
   /// let select: BlockElement =
-  ///   Static::builder().placeholder("Choose your favorite cities!")
+  ///   Static::builder().placeholder("Choose your favorite city!")
   ///                    .action_id("fave_city")
   ///                    .options(options)
   ///                    .build()
