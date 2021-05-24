@@ -63,6 +63,12 @@ impl Long for &str {
   }
 }
 
+impl<'a> Long for &Cow<'a, str> {
+  fn len(&self) -> usize {
+    str::len(self)
+  }
+}
+
 impl<T> Long for &[T] {
   fn len(&self) -> usize {
     self.as_ref().len()

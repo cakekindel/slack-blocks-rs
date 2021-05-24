@@ -214,7 +214,7 @@ impl<'a> Contents<'a> {
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[allow(missing_docs)]
 pub enum BlockElement<'a> {
-  Button(Button),
+  Button(Button<'a>),
   Checkboxes(Checkboxes<'a>),
   DatePicker(DatePicker<'a>),
   Overflow(Overflow<'a>),
@@ -292,7 +292,7 @@ convert!(impl<'a> From<select::Conversation<'a>> for self::BlockElement<'a>  => 
 convert!(impl<'a> From<select::User<'a>> for self::BlockElement<'a>  => |s| self::BlockElement::SelectUser(s));
 convert!(impl<'a> From<select::External<'a>> for self::BlockElement<'a>  => |s| self::BlockElement::SelectExternal(s));
 convert!(impl<'a> From<select::Static<'a>> for self::BlockElement<'a>  => |s| self::BlockElement::SelectStatic(s));
-convert!(impl     From<Button> for self::BlockElement<'static> => |b| self::BlockElement::Button(b));
+convert!(impl<'a> From<Button<'a>> for self::BlockElement<'a> => |b| self::BlockElement::Button(b));
 convert!(impl<'a> From<Radio<'a>> for self::BlockElement<'a> => |b| self::BlockElement::RadioButtons(b));
 convert!(impl<'a> From<TextInput<'a>> for self::BlockElement<'a> => |t| self::BlockElement::TextInput(t));
 convert!(impl<'a> From<DatePicker<'a>> for self::BlockElement<'a> => |t| self::BlockElement::DatePicker(t));
