@@ -11,10 +11,9 @@
 //! [select menus 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
 //! [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 
-// mod builder;
 pub mod conversation;
 pub mod external;
-// pub mod public_channel;
+pub mod public_channel;
 pub mod static_;
 pub mod user;
 
@@ -22,8 +21,8 @@ pub mod user;
 pub use conversation::Conversation;
 #[doc(inline)]
 pub use external::External;
-// #[doc(inline)]
-// pub use public_channel::PublicChannel;
+#[doc(inline)]
+pub use public_channel::PublicChannel;
 #[doc(inline)]
 pub use static_::Static;
 #[doc(inline)]

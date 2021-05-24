@@ -81,10 +81,10 @@ impl<'a> Static<'a> {
   /// sent, in case we haven't made that super clear.
   /// If you understand, could you pick a channel, already??"#;
   ///
-  /// let select = select::Static::builder().placeholder(placeholder)
-  ///                                       .action_id("abc123")
-  ///                                       .options(std::iter::empty())
-  ///                                       .build();
+  /// let select = select::multi::Static::builder().placeholder(placeholder)
+  ///                                              .action_id("abc123")
+  ///                                              .options(std::iter::empty())
+  ///                                              .build();
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
