@@ -1,3 +1,9 @@
+//! # Public Channel Select
+//! [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#channel_select)
+//!
+//! This select menu will populate its options with a list of
+//! public channels visible to the current user in the active workspace.
+
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
@@ -225,6 +231,7 @@ impl<'a> PublicChannel<'a> {
   }
 }
 
+/// Public Channel Select Builder
 pub mod build {
   use std::marker::PhantomData;
 
@@ -232,10 +239,14 @@ pub mod build {
   use crate::{build::*,
               elems::select::{multi, select_kind}};
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// PublicChannelBuilder.placeholder
     #[derive(Copy, Clone, Debug)]
     pub struct placeholder;
+
+    /// PublicChannelBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
   }
@@ -286,12 +297,20 @@ pub mod build {
     state: PhantomData<(Multi, Placeholder, ActionId)>,
   }
 
+  /// Initial state for PublicChannelBuilder.
+  ///
+  /// Users will be able to choose one of the options.
+  ///
+  /// To allow choosing many, use `slack_blocks::elems::select::multi::PublicChannel::builder`.
   pub type PublicChannelBuilderInit<'a> =
     PublicChannelBuilder<'a,
                          select_kind::Single,
                          RequiredMethodNotCalled<method::placeholder>,
                          RequiredMethodNotCalled<method::action_id>>;
 
+  /// Initial state for PublicChannelBuilder.
+  ///
+  /// Users will be able to choose many of the options.
   pub type MultiPublicChannelBuilderInit<'a> =
     PublicChannelBuilder<'a,
                          select_kind::Multi,

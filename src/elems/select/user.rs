@@ -220,6 +220,7 @@ impl<'a> User<'a> {
   }
 }
 
+/// User Select Builder
 pub mod build {
   use std::marker::PhantomData;
 
@@ -227,10 +228,14 @@ pub mod build {
   use crate::{build::*,
               elems::select::{multi, select_kind}};
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// UserBuilder.placeholder
     #[derive(Copy, Clone, Debug)]
     pub struct placeholder;
+
+    /// UserBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
   }
@@ -281,12 +286,20 @@ pub mod build {
     state: PhantomData<(Multi, Placeholder, ActionId)>,
   }
 
+  /// Initial state for UserBuilder.
+  ///
+  /// Users will be able to choose one user from their workspace.
+  ///
+  /// To allow choosing many, use `slack_blocks::elems::select::multi::User::builder`.
   pub type UserBuilderInit<'a> =
     UserBuilder<'a,
                 select_kind::Single,
                 RequiredMethodNotCalled<method::placeholder>,
                 RequiredMethodNotCalled<method::action_id>>;
 
+  /// Initial state for UserBuilder.
+  ///
+  /// Users will be able to choose many users from their workspace.
   pub type MultiUserBuilderInit<'a> =
     UserBuilder<'a,
                 select_kind::Multi,

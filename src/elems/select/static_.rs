@@ -7,15 +7,18 @@
 
 use std::{borrow::Cow, marker::PhantomData};
 
-use compose::{opt::NoUrl, Confirm};
+use compose::{opt::NoUrl, Confirm, Opt, OptGroup, OptOrOptGroup};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{compose, text, val_helpr::ValidationResult};
 
-type OptGroup<'a> = compose::OptGroup<'a, text::Plain, NoUrl>;
-type Opt<'a> = compose::Opt<'a, text::Plain, NoUrl>;
-type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, NoUrl>;
+/// Opt state supported by static select
+pub type StaticOptGroup<'a> = OptGroup<'a, text::Plain, NoUrl>;
+/// Opt state supported by static select
+pub type StaticOpt<'a> = Opt<'a, text::Plain, NoUrl>;
+/// Opt state supported by static select
+pub type StaticOptOrOptGroup<'a> = OptOrOptGroup<'a, text::Plain, NoUrl>;
 
 /// # Select menu with static options
 ///
@@ -33,18 +36,18 @@ pub struct Static<'a> {
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(length(max = 100))]
-  options: Option<Vec<Opt<'a>>>,
+  options: Option<Vec<StaticOpt<'a>>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(length(max = 100))]
-  option_groups: Option<Vec<OptGroup<'a>>>,
+  option_groups: Option<Vec<StaticOptGroup<'a>>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate]
   confirm: Option<Confirm>,
 
   // Select One
-  initial_option: Option<OptOrOptGroup<'a>>,
+  initial_option: Option<StaticOptOrOptGroup<'a>>,
 }
 
 impl<'a> Static<'a> {
@@ -124,17 +127,24 @@ impl<'a> Static<'a> {
   }
 }
 
+/// Static Select Builder
 pub mod build {
   use super::*;
   use crate::{build::*,
               elems::select::{multi, select_kind}};
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// StaticBuilder.placeholder
     #[derive(Copy, Clone, Debug)]
     pub struct placeholder;
+
+    /// StaticBuilder.options or option_groups
     #[derive(Copy, Clone, Debug)]
     pub struct options;
+
+    /// StaticBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
   }
@@ -182,15 +192,20 @@ pub mod build {
   pub struct StaticBuilder<'a, Multi, Placeholder, ActionId, Options> {
     placeholder: Option<text::Text>,
     action_id: Option<Cow<'a, str>>,
-    options: Option<Vec<Opt<'a>>>,
-    option_groups: Option<Vec<OptGroup<'a>>>,
+    options: Option<Vec<StaticOpt<'a>>>,
+    option_groups: Option<Vec<StaticOptGroup<'a>>>,
     confirm: Option<Confirm>,
-    initial_option: Option<OptOrOptGroup<'a>>,
-    initial_options: Option<Cow<'a, [OptOrOptGroup<'a>]>>,
+    initial_option: Option<StaticOptOrOptGroup<'a>>,
+    initial_options: Option<Cow<'a, [StaticOptOrOptGroup<'a>]>>,
     max_selected_items: Option<u32>,
     state: PhantomData<(Multi, Placeholder, ActionId, Options)>,
   }
 
+  /// Initial state for StaticBuilder.
+  ///
+  /// Users will be able to choose one of the static options.
+  ///
+  /// To allow choosing many, use `slack_blocks::elems::select::multi::Static::builder`.
   pub type StaticBuilderInit<'a> =
     StaticBuilder<'a,
                   select_kind::Single,
@@ -198,6 +213,9 @@ pub mod build {
                   RequiredMethodNotCalled<method::action_id>,
                   RequiredMethodNotCalled<method::options>>;
 
+  /// Initial state for StaticBuilder.
+  ///
+  /// Users will be able to choose many of the static options.
   pub type MultiStaticBuilderInit<'a> =
     StaticBuilder<'a,
                   select_kind::Multi,
@@ -289,7 +307,11 @@ pub mod build {
   }
 
   impl<'a, P, A>
-    StaticBuilder<'a, select_kind::Multi, P, A, Set<(method::options, Opt<'a>)>>
+    StaticBuilder<'a,
+                  select_kind::Multi,
+                  P,
+                  A,
+                  Set<(method::options, StaticOpt<'a>)>>
   {
     /// Set `initial_options` (Optional)
     ///
@@ -299,17 +321,22 @@ pub mod build {
     ///
     /// [option objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
     pub fn initial_options<I>(mut self, options: I) -> Self
-      where I: IntoIterator<Item = Opt<'a>>
+      where I: IntoIterator<Item = StaticOpt<'a>>
     {
-      self.initial_options = Some(options.into_iter()
-                                         .map(|o| OptOrOptGroup::<'a>::Opt(o))
-                                         .collect());
+      self.initial_options =
+        Some(options.into_iter()
+                    .map(|o| StaticOptOrOptGroup::<'a>::Opt(o))
+                    .collect());
       self
     }
   }
 
   impl<'a, P, A>
-    StaticBuilder<'a, select_kind::Multi, P, A, Set<(method::options, Opt<'a>)>>
+    StaticBuilder<'a,
+                  select_kind::Multi,
+                  P,
+                  A,
+                  Set<(method::options, StaticOpt<'a>)>>
   {
     /// Set `initial_options` (Optional)
     ///
@@ -319,11 +346,11 @@ pub mod build {
     ///
     /// [option objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
     pub fn initial_option_groups<I>(mut self, option_groups: I) -> Self
-      where I: IntoIterator<Item = OptGroup<'a>>
+      where I: IntoIterator<Item = StaticOptGroup<'a>>
     {
       self.initial_options =
         Some(option_groups.into_iter()
-                          .map(|o| OptOrOptGroup::<'a>::OptGroup(o))
+                          .map(|o| StaticOptOrOptGroup::<'a>::OptGroup(o))
                           .collect());
       self
     }
@@ -334,7 +361,7 @@ pub mod build {
                   select_kind::Single,
                   P,
                   A,
-                  Set<(method::options, Opt<'a>)>>
+                  Set<(method::options, StaticOpt<'a>)>>
   {
     /// Set `initial_option` (Optional)
     ///
@@ -342,8 +369,8 @@ pub mod build {
     /// that `Self::options` was called with.
     ///
     /// This option will be selected when the menu initially loads.
-    pub fn initial_option(mut self, option: Opt<'a>) -> Self {
-      self.initial_option = Some(OptOrOptGroup::<'a>::Opt(option));
+    pub fn initial_option(mut self, option: StaticOpt<'a>) -> Self {
+      self.initial_option = Some(StaticOptOrOptGroup::<'a>::Opt(option));
       self
     }
   }
@@ -353,7 +380,7 @@ pub mod build {
                   select_kind::Single,
                   P,
                   A,
-                  Set<(method::options, OptGroup<'a>)>>
+                  Set<(method::options, StaticOptGroup<'a>)>>
   {
     /// Set `initial_option` (Optional)
     ///
@@ -361,8 +388,11 @@ pub mod build {
     /// that `Self::options` was called with.
     ///
     /// This option will be selected when the menu initially loads.
-    pub fn initial_option_group(mut self, option_group: OptGroup<'a>) -> Self {
-      self.initial_option = Some(OptOrOptGroup::<'a>::OptGroup(option_group));
+    pub fn initial_option_group(mut self,
+                                option_group: StaticOptGroup<'a>)
+                                -> Self {
+      self.initial_option =
+        Some(StaticOptOrOptGroup::<'a>::OptGroup(option_group));
       self
     }
   }
@@ -377,8 +407,8 @@ pub mod build {
     pub fn options<Iter>(
       mut self,
       options: Iter)
-      -> StaticBuilder<'a, M, P, A, Set<(method::options, Opt<'a>)>>
-      where Iter: IntoIterator<Item = Opt<'a>>
+      -> StaticBuilder<'a, M, P, A, Set<(method::options, StaticOpt<'a>)>>
+      where Iter: IntoIterator<Item = StaticOpt<'a>>
     {
       self.options = Some(options.into_iter().collect::<Vec<_>>());
       self.cast_state()
@@ -393,8 +423,8 @@ pub mod build {
     pub fn option_groups<Iter>(
       mut self,
       groups: Iter)
-      -> StaticBuilder<'a, M, P, A, Set<(method::options, OptGroup<'a>)>>
-      where Iter: IntoIterator<Item = OptGroup<'a>>
+      -> StaticBuilder<'a, M, P, A, Set<(method::options, StaticOptGroup<'a>)>>
+      where Iter: IntoIterator<Item = StaticOptGroup<'a>>
     {
       self.option_groups = Some(groups.into_iter().collect::<Vec<_>>());
       self.cast_state()

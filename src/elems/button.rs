@@ -1,3 +1,25 @@
+//! # Button
+//! [slack api docs 🔗]
+//!
+//! Works with block types:
+//! - [Section 🔗]
+//! - [Actions 🔗]
+//!
+//! An interactive component that inserts a button.
+//! The button can be a trigger for anything from opening
+//! a simple link to starting a complex workflow.
+//!
+//! To use interactive components,
+//! you will need to make some changes
+//! to prepare your app.
+//!
+//! Read our [guide to enabling interactivity 🔗].
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#button
+//! [Section 🔗]: https://api.slack.com/reference/block-kit/blocks#section
+//! [Actions 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
+//! [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 

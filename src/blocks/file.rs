@@ -1,3 +1,12 @@
+//! # File Block
+//!
+//! [slack api docs 🔗]
+//!
+//! Displays a [remote file 🔗]
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#file
+//! [remote file 🔗]: https://api.slack.com/messaging/files/remote
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 

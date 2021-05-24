@@ -1,3 +1,14 @@
+//! # Date Picker Element
+//!
+//! An element which lets users easily select a date from a calendar style UI.
+//!
+//! [slack api docs 🔗]
+//!
+//! Works in [blocks 🔗]: Section, Actions, Input
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#datepicker
+//! [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
+
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
@@ -47,14 +58,17 @@ impl<'a> DatePicker<'a> {
   }
 }
 
+/// Date picker builder
 pub mod build {
   use std::marker::PhantomData;
 
   use super::*;
   use crate::build::*;
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// DatePickerBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
   }

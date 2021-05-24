@@ -318,6 +318,7 @@ impl<'a> Conversation<'a> {
   }
 }
 
+/// Conversation Select Builder
 pub mod build {
   use std::marker::PhantomData;
 
@@ -325,12 +326,16 @@ pub mod build {
   use crate::{build::*,
               elems::select::{multi, select_kind}};
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// ConversationBuilder.placeholder
     #[derive(Copy, Clone, Debug)]
     pub struct placeholder;
+    /// ConversationBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
+    /// ConversationBuilder.initial_channel(s)
     #[derive(Copy, Clone, Debug)]
     pub struct initial_channel;
   }
@@ -387,6 +392,11 @@ pub mod build {
     state: PhantomData<(Multi, Placeholder, ActionId, InitialChannel)>,
   }
 
+  /// Initial state for ConversationBuilder.
+  ///
+  /// Users will be able to choose one of the options.
+  ///
+  /// To allow choosing many, use `slack_blocks::elems::select::multi::Conversation::builder`.
   pub type ConversationBuilderInit<'a> =
     ConversationBuilder<'a,
                         select_kind::Single,
@@ -394,6 +404,9 @@ pub mod build {
                         RequiredMethodNotCalled<method::action_id>,
                         OptionalMethodNotCalled<method::initial_channel>>;
 
+  /// Initial state for ConversationBuilder.
+  ///
+  /// Users will be able to choose many options.
   pub type MultiConversationBuilderInit<'a> =
     ConversationBuilder<'a,
                         select_kind::Multi,

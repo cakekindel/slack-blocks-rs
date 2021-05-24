@@ -17,13 +17,21 @@ use serde::{Deserialize, Serialize};
 
 use crate::{convert, val_helpr::ValidationResult};
 
+#[doc(inline)]
 pub mod button;
+#[doc(inline)]
 pub mod checkboxes;
+#[doc(inline)]
 pub mod date_picker;
+#[doc(inline)]
 pub mod image;
+#[doc(inline)]
 pub mod overflow;
+#[doc(inline)]
 pub mod radio;
+#[doc(inline)]
 pub mod select;
+#[doc(inline)]
 pub mod text_input;
 
 #[doc(inline)]
@@ -60,62 +68,103 @@ pub use text_input::TextInput;
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum BlockElement<'a> {
+  /// # Button Element
   Button(Button),
+  /// # Checkboxes Element
   Checkboxes(Checkboxes<'a>),
+  /// # Image Element
   Image(Image<'a>),
 
+  /// # DatePicker Element
   #[serde(rename = "datepicker")]
   DatePicker(DatePicker<'a>),
 
+  /// # Overflow Element
   #[serde(rename = "overflow_menu")]
   Overflow(Overflow<'a>),
 
+  /// # Radio Button Group
   RadioButtons(Radio<'a>),
 
+  /// # Text Input Element
   #[serde(rename = "plain_text_input")]
   TextInput(TextInput<'a>),
 
+  /// # Select a public channel
   #[serde(rename = "channels_select")]
   SelectPublicChannel(select::PublicChannel<'a>),
 
+  /// # Select any conversation (DM, Group DM, Public Channel, Private Channel)
   #[serde(rename = "conversations_select")]
   SelectConversation(select::Conversation<'a>),
 
+  /// # Select a user from the workspace
   #[serde(rename = "users_select")]
   SelectUser(select::User<'a>),
 
+  /// # Select options loaded from an external data source
   #[serde(rename = "external_select")]
   SelectExternal(select::External<'a>),
 
+  /// # Select options configured by your application
   #[serde(rename = "static_select")]
   SelectStatic(select::Static<'a>),
 
+  /// # Select multiple options configured by your application
   #[serde(rename = "multi_static_select")]
   MultiSelectStatic(select::multi::Static<'a>),
 
-  #[serde(rename = "multi_static_user")]
+  /// # Select multiple users from the workspace
+  #[serde(rename = "multi_user_select")]
   MultiSelectUser(select::multi::User<'a>),
 
-  #[serde(rename = "multi_static_external")]
+  /// # Select multiple options loaded from an external data source
+  #[serde(rename = "multi_external_select")]
   MultiSelectExternal(select::multi::External<'a>),
 
-  #[serde(rename = "multi_static_conversation")]
+  /// # Select multiple conversations (DM, Group DM, Public Channel, Private Channel)
+  #[serde(rename = "multi_conversations_select")]
   MultiSelectConversation(select::multi::Conversation<'a>),
+
+  /// # Select multiple conversations (DM, Group DM, Public Channel, Private Channel)
+  #[serde(rename = "multi_channel_select")]
+  MultiSelectPublicChannel(select::multi::PublicChannel<'a>),
 }
 
 impl<'a> BlockElement<'a> {
+  /// Validate that this block element agrees with Slack's model requirements.
+  ///
+  /// ```
+  /// use slack_blocks::elems::{BlockElement, Button};
+  ///
+  /// let text = std::iter::repeat('a').take(76).collect::<String>();
+  /// let btn = Button::from_text_and_action_id(text, "");
+  ///
+  /// let elem = BlockElement::from(btn);
+  ///
+  /// assert!(matches!(elem.validate(), Err(_)))
+  /// ```
   pub fn validate(&self) -> ValidationResult {
+    use BlockElement::*;
+
     match self {
-      | Self::Button(cts) => cts.validate(),
-      | Self::SelectPublicChannel(cts) => cts.validate(),
-      | Self::SelectConversation(cts) => cts.validate(),
-      | Self::SelectUser(cts) => cts.validate(),
-      | Self::SelectExternal(cts) => cts.validate(),
-      | Self::SelectStatic(cts) => cts.validate(),
-      | Self::RadioButtons(cts) => cts.validate(),
-      | Self::Overflow(cts) => cts.validate(),
-      | Self::Checkboxes(cts) => cts.validate(),
-      | rest => todo!("validation not implemented for {:?}", rest),
+      | Button(cts) => cts.validate(),
+      | SelectPublicChannel(cts) => cts.validate(),
+      | SelectConversation(cts) => cts.validate(),
+      | SelectUser(cts) => cts.validate(),
+      | SelectExternal(cts) => cts.validate(),
+      | SelectStatic(cts) => cts.validate(),
+      | MultiSelectPublicChannel(cts) => cts.validate(),
+      | MultiSelectConversation(cts) => cts.validate(),
+      | MultiSelectUser(cts) => cts.validate(),
+      | MultiSelectExternal(cts) => cts.validate(),
+      | MultiSelectStatic(cts) => cts.validate(),
+      | RadioButtons(cts) => cts.validate(),
+      | Overflow(cts) => cts.validate(),
+      | Checkboxes(cts) => cts.validate(),
+      | Image(cts) => cts.validate(),
+      | DatePicker(cts) => cts.validate(),
+      | TextInput(cts) => cts.validate(),
     }
   }
 }
@@ -126,6 +175,7 @@ convert!(impl<'a> From<TextInput<'a>> for BlockElement<'a> => |t| BlockElement::
 convert!(impl<'a> From<Overflow<'a>> for BlockElement<'a> => |t| BlockElement::Overflow(t));
 convert!(impl<'a> From<DatePicker<'a>> for BlockElement<'a> => |t| BlockElement::DatePicker(t));
 convert!(impl<'a> From<Checkboxes<'a>> for BlockElement<'a> => |t| BlockElement::Checkboxes(t));
+convert!(impl<'a> From<Image<'a>> for BlockElement<'a> => |t| BlockElement::Image(t));
 
 convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {

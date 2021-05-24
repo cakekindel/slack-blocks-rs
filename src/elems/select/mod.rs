@@ -17,13 +17,19 @@ use std::borrow::Cow;
 use crate::{convert, text};
 
 mod builder;
-pub mod conversation;
-pub mod external;
-pub mod public_channel;
-pub mod static_;
-pub mod user;
-
+#[doc(inline)]
 pub mod multi;
+
+#[doc(inline)]
+pub mod conversation;
+#[doc(inline)]
+pub mod external;
+#[doc(inline)]
+pub mod public_channel;
+#[doc(inline)]
+pub mod static_;
+#[doc(inline)]
+pub mod user;
 
 #[doc(inline)]
 pub use builder::SelectBuilder;
@@ -55,10 +61,15 @@ pub use user::User;
              note = "enum doesn't really provide value as wrapper type and is confusing. use select types directly and slack_blocks::BlockElement instead.")]
 #[derive(Clone, Debug, Hash, PartialEq)]
 pub enum Select<'a> {
+  /// Static
   Static(Static<'a>),
+  /// External
   External(External<'a>),
+  /// User
   User(User<'a>),
+  /// Conversation
   Conversation(Conversation<'a>),
+  /// PublicChannel
   PublicChannel(PublicChannel<'a>),
 }
 
@@ -108,9 +119,15 @@ convert!(impl<'a> From<External<'a>> for Select<'a> => |e| Select::External(e));
 convert!(impl<'a> From<Conversation<'a>> for Select<'a> => |e| Select::Conversation(e));
 convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicChannel(e));
 
+/// Marker structs for whether users can select one or many list items.
+///
+/// Used to inform builder structs what kind of select element to build.
 pub mod select_kind {
+  /// Users can select many items from the list.
   #[derive(Copy, Clone, Debug)]
   pub struct Multi;
+
+  /// Users can select one item from the list.
   #[derive(Copy, Clone, Debug)]
   pub struct Single;
 }

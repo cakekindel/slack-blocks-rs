@@ -1,3 +1,15 @@
+//! # Plain Text Input
+//!
+//! [slack api docs 🔗]
+//!
+//! A plain-text input, similar to the HTML `<input>` tag, creates a field where a user can enter freeform data.
+//! It can appear as a single-line field or a larger textarea using the `multiline` flag.
+//!
+//! Works in [blocks 🔗]: Input
+//! Works in [app surfaces 🔗]: Home tabs, Modals, Messages
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
+
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
@@ -89,18 +101,22 @@ fn validate_placeholder<'a>(p: &text::Text) -> ValidatorResult {
   below_len("TextInput.placeholder", 150, p)
 }
 
+/// Text Input Builder
 pub mod build {
   use std::marker::PhantomData;
 
   use super::*;
   use crate::build::*;
 
+  /// Required Builder Method markers
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// TextInputBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
   }
 
+  /// Initial state for TextInputBuilder
   pub type TextInputBuilderInit<'a> =
     TextInputBuilder<'a, RequiredMethodNotCalled<method::action_id>>;
 

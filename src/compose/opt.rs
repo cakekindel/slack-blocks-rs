@@ -1,3 +1,20 @@
+//! # Option Object
+//! [slack api docs 🔗]
+//!
+//! An object that represents a single selectable item in a
+//! - [select menu 🔗],
+//! - [multi-select menu 🔗],
+//! - [checkbox group 🔗],
+//! - [radio button group 🔗],
+//! - or [overflow menu 🔗].
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option
+//! [select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
+//! [multi-select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#multi_select
+//! [checkbox group 🔗]: https://api.slack.com/reference/block-kit/block-elements#checkboxes
+//! [radio button group 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
+//! [overflow menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#overflow
+
 use std::{borrow::Cow, marker::PhantomData};
 
 use serde::{Deserialize, Serialize};
@@ -6,6 +23,7 @@ use validator::Validate;
 use super::text;
 use crate::{build::*, val_helpr::ValidationResult};
 
+/// Opt supports text::Plain and text::Mrkdwn.
 #[derive(Copy,
            Clone,
            Debug,
@@ -16,6 +34,7 @@ use crate::{build::*, val_helpr::ValidationResult};
            Validate)]
 pub struct AnyText;
 
+/// Opt does not support urls.
 #[derive(Copy,
            Clone,
            Debug,
@@ -26,6 +45,7 @@ pub struct AnyText;
            Validate)]
 pub struct NoUrl;
 
+/// Opt does support urls.
 #[derive(Copy,
            Clone,
            Debug,
@@ -387,21 +407,27 @@ impl<'a, U> Opt<'a, text::Plain, U> {
   }
 }
 
+/// Opt builder
 pub mod build {
   use std::marker::PhantomData;
 
   use super::*;
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// OptBuilder.value
     #[derive(Copy, Clone, Debug)]
     pub struct value;
+    /// OptBuilder.text
     #[derive(Copy, Clone, Debug)]
     pub struct text;
+    /// OptBuilder.url
     #[derive(Copy, Clone, Debug)]
     pub struct url;
   }
 
+  /// Initial state for OptBuilder
   pub type OptBuilderInit<'a> =
     OptBuilder<'a,
                RequiredMethodNotCalled<method::text>,
@@ -676,19 +702,19 @@ pub mod build {
   }
 }
 
-pub mod validate {
+mod validate {
   use super::*;
   use crate::val_helpr::{below_len, ValidatorResult};
 
-  pub fn text(text: &text::Text) -> ValidatorResult {
+  pub(super) fn text(text: &text::Text) -> ValidatorResult {
     below_len("Option Text", 75, text.as_ref())
   }
 
-  pub fn desc(text: &text::Text) -> ValidatorResult {
+  pub(super) fn desc(text: &text::Text) -> ValidatorResult {
     below_len("Option Description", 75, text.as_ref())
   }
 
-  pub fn url(text: &Cow<'_, str>) -> ValidatorResult {
+  pub(super) fn url(text: &Cow<'_, str>) -> ValidatorResult {
     below_len("URL", 3000, text.as_ref())
   }
 }

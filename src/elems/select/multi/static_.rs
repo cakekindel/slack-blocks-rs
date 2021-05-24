@@ -1,3 +1,15 @@
+//! # Multi-select menu with static options
+//!
+//! [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#static_multi_select)
+//!
+//! This is the simplest form of select menu,
+//! with a static list of options passed in when defining the element.
+//!
+//! Works in [blocks 🔗]: Section, Input
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
+//! [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
+
 use std::borrow::Cow;
 
 use compose::{opt::NoUrl, Confirm};

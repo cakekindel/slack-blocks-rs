@@ -1,3 +1,16 @@
+//! # Checkbox Group
+//!
+//! A checkbox group that allows a user to choose multiple items from a list of possible options.
+//!
+//! [slack api docs 🔗]
+//!
+//! Works in [blocks 🔗]: Section, Actions, Input
+//! Works in [app surfaces 🔗]: Home tabs, Modals, Messages
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#checkboxes
+//! [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
+//! [app surfaces 🔗]: https://api.slack.com/surfaces
+
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
@@ -87,16 +100,20 @@ impl<'a> Checkboxes<'a> {
   }
 }
 
+/// Checkbox group builder
 pub mod build {
   use std::marker::PhantomData;
 
   use super::*;
   use crate::build::*;
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   pub mod method {
+    /// CheckboxesBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
+    /// CheckboxesBuilder.options
     #[derive(Copy, Clone, Debug)]
     pub struct options;
   }

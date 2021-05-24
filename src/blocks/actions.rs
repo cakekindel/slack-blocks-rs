@@ -1,3 +1,12 @@
+//! # Actions Block
+//!
+//! [slack api docs 🔗]
+//!
+//! A block that is used to hold interactive [elements 🔗]
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
+//! [elements 🔗]: https://api.slack.com/reference/messaging/block-elements
+
 use std::convert::{TryFrom, TryInto};
 
 use serde::{Deserialize, Serialize};
@@ -203,6 +212,7 @@ impl<'a> Contents<'a> {
 ///
 /// [block elements 🔗]: https://api.slack.com/reference/block-kit/block-elements
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[allow(missing_docs)]
 pub enum BlockElement<'a> {
   Button(Button),
   Checkboxes(Checkboxes<'a>),

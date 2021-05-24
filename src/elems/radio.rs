@@ -1,3 +1,16 @@
+//! # Radio Buttons
+//!
+//! A radio button group that allows a user to choose one item from a list of possible options.
+//!
+//! [slack api docs 🔗]
+//!
+//! Works in [blocks 🔗]: Section, Actions, Input
+//! Works in [app surfaces 🔗]: Home tabs, Modals, Messages
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
+//! [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
+//! [app surfaces 🔗]: https://api.slack.com/surfaces
+
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
@@ -9,7 +22,8 @@ use crate::{compose::{opt::{AnyText, NoUrl},
             text,
             val_helpr::ValidationResult};
 
-pub type MyOpt<'a> = Opt<'a, AnyText, NoUrl>;
+/// Opt state supported by radio buttons
+pub type RadioButtonOpt<'a> = Opt<'a, AnyText, NoUrl>;
 
 /// # Radio Buttons
 ///
@@ -30,11 +44,11 @@ pub struct Radio<'a> {
 
   #[validate(length(max = 10))]
   #[validate]
-  options: Vec<MyOpt<'a>>, // max 10, plain or md
+  options: Vec<RadioButtonOpt<'a>>, // max 10, plain or md
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate]
-  initial_option: Option<MyOpt<'a>>,
+  initial_option: Option<RadioButtonOpt<'a>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate]
@@ -83,20 +97,25 @@ impl<'a> Radio<'a> {
   }
 }
 
+/// Radio button group builder
 pub mod build {
   use std::marker::PhantomData;
 
   use super::*;
   use crate::build::*;
 
+  /// Required builder methods
   #[allow(non_camel_case_types)]
   mod method {
+    /// RadioBuilder.action_id
     #[derive(Copy, Clone, Debug)]
     pub struct action_id;
+    /// RadioBuilder.options
     #[derive(Copy, Clone, Debug)]
     pub struct options;
   }
 
+  /// Initial state for radio button builder
   pub type RadioBuilderInit<'a> =
     RadioBuilder<'a,
                  AnyText,
@@ -134,8 +153,8 @@ pub mod build {
   #[derive(Debug)]
   pub struct RadioBuilder<'a, T, A, O> {
     action_id: Option<Cow<'a, str>>,
-    options: Option<Vec<MyOpt<'a>>>,
-    initial_option: Option<MyOpt<'a>>,
+    options: Option<Vec<RadioButtonOpt<'a>>>,
+    initial_option: Option<RadioButtonOpt<'a>>,
     confirm: Option<Confirm>,
     state: PhantomData<(T, A, O)>,
   }

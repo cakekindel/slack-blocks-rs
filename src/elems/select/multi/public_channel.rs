@@ -1,3 +1,9 @@
+//! # Public Channel Select
+//! [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#channel_select)
+//!
+//! This select menu will populate its options with a list of
+//! public channels visible to the current user in the active workspace.
+
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};

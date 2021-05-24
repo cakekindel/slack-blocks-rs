@@ -1,3 +1,15 @@
+//! # Input Block
+//!
+//! [slack api docs 🔗]
+//!
+//! A block that collects information from users -
+//!
+//! Read [slack's guide to using modals 🔗]
+//! to learn how input blocks pass information to your app.
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#input
+//! [slack's guide to using modals 🔗]: https://api.slack.com/surfaces/modals/using#gathering_input
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
@@ -226,6 +238,7 @@ impl<'a> Contents<'a> {
 /// supported by InputElement.
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
+#[allow(missing_docs)]
 pub enum InputElement<'a> {
   #[serde(rename = "channels_select")]
   SelectPublicChannel(select::PublicChannel<'a>),

@@ -1,6 +1,12 @@
+//! Just plain text
+//!
+//! Only formatting available is emojis.
+
 use serde::{Deserialize, Serialize};
 
-/// Literally just plain text, with the only formatting available being emojis.
+/// Just plain text
+///
+/// Only formatting available is emojis.
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Contents {
   text: String,

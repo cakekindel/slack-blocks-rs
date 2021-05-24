@@ -1,3 +1,23 @@
+//! # Section Block
+//!
+//! _[slack api docs 🔗]_
+//!
+//! Available in surfaces:
+//!  - [modals 🔗]
+//!  - [messages 🔗]
+//!  - [home tabs 🔗]
+//!
+//! A `section` is one of the most flexible blocks available -
+//! it can be used as a simple text block,
+//! in combination with text fields,
+//! or side-by-side with any of the available [block elements 🔗]
+//!
+//! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#section
+//! [modals 🔗]: https://api.slack.com/surfaces/modals
+//! [messages 🔗]: https://api.slack.com/surfaces/messages
+//! [home tabs 🔗]: https://api.slack.com/surfaces/tabs
+//! [block elements 🔗]: https://api.slack.com/reference/messaging/block-elements
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
