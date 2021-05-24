@@ -45,6 +45,15 @@
 //! [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/
 //! [Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
 
+// #![warn(missing_docs)]
+// #![warn(missing_doc_code_examples)]
+#![forbid(missing_copy_implementations,
+          missing_debug_implementations,
+          unreachable_pub,
+          unsafe_code,
+          unused_crate_dependencies)]
+#![allow(deprecated)] // temporary
+
 #[macro_use]
 extern crate validator_derive;
 

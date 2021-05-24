@@ -144,7 +144,7 @@ impl Confirm {
 }
 
 /// The possible styles of the confirm button on your dialog.
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ConfirmStyle {
   /// Display the button with a red background on desktop,
@@ -158,19 +158,19 @@ pub enum ConfirmStyle {
 mod validate {
   use crate::{text, val_helpr::*};
 
-  pub fn text(text: &text::Text) -> ValidatorResult {
+  pub(super) fn text(text: &text::Text) -> ValidatorResult {
     below_len("Confirmation Dialog text", 300, text.as_ref())
   }
 
-  pub fn title(text: &text::Text) -> ValidatorResult {
+  pub(super) fn title(text: &text::Text) -> ValidatorResult {
     below_len("Confirmation Dialog title", 100, text.as_ref())
   }
 
-  pub fn confirm(text: &text::Text) -> ValidatorResult {
+  pub(super) fn confirm(text: &text::Text) -> ValidatorResult {
     below_len("Confirmation Dialog confirmation text", 30, text.as_ref())
   }
 
-  pub fn deny(text: &text::Text) -> ValidatorResult {
+  pub(super) fn deny(text: &text::Text) -> ValidatorResult {
     below_len("Confirmation Dialog deny text", 30, text.as_ref())
   }
 }

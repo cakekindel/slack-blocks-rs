@@ -327,8 +327,11 @@ pub mod build {
 
   #[allow(non_camel_case_types)]
   pub mod method {
+    #[derive(Copy, Clone, Debug)]
     pub struct placeholder;
+    #[derive(Copy, Clone, Debug)]
     pub struct action_id;
+    #[derive(Copy, Clone, Debug)]
     pub struct initial_channel;
   }
 
@@ -367,7 +370,7 @@ pub mod build {
   ///
   /// // <send block to API>
   /// ```
-  #[derive(Default)]
+  #[derive(Debug)]
   pub struct ConversationBuilder<'a,
    Multi,
    Placeholder,

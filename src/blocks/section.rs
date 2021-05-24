@@ -187,11 +187,11 @@ mod validate {
   use crate::{compose::text,
               val_helpr::{below_len, ValidatorResult}};
 
-  pub fn text(text: &text::Text) -> ValidatorResult {
+  pub(super) fn text(text: &text::Text) -> ValidatorResult {
     below_len("Section Text", 3000, text.as_ref())
   }
 
-  pub fn fields(texts: &Vec<text::Text>) -> ValidatorResult {
+  pub(super) fn fields(texts: &Vec<text::Text>) -> ValidatorResult {
     texts.iter()
          .map(|text| below_len("Section Field", 2000, text.as_ref()))
          .collect()

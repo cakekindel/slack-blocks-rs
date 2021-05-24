@@ -126,7 +126,9 @@ pub mod build {
 
   #[allow(non_camel_case_types)]
   mod method {
+    #[derive(Copy, Clone, Debug)]
     pub struct label;
+    #[derive(Copy, Clone, Debug)]
     pub struct options;
   }
 
@@ -219,6 +221,7 @@ pub mod build {
   ///
   ///  // <send block to API>
   ///  ```
+  #[derive(Debug)]
   pub struct OptGroupBuilder<'a, T, U, Options, Label> {
     label: Option<text::Text>,
     options: Option<Vec<Opt<'a, T, U>>>,
@@ -319,7 +322,7 @@ mod validate {
   use super::*;
   use crate::val_helpr::{below_len, ValidatorResult};
 
-  pub fn label(text: &text::Text) -> ValidatorResult {
+  pub(super) fn label(text: &text::Text) -> ValidatorResult {
     below_len("Option Group Label", 75, text.as_ref())
   }
 }

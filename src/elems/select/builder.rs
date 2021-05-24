@@ -6,6 +6,7 @@ use crate::{compose::Confirm, text};
 /// # Select Element Builder
 /// Use to construct a Select element
 /// and easily choose a data source
+#[derive(Debug)]
 pub struct SelectBuilder<'a> {
   pub placeholder: text::Plain,
   pub action_id: Cow<'a, str>,

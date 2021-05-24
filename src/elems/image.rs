@@ -49,7 +49,9 @@ pub mod build {
 
   #[allow(non_camel_case_types)]
   pub mod method {
+    #[derive(Copy, Clone, Debug)]
     pub struct image_url;
+    #[derive(Copy, Clone, Debug)]
     pub struct alt_text;
   }
 
@@ -80,6 +82,7 @@ pub mod build {
   ///
   /// // <send block to slack API>
   /// ```
+  #[derive(Debug)]
   pub struct ImageBuilder<'a, U, A> {
     image_url: Option<Cow<'a, str>>,
     alt_text: Option<Cow<'a, str>>,

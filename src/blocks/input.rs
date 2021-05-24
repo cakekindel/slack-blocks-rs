@@ -249,11 +249,11 @@ mod validate {
   use crate::{compose::text,
               val_helpr::{below_len, ValidatorResult}};
 
-  pub fn label(text: &text::Text) -> ValidatorResult {
+  pub(super) fn label(text: &text::Text) -> ValidatorResult {
     below_len("Input Label", 2000, text.as_ref())
   }
 
-  pub fn hint(text: &text::Text) -> ValidatorResult {
+  pub(super) fn hint(text: &text::Text) -> ValidatorResult {
     below_len("Input Hint", 2000, text.as_ref())
   }
 }
