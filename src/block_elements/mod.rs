@@ -92,6 +92,15 @@ pub enum BlockElement<'a> {
 
   #[serde(rename = "multi_static_select")]
   MultiSelectStatic(select::multi::Static<'a>),
+
+  #[serde(rename = "multi_static_user")]
+  MultiSelectUser(select::multi::User<'a>),
+
+  #[serde(rename = "multi_static_external")]
+  MultiSelectExternal(select::multi::External<'a>),
+
+  #[serde(rename = "multi_static_conversation")]
+  MultiSelectConversation(select::multi::Conversation<'a>),
 }
 
 impl<'a> BlockElement<'a> {
@@ -135,3 +144,6 @@ convert!(impl<'a> From<select::Conversation<'a>> for BlockElement<'a> => |s| Blo
 convert!(impl<'a> From<select::User<'a>> for BlockElement<'a> => |s| BlockElement::SelectUser(s));
 
 convert!(impl<'a> From<select::multi::Static<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectStatic(s));
+convert!(impl<'a> From<select::multi::User<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectUser(s));
+convert!(impl<'a> From<select::multi::Conversation<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectConversation(s));
+convert!(impl<'a> From<select::multi::External<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectExternal(s));
