@@ -69,7 +69,7 @@ pub use text_input::TextInput;
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum BlockElement<'a> {
   /// # Button Element
-  Button(Button),
+  Button(Button<'a>),
   /// # Checkboxes Element
   Checkboxes(Checkboxes<'a>),
   /// # Image Element
@@ -169,7 +169,7 @@ impl<'a> BlockElement<'a> {
   }
 }
 
-convert!(impl From<Button> for BlockElement<'static> => |b| BlockElement::Button(b));
+convert!(impl<'a> From<Button<'a>> for BlockElement<'a> => |b| BlockElement::Button(b));
 convert!(impl<'a> From<Radio<'a>> for BlockElement<'a> => |b| BlockElement::RadioButtons(b));
 convert!(impl<'a> From<TextInput<'a>> for BlockElement<'a> => |t| BlockElement::TextInput(t));
 convert!(impl<'a> From<Overflow<'a>> for BlockElement<'a> => |t| BlockElement::Overflow(t));

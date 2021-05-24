@@ -20,10 +20,12 @@
 //! [Actions 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
 //! [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 
+use std::borrow::Cow;
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{text, val_helpr::ValidationResult};
+use crate::{compose::Confirm, text, val_helpr::ValidationResult};
 
 /// # Button
 /// [slack api docs 🔗]
@@ -47,29 +49,36 @@ use crate::{text, val_helpr::ValidationResult};
 /// [Actions 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 #[derive(Validate, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-pub struct Button {
+pub struct Button<'a> {
   #[validate(custom = "validate::text")]
   text: text::Text,
 
   #[validate(length(max = 255))]
-  action_id: String,
+  action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 3000))]
-  url: Option<String>,
+  #[validate(custom = "validate::url")]
+  url: Option<Cow<'a, str>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 2000))]
-  value: Option<String>,
+  #[validate(custom = "validate::value")]
+  value: Option<Cow<'a, str>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   style: Option<Style>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  confirm: Option<()>, // FIX: doesn't exist yet
+  confirm: Option<Confirm>,
 }
 
-impl Button {
+impl<'a> Button<'a> {
+  /// Build a button!
+  ///
+  /// see build::ButtonBuilder for example.
+  pub fn builder() -> build::ButtonBuilderInit<'a> {
+    build::ButtonBuilderInit::new()
+  }
+
   /// Create a `button::Contents` from a text label and ID for your app
   /// to be able to identify what was pressed.
   ///
@@ -95,11 +104,12 @@ impl Button {
   /// let actions_block: Block = actions::Contents::from_action_elements(vec![btn.into()]).into();
   /// // < send block to slack's API >
   /// ```
+  #[deprecated(since = "0.17.3", note = "use Button::builder instead")]
   pub fn from_text_and_action_id(text: impl Into<text::Plain>,
-                                 action_id: impl ToString)
+                                 action_id: impl Into<Cow<'a, str>>)
                                  -> Self {
     Self { text: text.into().into(),
-           action_id: action_id.to_string(),
+           action_id: action_id.into(),
            url: None,
            value: None,
            style: None,
@@ -127,8 +137,9 @@ impl Button {
   /// let actions_block: Block = actions::Contents::from_action_elements(vec![btn.into()]).into();
   /// // < send block to slack's API >
   /// ```
-  pub fn with_url(mut self, url: impl ToString) -> Self {
-    self.url = Some(url.to_string());
+  #[deprecated(since = "0.17.3", note = "use Button::builder instead")]
+  pub fn with_url(mut self, url: impl Into<Cow<'a, str>>) -> Self {
+    self.url = Some(url.into());
     self
   }
 
@@ -148,8 +159,9 @@ impl Button {
   /// let actions_block: Block = actions::Contents::from_action_elements(vec![btn.into()]).into();
   /// // < send block to slack's API >
   /// ```
-  pub fn with_value(mut self, value: impl ToString) -> Self {
-    self.value = Some(value.to_string());
+  #[deprecated(since = "0.17.3", note = "use Button::builder instead")]
+  pub fn with_value(mut self, value: impl Into<Cow<'a, str>>) -> Self {
+    self.value = Some(value.into());
     self
   }
 
@@ -178,6 +190,7 @@ impl Button {
   /// ).into();
   /// // < send block to slack's API >
   /// ```
+  #[deprecated(since = "0.17.3", note = "use Button::builder instead")]
   pub fn with_style(mut self, style: Style) -> Self {
     self.style = Some(style);
     self
@@ -225,11 +238,193 @@ pub enum Style {
   Danger,
 }
 
+/// Button builder
+pub mod build {
+  use std::marker::PhantomData;
+
+  use super::*;
+  use crate::build::*;
+
+  /// Required builder methods
+  #[allow(non_camel_case_types)]
+  pub mod method {
+    /// ButtonBuilder.text
+    #[derive(Copy, Clone, Debug)]
+    pub struct text;
+
+    /// ButtonBuilder.action_id
+    #[derive(Copy, Clone, Debug)]
+    pub struct action_id;
+  }
+
+  /// Initial state for ButtonBuilder
+  pub type ButtonBuilderInit<'a> =
+    ButtonBuilder<'a,
+                  RequiredMethodNotCalled<method::text>,
+                  RequiredMethodNotCalled<method::action_id>>;
+
+  /// # Button Builder
+  ///
+  /// Allows you to construct safely, with compile-time checks
+  /// on required setter methods.
+  ///
+  /// # Required Methods
+  /// `ButtonBuilder::build()` is only available if these methods have been called:
+  ///  - `action_id`
+  ///  - `text`
+  ///
+  /// ```
+  /// use std::convert::TryFrom;
+  ///
+  /// use slack_blocks::{blocks, elems};
+  ///
+  /// let button: elems::BlockElement = elems::Button::builder().text("do stuff!")
+  ///                                                           .action_id("stuff")
+  ///                                                           .build()
+  ///                                                           .into();
+  /// let block: blocks::Block =
+  ///   blocks::Actions::try_from(button).expect("Actions block supports buttons")
+  ///                                    .into();
+  /// ```
+  #[derive(Debug)]
+  pub struct ButtonBuilder<'a, Text, ActionId> {
+    text: Option<text::Text>,
+    action_id: Option<Cow<'a, str>>,
+    url: Option<Cow<'a, str>>,
+    value: Option<Cow<'a, str>>,
+    style: Option<Style>,
+    confirm: Option<Confirm>,
+    state: PhantomData<(Text, ActionId)>,
+  }
+
+  impl<'a, T, A> ButtonBuilder<'a, T, A> {
+    /// Construct a new button builder
+    pub fn new() -> Self {
+      Self { text: None,
+             action_id: None,
+             url: None,
+             value: None,
+             style: None,
+             confirm: None,
+             state: PhantomData::<_> }
+    }
+
+    /// Set `style` (Optional)
+    ///
+    /// Decorates buttons with alternative visual color schemes.
+    ///
+    /// Use this option with restraint.
+    ///
+    /// If this method is not called,
+    /// the default button style will be used.
+    pub fn style(mut self, style: Style) -> Self {
+      self.style = Some(style);
+      self
+    }
+
+    /// Set `confirm` (Optional)
+    ///
+    /// A [confirm object 🔗] that defines an optional confirmation dialog after the button is clicked.
+    ///
+    /// [confirm object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#confirm
+    pub fn confirm(mut self, confirm: Confirm) -> Self {
+      self.confirm = Some(confirm);
+      self
+    }
+
+    /// Set `value` (Optional)
+    ///
+    /// Add a meaningful value to send back to your app when this button is clicked.
+    ///
+    /// Maximum length for this field is 2000 characters.
+    pub fn value(mut self, value: impl Into<Cow<'a, str>>) -> Self {
+      self.value = Some(value.into());
+      self
+    }
+
+    /// Set `action_id` (**Required**)
+    ///
+    /// An identifier for this action.
+    ///
+    /// You can use this when you receive an interaction payload to [identify the source of the action 🔗].
+    ///
+    /// Should be unique among all other `action_id`s used elsewhere by your app.
+    ///
+    /// Maximum length for this field is 255 characters.
+    ///
+    /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
+    pub fn action_id(self,
+                     action_id: impl Into<Cow<'a, str>>)
+                     -> ButtonBuilder<'a, T, Set<method::action_id>> {
+      ButtonBuilder { text: self.text,
+                      action_id: Some(action_id.into()),
+                      url: self.url,
+                      value: self.value,
+                      style: self.style,
+                      confirm: self.confirm,
+                      state: PhantomData::<_> }
+    }
+
+    /// Set `text` (**Required**)
+    ///
+    /// A plain [text object 🔗] that defines the button's text.
+    ///
+    /// Maximum length for the text in this field is 75 characters.
+    ///
+    /// [text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
+    pub fn text(self,
+                text: impl Into<text::Plain>)
+                -> ButtonBuilder<'a, Set<method::text>, A> {
+      ButtonBuilder { text: Some(text.into().into()),
+                      action_id: self.action_id,
+                      url: self.url,
+                      value: self.value,
+                      style: self.style,
+                      confirm: self.confirm,
+                      state: PhantomData::<_> }
+    }
+  }
+
+  impl<'a> ButtonBuilder<'a, Set<method::text>, Set<method::action_id>> {
+    /// All done building, now give me a darn button!
+    ///
+    /// > `no method name 'build' found for struct 'ButtonBuilder<...>'`?
+    /// Make sure all required setter methods have been called. See docs for `ButtonBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::elems::Button;
+    ///
+    /// let foo = Button::builder().build(); // Won't compile!
+    /// ```
+    ///
+    /// ```
+    /// use slack_blocks::{compose::Opt, elems::Button};
+    ///
+    /// let foo = Button::builder().action_id("foo").text("Do foo").build();
+    /// ```
+    pub fn build(self) -> Button<'a> {
+      Button { text: self.text.unwrap(),
+               action_id: self.action_id.unwrap(),
+               url: self.url,
+               confirm: self.confirm,
+               style: self.style,
+               value: self.value }
+    }
+  }
+}
+
 mod validate {
+  use super::*;
   use crate::{text,
               val_helpr::{below_len, ValidatorResult}};
 
   pub(super) fn text(text: &text::Text) -> ValidatorResult {
     below_len("Button Text", 75, text.as_ref())
+  }
+  pub(super) fn url(url: &Cow<str>) -> ValidatorResult {
+    below_len("Button.url", 3000, url)
+  }
+  pub(super) fn value(value: &Cow<str>) -> ValidatorResult {
+    below_len("Button.text", 2000, value)
   }
 }
