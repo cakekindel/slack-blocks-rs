@@ -85,7 +85,7 @@ impl<'a> Select<'a> {
   ///     text::Plain::from("Right column"),
   /// ];
   ///
-  /// let select: elem::BlockElement = elem::Select::from_placeholder_and_action_id("Pick a channel!", "1234")
+  /// let select: elems::BlockElement = elems::Select::from_placeholder_and_action_id("Pick a channel!", "1234")
   ///                                                     .choose_from_public_channels()
   ///                                                     .into();
   ///
