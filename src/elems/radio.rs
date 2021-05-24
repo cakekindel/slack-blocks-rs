@@ -61,7 +61,7 @@ impl<'a> Radio<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{block_elements::Radio, compose::Opt};
+  /// use slack_blocks::{compose::Opt, elems::Radio};
   ///
   /// fn repeat<T: Copy>(el: T, n: usize) -> impl Iterator<Item = T> {
   ///   std::iter::repeat(el).take(n)
@@ -113,9 +113,9 @@ pub mod build {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{block_elements::Radio,
-  ///                    blocks::{Actions, Block},
-  ///                    compose::Opt};
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    compose::Opt,
+  ///                    elems::Radio};
   ///
   /// let options = vec![Opt::builder().text_md(":joy:").value("joy").build(),
   ///                    Opt::builder().text_md(":smirk:").value("smirk").build(),];
@@ -245,13 +245,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `RadioBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::Radio;
+    /// use slack_blocks::elems::Radio;
     ///
     /// let foo = Radio::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::{block_elements::Radio, compose::Opt};
+    /// use slack_blocks::{compose::Opt, elems::Radio};
     ///
     /// let foo = Radio::builder().action_id("bar")
     ///                           .options(vec![Opt::builder().text_md("foo")

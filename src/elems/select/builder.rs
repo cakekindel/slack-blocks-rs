@@ -44,7 +44,7 @@ impl<'a> SelectBuilder<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Actions},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{text, Confirm, text::ToSlackPlaintext},
   /// };
   ///
@@ -83,7 +83,7 @@ impl<'a> SelectBuilder<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Section, Actions},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{text, Confirm},
   /// };
   ///
@@ -122,7 +122,7 @@ impl<'a> SelectBuilder<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Section, Actions},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{text, Confirm},
   /// };
   ///
@@ -160,8 +160,8 @@ impl<'a> SelectBuilder<'a> {
   /// ```
   /// use std::{convert::TryFrom, iter};
   ///
-  /// use slack_blocks::{block_elements::{select::Select, BlockElement},
-  ///                    blocks::{Actions, Block, Section},
+  /// use slack_blocks::{blocks::{Actions, Block, Section},
+  ///                    elems::{select::Select, BlockElement},
   ///                    text,
   ///                    text::ToSlackPlaintext};
   ///
@@ -195,7 +195,7 @@ impl<'a> SelectBuilder<'a> {
   ///   text,
   ///   text::ToSlackPlaintext,
   ///   blocks::{Block, Section, Actions},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   /// };
   ///
   /// let select: BlockElement = Select::from_placeholder_and_action_id("Pick your favorite cheese", "cheese_chosen")

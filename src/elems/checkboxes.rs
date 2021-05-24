@@ -64,7 +64,7 @@ impl<'a> Checkboxes<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{block_elements::Checkboxes, compose::Opt};
+  /// use slack_blocks::{compose::Opt, elems::Checkboxes};
   ///
   /// fn repeat<T: Copy>(el: T, n: usize) -> impl Iterator<Item = T> {
   ///   std::iter::repeat(el).take(n)
@@ -119,9 +119,9 @@ pub mod build {
   /// ```
   /// use std::convert::TryFrom;
   ///
-  /// use slack_blocks::{block_elements::{BlockElement, Checkboxes},
-  ///                    blocks::{Actions, Block},
-  ///                    compose::Opt};
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    compose::Opt,
+  ///                    elems::{BlockElement, Checkboxes}};
   ///
   /// mod usa {
   ///   pub struct State {
@@ -271,13 +271,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `CheckboxesBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::Checkboxes;
+    /// use slack_blocks::elems::Checkboxes;
     ///
     /// let foo = Checkboxes::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::{block_elements::Checkboxes, compose::Opt};
+    /// use slack_blocks::{compose::Opt, elems::Checkboxes};
     ///
     /// let foo = Checkboxes::builder().action_id("foo")
     ///                                .options(vec![Opt::builder().text_plain("foo")

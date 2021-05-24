@@ -86,7 +86,7 @@ impl<'a> Conversation<'a> {
   /// use std::convert::TryFrom;
   /// use std::iter;
   ///
-  /// use slack_blocks::block_elements::{BlockElement, select};
+  /// use slack_blocks::elems::{BlockElement, select};
   /// use slack_blocks::blocks;
   /// use slack_blocks::text;
   /// use text::ToSlackPlaintext;
@@ -135,7 +135,7 @@ impl<'a> Conversation<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Actions},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{text, Confirm, text::ToSlackPlaintext},
   /// };
   ///
@@ -184,7 +184,7 @@ impl<'a> Conversation<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Actions},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{
   ///     text,
   ///     Confirm,
@@ -232,7 +232,7 @@ impl<'a> Conversation<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Actions, Section},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{text, Confirm, text::ToSlackPlaintext},
   /// };
   ///
@@ -299,7 +299,7 @@ impl<'a> Conversation<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   ///
   /// let select = select::Conversation::from_placeholder_and_action_id(
   ///         r#"Hey I really would appreciate it if you chose

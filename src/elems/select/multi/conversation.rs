@@ -68,7 +68,7 @@ impl<'a> Conversation<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   ///
   /// let select = select::Conversation::from_placeholder_and_action_id(
   ///         r#"Hey I really would appreciate it if you chose

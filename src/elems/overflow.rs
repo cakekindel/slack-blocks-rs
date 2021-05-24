@@ -57,7 +57,7 @@ impl<'a> Overflow<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{block_elements::Overflow, compose::Opt};
+  /// use slack_blocks::{compose::Opt, elems::Overflow};
   ///
   /// fn repeat<T: Copy>(el: T, n: usize) -> impl Iterator<Item = T> {
   ///   std::iter::repeat(el).take(n)
@@ -117,7 +117,7 @@ pub mod build {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{block_elements::Overflow, compose::Opt};
+  /// use slack_blocks::{elems::Overflow, compose::Opt};
   ///
   /// Overflow::builder()
   ///          .action_id("foo")
@@ -212,13 +212,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `OverflowBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::Overflow;
+    /// use slack_blocks::elems::Overflow;
     ///
     /// let foo = Overflow::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::{block_elements::Overflow, compose::Opt};
+    /// use slack_blocks::{compose::Opt, elems::Overflow};
     ///
     /// let foo = Overflow::builder().action_id("bar")
     ///                              .options(vec![Opt::builder().text_plain("foo")

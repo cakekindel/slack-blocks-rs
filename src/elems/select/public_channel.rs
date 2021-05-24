@@ -46,7 +46,7 @@ impl<'a> PublicChannel<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   /// use slack_blocks::blocks;
   /// use slack_blocks::text;
   ///
@@ -86,7 +86,7 @@ impl<'a> PublicChannel<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   /// use slack_blocks::text;
   /// use slack_blocks::blocks;
   /// use slack_blocks::compose;
@@ -129,7 +129,7 @@ impl<'a> PublicChannel<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   /// use slack_blocks::text;
   /// use slack_blocks::blocks;
   /// use slack_blocks::compose;
@@ -177,7 +177,7 @@ impl<'a> PublicChannel<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   ///
   /// let select = select::PublicChannel::from_placeholder_and_action_id(
   ///         r#"Hey I really would appreciate it if you chose

@@ -63,7 +63,7 @@ pub enum Select<'a> {
 }
 
 impl<'a> Select<'a> {
-  /// Construct a Select block element from required parts
+  /// Construct a Select block elem from required parts
   ///
   /// # Arguments
   /// - `placeholder`: A plain_text [text object 🔗] that defines the placeholder text shown on the menu.
@@ -76,7 +76,7 @@ impl<'a> Select<'a> {
   /// [text objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
   /// # Example
   /// ```
-  /// use slack_blocks::{blocks, blocks::actions::Contents as ActionsBlock, block_elements as element, compose::text};
+  /// use slack_blocks::{blocks, blocks::actions::Contents as ActionsBlock, elems, compose::text};
   ///
   /// # use std::error::Error;
   /// # pub fn main() -> Result<(), Box<dyn Error>> {
@@ -85,7 +85,7 @@ impl<'a> Select<'a> {
   ///     text::Plain::from("Right column"),
   /// ];
   ///
-  /// let select: element::BlockElement = element::Select::from_placeholder_and_action_id("Pick a channel!", "1234")
+  /// let select: elem::BlockElement = elem::Select::from_placeholder_and_action_id("Pick a channel!", "1234")
   ///                                                     .choose_from_public_channels()
   ///                                                     .into();
   ///

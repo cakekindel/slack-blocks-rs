@@ -54,9 +54,9 @@ impl<'a> Static<'a> {
   /// ```
   /// use std::convert::TryFrom;
   ///
-  /// use slack_blocks::{block_elements::{select::Static, BlockElement},
-  ///                    blocks::{Actions, Block},
+  /// use slack_blocks::{blocks::{Actions, Block},
   ///                    compose::Opt,
+  ///                    elems::{select::Static, BlockElement},
   ///                    text};
   ///
   /// struct City {
@@ -103,7 +103,7 @@ impl<'a> Static<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   ///
   /// let placeholder = r#"Hey I really would appreciate it if you chose
   /// a channel relatively soon, so that we can figure out
@@ -126,8 +126,8 @@ impl<'a> Static<'a> {
 
 pub mod build {
   use super::*;
-  use crate::{block_elements::select::{multi, select_kind},
-              build::*};
+  use crate::{build::*,
+              elems::select::{multi, select_kind}};
 
   #[allow(non_camel_case_types)]
   pub mod method {
@@ -156,9 +156,9 @@ pub mod build {
   /// ```
   /// use std::convert::TryFrom;
   ///
-  /// use slack_blocks::{block_elements::{select::Static, BlockElement},
-  ///                    blocks::{Actions, Block},
-  ///                    compose::Opt};
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    compose::Opt,
+  ///                    elems::{select::Static, BlockElement}};
   ///
   /// let rust = Opt::from_plain_text_and_value("Rust", "rs");
   ///
@@ -411,13 +411,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `StaticBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::select::Static;
+    /// use slack_blocks::elems::select::Static;
     ///
     /// let sel = Static::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::block_elements::select::Static;
+    /// use slack_blocks::elems::select::Static;
     ///
     /// let sel = Static::builder().placeholder("foo")
     ///                            .action_id("bar")
@@ -447,13 +447,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `StaticBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::select::Static;
+    /// use slack_blocks::elems::select::Static;
     ///
     /// let sel = Static::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::block_elements::select::Static;
+    /// use slack_blocks::elems::select::Static;
     ///
     /// let sel = Static::builder().placeholder("foo")
     ///                            .action_id("bar")
