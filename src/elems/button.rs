@@ -68,10 +68,17 @@ pub struct Button<'a> {
   style: Option<Style>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  confirm: Option<()>, // FIX: doesn't exist yet
+  confirm: Option<Confirm>,
 }
 
 impl<'a> Button<'a> {
+  /// Build a button!
+  ///
+  /// see build::ButtonBuilder for example.
+  pub fn builder() -> build::ButtonBuilderInit<'a> {
+    build::ButtonBuilderInit::new()
+  }
+
   /// Create a `button::Contents` from a text label and ID for your app
   /// to be able to identify what was pressed.
   ///
@@ -267,14 +274,17 @@ pub mod build {
   ///  - `text`
   ///
   /// ```
+  /// use std::convert::TryFrom;
+  ///
   /// use slack_blocks::{blocks, elems};
   ///
   /// let button: elems::BlockElement = elems::Button::builder().text("do stuff!")
   ///                                                           .action_id("stuff")
-  ///                                                           .build();
-  /// let block: block::Block =
-  ///   block::Action::try_from(button).expect("Actions block supports buttons")
-  ///                                  .into();
+  ///                                                           .build()
+  ///                                                           .into();
+  /// let block: blocks::Block =
+  ///   blocks::Actions::try_from(button).expect("Actions block supports buttons")
+  ///                                    .into();
   /// ```
   #[derive(Debug)]
   pub struct ButtonBuilder<'a, Text, ActionId> {
@@ -372,6 +382,33 @@ pub mod build {
                       style: self.style,
                       confirm: self.confirm,
                       state: PhantomData::<_> }
+    }
+  }
+
+  impl<'a> ButtonBuilder<'a, Set<method::text>, Set<method::action_id>> {
+    /// All done building, now give me a darn button!
+    ///
+    /// > `no method name 'build' found for struct 'ButtonBuilder<...>'`?
+    /// Make sure all required setter methods have been called. See docs for `ButtonBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::elems::Button;
+    ///
+    /// let foo = Button::builder().build(); // Won't compile!
+    /// ```
+    ///
+    /// ```
+    /// use slack_blocks::{compose::Opt, elems::Button};
+    ///
+    /// let foo = Button::builder().action_id("foo").text("Do foo").build();
+    /// ```
+    pub fn build(self) -> Button<'a> {
+      Button { text: self.text.unwrap(),
+               action_id: self.action_id.unwrap(),
+               url: self.url,
+               confirm: self.confirm,
+               style: self.style,
+               value: self.value }
     }
   }
 }
