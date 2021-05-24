@@ -111,7 +111,7 @@ impl<'a> Block<'a> {
   /// Validate that this block agrees with Slack's model requirements.
   ///
   /// ```
-  /// use slack_blocks::{block, block::Image};
+  /// use slack_blocks::{blocks, blocks::Image};
   ///
   /// let long_string = std::iter::repeat('a').take(2001).collect::<String>();
   ///

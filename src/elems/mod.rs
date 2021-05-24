@@ -135,15 +135,12 @@ impl<'a> BlockElement<'a> {
   /// Validate that this block element agrees with Slack's model requirements.
   ///
   /// ```
-  /// use slack_blocks::elems::{BlockElement, Image};
+  /// use slack_blocks::elems::{BlockElement, Button};
   ///
-  /// let url = format!("https://{}.com/img.png",
-  ///                   std::iter::repeat('a').take(2000).collect::<String>());
-  /// let img = Image::builder().alt_text("picture from a very long website.")
-  ///                           .image_url(url)
-  ///                           .build();
+  /// let text = std::iter::repeat('a').take(76).collect::<String>();
+  /// let btn = Button::from_text_and_action_id(text, "");
   ///
-  /// let elem = BlockElement::from(img);
+  /// let elem = BlockElement::from(btn);
   ///
   /// assert!(matches!(elem.validate(), Err(_)))
   /// ```
@@ -178,6 +175,7 @@ convert!(impl<'a> From<TextInput<'a>> for BlockElement<'a> => |t| BlockElement::
 convert!(impl<'a> From<Overflow<'a>> for BlockElement<'a> => |t| BlockElement::Overflow(t));
 convert!(impl<'a> From<DatePicker<'a>> for BlockElement<'a> => |t| BlockElement::DatePicker(t));
 convert!(impl<'a> From<Checkboxes<'a>> for BlockElement<'a> => |t| BlockElement::Checkboxes(t));
+convert!(impl<'a> From<Image<'a>> for BlockElement<'a> => |t| BlockElement::Image(t));
 
 convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
     => |s| match s {
