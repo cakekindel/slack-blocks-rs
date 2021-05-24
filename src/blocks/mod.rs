@@ -59,7 +59,7 @@ type ValidationResult = Result<(), validator::ValidationErrors>;
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Block<'a> {
   /// # Section Block
-  Section(Section),
+  Section(Section<'a>),
 
   /// # Divider Block
   ///
@@ -136,7 +136,7 @@ impl<'a> Block<'a> {
 
 convert!(impl<'a> From<Actions<'a>> for Block<'a>      => |a| Block::Actions(a));
 convert!(impl<'a> From<Input<'a>>   for Block<'a>      => |a| Block::Input(a));
-convert!(impl     From<Section>     for Block<'static> => |a| Block::Section(a));
+convert!(impl<'a> From<Section<'a>> for Block<'a>      => |a| Block::Section(a));
 convert!(impl     From<Image>       for Block<'static> => |a| Block::Image(a));
 convert!(impl<'a> From<Context<'a>> for Block<'a>      => |a| Block::Context(a));
 convert!(impl     From<File>        for Block<'static> => |a| Block::File(a));

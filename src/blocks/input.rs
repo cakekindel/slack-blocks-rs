@@ -15,7 +15,8 @@ use validator::Validate;
 
 use crate::{compose::text,
             convert,
-            elems::{select, Radio, TextInput},
+            elems,
+            elems::{select, BlockElement},
             val_helpr::ValidationResult};
 
 /// # Input Block
@@ -34,7 +35,7 @@ pub struct Contents<'a> {
   #[validate(custom = "validate::label")]
   label: text::Text,
 
-  element: InputElement<'a>,
+  element: SupportedElement<'a>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(length(max = 255))]
@@ -63,7 +64,7 @@ impl<'a> Contents<'a> {
   /// - `element` - An interactive `block_element` that will be used to gather
   ///     the input for this block.
   ///     For the kinds of Elements supported by
-  ///     Input blocks, see the `InputElement` enum.
+  ///     Input blocks, see the `SupportedElement` enum.
   ///     For info about Block Elements in general,
   ///     see the `elems` module.
   ///
@@ -83,7 +84,7 @@ impl<'a> Contents<'a> {
   /// // < send to slack API >
   /// ```
   pub fn from_label_and_element(label: impl Into<text::Plain>,
-                                element: impl Into<InputElement<'a>>)
+                                element: impl Into<SupportedElement<'a>>)
                                 -> Self {
     Contents { label: label.into().into(),
                element: element.into(),
@@ -234,29 +235,34 @@ impl<'a> Contents<'a> {
   }
 }
 
-/// Enum representing the [`BlockElement` 🔗] types
-/// supported by InputElement.
+/// The Block Elements supported in an Input Block.
+///
+/// Supports:
+/// - Radio Buttons
+/// - Text Input
+/// - Checkboxes
+/// - Date Picker
+/// - All Select Menus
+/// - All Multi-Select Menus
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
-#[allow(missing_docs)]
-pub enum InputElement<'a> {
-  #[serde(rename = "channels_select")]
-  SelectPublicChannel(select::PublicChannel<'a>),
-  Checkboxes,
-  DatePicker,
-  MultiSelect,
-  TextInput(TextInput<'a>),
-  Radio(Radio<'a>),
-}
+pub struct SupportedElement<'a>(BlockElement<'a>);
 
-use select::PublicChannel as SelectPublicChannel;
-convert! {
-    impl<'_> From<SelectPublicChannel> for InputElement
-        => |contents| InputElement::SelectPublicChannel(contents)
-}
+convert!(impl<'a> From<elems::Radio<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<elems::TextInput<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<elems::Checkboxes<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<elems::DatePicker<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
 
-convert!(impl<'a> From<Radio<'a>> for InputElement<'a> => |r| InputElement::Radio(r));
-convert!(impl<'a> From<TextInput<'a>> for InputElement<'a> => |r| InputElement::TextInput(r));
+convert!(impl<'a> From<select::Static<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<select::External<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<select::User<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<select::Conversation<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<select::PublicChannel<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+
+convert!(impl<'a> From<select::multi::Static<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<select::multi::External<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<select::multi::User<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<select::multi::Conversation<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
+convert!(impl<'a> From<select::multi::PublicChannel<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
 
 mod validate {
   use crate::{compose::text,

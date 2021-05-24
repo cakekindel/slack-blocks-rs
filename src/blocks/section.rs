@@ -18,10 +18,12 @@
 //! [home tabs 🔗]: https://api.slack.com/surfaces/tabs
 //! [block elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 
+use std::borrow::Cow;
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{compose::text, val_helpr::ValidationResult};
+use crate::{compose::text, elems::BlockElement, val_helpr::ValidationResult};
 
 /// # Section Block
 ///
@@ -43,28 +45,27 @@ use crate::{compose::text, val_helpr::ValidationResult};
 /// [home tabs 🔗]: https://api.slack.com/surfaces/tabs
 /// [block elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct Contents {
+pub struct Contents<'a> {
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 10))]
   #[validate(custom = "validate::fields")]
-  fields: Option<Vec<text::Text>>,
+  fields: Option<Cow<'a, [text::Text]>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(custom = "validate::text")]
   text: Option<text::Text>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 255))]
-  block_id: Option<String>,
+  #[validate(custom = "validate::block_id")]
+  block_id: Option<Cow<'a, str>>,
 
   /// One of the available [element objects 🔗][element_objects].
   ///
   /// [element_objects]: https://api.slack.com/reference/messaging/block-elements
   #[serde(skip_serializing_if = "Option::is_none")]
-  accessory: Option<()>,
+  accessory: Option<BlockElement<'a>>,
 }
 
-impl Contents {
+impl<'a> Contents<'a> {
   /// Construct a Section block from a collection of text objects
   ///
   /// # Arguments
@@ -90,16 +91,14 @@ impl Contents {
   /// let fields = vec![text::Plain::from("Left column"),
   ///                   text::Plain::from("Right column"),];
   ///
-  /// let block = blocks::section::Contents::from_fields(fields);
+  /// let block = blocks::section::Contents::from_fields(&fields);
   ///
   /// // < send to slack API >
   /// # Ok(())
   /// # }
   /// ```
-  pub fn from_fields<FieldIter: IntoIterator<Item = impl Into<text::Text>>>(
-    fields: FieldIter)
-    -> Self {
-    let fields = Some(fields.into_iter().map(|f| f.into()).collect());
+  pub fn from_fields(fields: impl Into<Cow<'a, [text::Text]>>) -> Self {
+    let fields = Some(fields.into());
 
     Self { fields,
            text: None,
@@ -165,8 +164,8 @@ impl Contents {
   /// # Ok(())
   /// # }
   /// ```
-  pub fn with_block_id(mut self, block_id: impl AsRef<str>) -> Self {
-    self.block_id = Some(block_id.as_ref().to_string());
+  pub fn with_block_id(mut self, block_id: impl Into<Cow<'a, str>>) -> Self {
+    self.block_id = Some(block_id.into());
     self
   }
 
@@ -204,16 +203,28 @@ impl Contents {
 }
 
 mod validate {
+  use super::*;
   use crate::{compose::text,
               val_helpr::{below_len, ValidatorResult}};
 
   pub(super) fn text(text: &text::Text) -> ValidatorResult {
-    below_len("Section Text", 3000, text.as_ref())
+    below_len("Section.text", 3000, text.as_ref())
   }
 
-  pub(super) fn fields(texts: &Vec<text::Text>) -> ValidatorResult {
-    texts.iter()
-         .map(|text| below_len("Section Field", 2000, text.as_ref()))
-         .collect()
+  pub(super) fn block_id(text: &Cow<str>) -> ValidatorResult {
+    below_len("Section.block_id", 255, text.as_ref())
+  }
+
+  pub(super) fn fields(texts: &Cow<[text::Text]>) -> ValidatorResult {
+    below_len("Section.fields", 10, texts.as_ref()).and(
+                                                        texts.iter()
+                                                             .map(|text| {
+                                                               below_len(
+             "Section.fields",
+             2000,
+             text.as_ref())
+                                                             })
+                                                             .collect(),
+    )
   }
 }
