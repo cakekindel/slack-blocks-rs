@@ -27,6 +27,29 @@ pub struct PublicChannel<'a> {
 }
 
 impl<'a> PublicChannel<'a> {
+  /// Build a new public channel select element
+  ///
+  /// # Examples
+  /// ```
+  /// use std::convert::TryFrom;
+  ///
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    compose::Opt,
+  ///                    elems::{select, BlockElement},
+  ///                    text};
+  ///
+  /// let select: BlockElement =
+  ///   select::PublicChannel::builder().placeholder("Choose your favorite channel!")
+  ///                                  .action_id("fave_channel")
+  ///                                  .build()
+  ///                                  .into();
+  ///
+  /// let block: Block = Actions::try_from(select).unwrap().into();
+  /// ```
+  pub fn builder() -> build::PublicChannelBuilderInit<'a> {
+    build::PublicChannelBuilderInit::new()
+  }
+
   /// Construct a Select element, with a data
   /// source of the Public Channels in the user's
   /// Workspace.
