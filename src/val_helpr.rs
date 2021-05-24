@@ -4,8 +4,8 @@ use std::borrow::Cow;
 
 use validator::ValidationError;
 
-pub type ValidationResult = Result<(), validator::ValidationErrors>;
-pub type ValidatorResult = Result<(), validator::ValidationError>;
+pub(crate) type ValidationResult = Result<(), validator::ValidationErrors>;
+pub(crate) type ValidatorResult = Result<(), validator::ValidationError>;
 
 pub(crate) fn error<StrIsh: AsRef<str>>(kind: &'static str,
                                         msg: StrIsh)

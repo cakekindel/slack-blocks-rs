@@ -6,13 +6,34 @@ use validator::Validate;
 use super::text;
 use crate::{build::*, val_helpr::ValidationResult};
 
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Copy,
+           Clone,
+           Debug,
+           Deserialize,
+           Hash,
+           PartialEq,
+           Serialize,
+           Validate)]
 pub struct AnyText;
 
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Copy,
+           Clone,
+           Debug,
+           Deserialize,
+           Hash,
+           PartialEq,
+           Serialize,
+           Validate)]
 pub struct NoUrl;
 
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Copy,
+           Clone,
+           Debug,
+           Deserialize,
+           Hash,
+           PartialEq,
+           Serialize,
+           Validate)]
 pub struct AllowUrl;
 
 /// # Option Object
@@ -373,8 +394,11 @@ pub mod build {
 
   #[allow(non_camel_case_types)]
   pub mod method {
+    #[derive(Copy, Clone, Debug)]
     pub struct value;
+    #[derive(Copy, Clone, Debug)]
     pub struct text;
+    #[derive(Copy, Clone, Debug)]
     pub struct url;
   }
 
@@ -421,6 +445,7 @@ pub mod build {
   ///
   /// // <send block to API>
   /// ```
+  #[derive(Debug)]
   pub struct OptBuilder<'a, Text, Value, Url> {
     text: Option<text::Text>,
     value: Option<Cow<'a, str>>,

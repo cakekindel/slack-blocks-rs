@@ -234,7 +234,9 @@ pub mod build {
 
   #[allow(non_camel_case_types)]
   pub mod method {
+    #[derive(Copy, Clone, Debug)]
     pub struct placeholder;
+    #[derive(Copy, Clone, Debug)]
     pub struct action_id;
   }
 
@@ -273,7 +275,7 @@ pub mod build {
   ///
   /// // <send block to API>
   /// ```
-  #[derive(Default)]
+  #[derive(Debug)]
   pub struct PublicChannelBuilder<'a, Multi, Placeholder, ActionId> {
     placeholder: Option<text::Text>,
     action_id: Option<Cow<'a, str>>,

@@ -109,14 +109,16 @@ convert!(impl<'a> From<Conversation<'a>> for Select<'a> => |e| Select::Conversat
 convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicChannel(e));
 
 pub mod select_kind {
+  #[derive(Copy, Clone, Debug)]
   pub struct Multi;
+  #[derive(Copy, Clone, Debug)]
   pub struct Single;
 }
 
 mod validate {
   use crate::{text, val_helpr::*};
 
-  pub fn placeholder(text: &text::Text) -> ValidatorResult {
+  pub(super) fn placeholder(text: &text::Text) -> ValidatorResult {
     below_len("Select Placeholder text", 150, text.as_ref())
   }
 }

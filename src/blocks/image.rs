@@ -151,7 +151,7 @@ mod validate {
   use crate::{compose::text,
               val_helpr::{below_len, ValidatorResult}};
 
-  pub fn title(text: &text::Text) -> ValidatorResult {
+  pub(super) fn title(text: &text::Text) -> ValidatorResult {
     below_len("Image Title", 2000, text.as_ref())
   }
 }

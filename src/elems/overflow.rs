@@ -95,7 +95,9 @@ pub mod build {
 
   #[allow(non_camel_case_types)]
   pub mod method {
+    #[derive(Copy, Clone, Debug)]
     pub struct action_id;
+    #[derive(Copy, Clone, Debug)]
     pub struct options;
   }
 
@@ -134,6 +136,7 @@ pub mod build {
   ///                .build(),
   ///          ]);
   /// ```
+  #[derive(Debug)]
   pub struct OverflowBuilder<'a, A, O> {
     action_id: Option<Cow<'a, str>>,
     options: Option<Cow<'a, [MyOpt<'a>]>>,

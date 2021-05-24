@@ -191,7 +191,7 @@ impl ConversationFilter {
 }
 
 // TODO: move this somewhere else. it is 100% gonna be used elsewhere.
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub enum ConversationKind {
   #[serde(rename = "im")]
   Dm,

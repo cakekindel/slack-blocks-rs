@@ -192,7 +192,7 @@ impl Button {
 }
 
 /// Style to optionally decorate buttons with
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Style {
   /// Gives buttons a green outline and text, ideal for affirmation or confirmation actions.
@@ -207,7 +207,7 @@ mod validate {
   use crate::{text,
               val_helpr::{below_len, ValidatorResult}};
 
-  pub fn text(text: &text::Text) -> ValidatorResult {
+  pub(super) fn text(text: &text::Text) -> ValidatorResult {
     below_len("Button Text", 75, text.as_ref())
   }
 }

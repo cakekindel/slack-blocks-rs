@@ -55,6 +55,7 @@ pub mod build {
 
   #[allow(non_camel_case_types)]
   pub mod method {
+    #[derive(Copy, Clone, Debug)]
     pub struct action_id;
   }
 
@@ -85,6 +86,7 @@ pub mod build {
   ///
   /// // <send block to slack API>
   /// ```
+  #[derive(Debug)]
   pub struct DatePickerBuilder<'a, A> {
     action_id: Option<Cow<'a, str>>,
     placeholder: Option<text::Text>,
