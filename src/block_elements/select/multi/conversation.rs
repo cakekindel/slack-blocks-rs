@@ -70,15 +70,16 @@ impl<'a> Conversation<'a> {
   /// ```
   /// use slack_blocks::block_elements::select;
   ///
-  /// let select = select::Conversation::from_placeholder_and_action_id(
-  ///         r#"Hey I really would appreciate it if you chose
+  /// let select = select::multi::Conversation::builder().placeholder(
+  ///                           r#"Hey I really would appreciate it if you chose
   ///         a channel relatively soon, so that we can figure out
   ///         where we need to send this poll, ok? it's kind of
   ///         important that you specify where this poll should be
   ///         sent, in case we haven't made that super clear.
   ///         If you understand, could you pick a channel, already??"#,
-  ///         "ABC123"
-  ///     );
+  /// )
+  ///              .action_id("ABC123")
+  ///              .build();
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
