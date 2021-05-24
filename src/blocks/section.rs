@@ -88,16 +88,21 @@ impl<'a> Contents<'a> {
   ///
   /// # use std::error::Error;
   /// # pub fn main() -> Result<(), Box<dyn Error>> {
-  /// let fields = vec![text::Plain::from("Left column"),
-  ///                   text::Plain::from("Right column"),];
+  /// let fields = vec!["Left column", "Right column"].into_iter()
+  ///                                                 .map(|s: &str| -> text::Text {
+  ///                                                   text::Plain::from(s).into()
+  ///                                                 })
+  ///                                                 .collect::<Vec<_>>();
   ///
-  /// let block = blocks::section::Contents::from_fields(&fields);
+  /// let block = blocks::Section::from_fields(&fields);
   ///
   /// // < send to slack API >
   /// # Ok(())
   /// # }
   /// ```
-  pub fn from_fields(fields: impl Into<Cow<'a, [text::Text]>>) -> Self {
+  pub fn from_fields<I>(fields: I) -> Self
+    where I: Into<Cow<'a, [text::Text]>>
+  {
     let fields = Some(fields.into());
 
     Self { fields,
