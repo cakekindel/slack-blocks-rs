@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.18.0 (2021-05-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* button should use cow and have builder (#144)
+
+### Bug Fixes
+
+* button should use cow and have builder ([#144](https://github.com/cakekindel/slack-blocks-rs/issues/144)) ([4a73b39](https://github.com/cakekindel/slack-blocks-rs/commit/4a73b39d4a1ba4984129fe8e89eb9dbda4ed6124))
+
 ### 0.17.2 (2021-05-24)
 
 ### 0.17.1 (2021-05-24)
