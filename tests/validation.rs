@@ -57,7 +57,7 @@ should_fail!(
   section_with_long_field:
     Block::Section(
       section::Contents::from_fields(
-        vec![text::Plain::from(common::string_of_len(2001))],
+        vec![text::Plain::from(common::string_of_len(2001)).into()],
       ),
     )
 );
@@ -65,7 +65,7 @@ should_fail!(
 should_fail!(
     section_with_many_fields:
     Block::Section(
-        section::Contents::from_fields(common::vec_of_len(text::Plain::from(""), 11))
+        section::Contents::from_fields(common::vec_of_len(text::Plain::from("").into(), 11))
     )
 );
 
@@ -109,7 +109,7 @@ should_fail!(
     actions_with_too_many_objects:
     Block::Actions(
        common::vec_of_len(
-           actions::BlockElement::SelectStatic(
+           actions::SupportedElement::from(
              elems::select::Static::builder()
                                             .placeholder("bar")
                                             .action_id("foo")

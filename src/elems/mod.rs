@@ -197,3 +197,4 @@ convert!(impl<'a> From<select::multi::Static<'a>> for BlockElement<'a> => |s| Bl
 convert!(impl<'a> From<select::multi::User<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectUser(s));
 convert!(impl<'a> From<select::multi::Conversation<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectConversation(s));
 convert!(impl<'a> From<select::multi::External<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectExternal(s));
+convert!(impl<'a> From<select::multi::PublicChannel<'a>> for BlockElement<'a> => |s| BlockElement::MultiSelectPublicChannel(s));

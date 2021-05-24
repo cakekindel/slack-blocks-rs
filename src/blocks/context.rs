@@ -28,7 +28,7 @@ use crate::{convert, elems::Image, text, val_helpr::ValidationResult};
            Validate)]
 pub struct Contents<'a> {
   #[validate(length(max = 10))]
-  elements: Vec<Compose<'a>>,
+  elements: Vec<ImageOrText<'a>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(length(max = 255))]
@@ -103,7 +103,9 @@ impl<'a> Contents<'a> {
   /// let block: Block = context.into();
   /// // < send block to slack's API >
   /// ```
-  pub fn with_element(mut self, element: impl Into<self::Compose<'a>>) -> Self {
+  pub fn with_element(mut self,
+                      element: impl Into<self::ImageOrText<'a>>)
+                      -> Self {
     self.elements.push(element.into());
     self
   }
@@ -133,7 +135,7 @@ impl<'a> Contents<'a> {
   ///   // < send block to slack's API >
   /// }
   /// ```
-  pub fn from_context_elements(elements: impl IntoIterator<Item = impl Into<Compose<'a>>>)
+  pub fn from_context_elements(elements: impl IntoIterator<Item = impl Into<ImageOrText<'a>>>)
                                -> Self {
     elements.into_iter()
             .map(|i| i.into())
@@ -164,8 +166,8 @@ impl<'a> Contents<'a> {
   }
 }
 
-impl<'a> From<Vec<Compose<'a>>> for Contents<'a> {
-  fn from(elements: Vec<Compose<'a>>) -> Self {
+impl<'a> From<Vec<ImageOrText<'a>>> for Contents<'a> {
+  fn from(elements: Vec<ImageOrText<'a>>) -> Self {
     Self { elements,
            ..Default::default() }
   }
@@ -174,12 +176,12 @@ impl<'a> From<Vec<Compose<'a>>> for Contents<'a> {
 /// The Composition objects supported by this block
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[allow(missing_docs)]
-pub enum Compose<'a> {
+pub enum ImageOrText<'a> {
   Text(text::Text),
   Image(Image<'a>),
 }
 
-convert!(impl From<text::Text> for Compose<'static> => |txt| Compose::Text(txt));
-convert!(impl<'a> From<Image<'a>> for Compose<'a> => |i| Compose::Image(i));
-convert!(impl From<text::Plain> for Compose<'static> => |t| text::Text::from(t).into());
-convert!(impl From<text::Mrkdwn> for Compose<'static> => |t| text::Text::from(t).into());
+convert!(impl From<text::Text> for ImageOrText<'static> => |txt| ImageOrText::Text(txt));
+convert!(impl<'a> From<Image<'a>> for ImageOrText<'a> => |i| ImageOrText::Image(i));
+convert!(impl From<text::Plain> for ImageOrText<'static> => |t| text::Text::from(t).into());
+convert!(impl From<text::Mrkdwn> for ImageOrText<'static> => |t| text::Text::from(t).into());
