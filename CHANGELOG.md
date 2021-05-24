@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.16.9 (2021-05-24)
+
+
+### Features
+
+* conversations multi-select ([#139](https://github.com/cakekindel/slack-blocks-rs/issues/139)) ([187aeee](https://github.com/cakekindel/slack-blocks-rs/commit/187aeeef28d85c3b0c9689246f315d69257d1695))
+
 ### 0.16.8 (2021-05-24)
 
 
