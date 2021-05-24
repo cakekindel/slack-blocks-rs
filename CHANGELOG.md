@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.19.0 (2021-05-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* standardize supported block elements (#145)
+
+### Features
+
+* standardize supported block elements ([#145](https://github.com/cakekindel/slack-blocks-rs/issues/145)) ([bdbf7c7](https://github.com/cakekindel/slack-blocks-rs/commit/bdbf7c7ac198223d1682db42c729b012241a8a00))
+
 ## 0.18.0 (2021-05-24)
 
 
