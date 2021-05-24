@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.17.1 (2021-05-24)
+
+
+### Bug Fixes
+
+* all the lints! ([#142](https://github.com/cakekindel/slack-blocks-rs/issues/142)) ([fff8f11](https://github.com/cakekindel/slack-blocks-rs/commit/fff8f119bee17d19a165c4be8bb07e28cf202c6c))
+
 ## 0.17.0 (2021-05-24)
 
 
