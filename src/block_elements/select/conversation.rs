@@ -43,6 +43,29 @@ pub struct Conversation<'a> {
 }
 
 impl<'a> Conversation<'a> {
+  /// Build a new conversation multi-select element
+  ///
+  /// # Examples
+  /// ```
+  /// use std::convert::TryFrom;
+  ///
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    compose::Opt,
+  ///                    elems::{select, BlockElement},
+  ///                    text};
+  ///
+  /// let select: BlockElement =
+  ///   select::Conversation::builder().placeholder("Choose your favorite channel!")
+  ///                                  .action_id("fave_channel")
+  ///                                  .build()
+  ///                                  .into();
+  ///
+  /// let block: Block = Actions::try_from(select).unwrap().into();
+  /// ```
+  pub fn builder() -> build::ConversationBuilderInit<'a> {
+    build::ConversationBuilderInit::new()
+  }
+
   /// Construct a Select element, letting users choose a DM / Group DM / Public channel from their workspace.
   ///
   /// # Arguments
@@ -333,8 +356,8 @@ pub mod build {
   ///                    elems::{select::Conversation, BlockElement}};
   ///
   /// let select: BlockElement =
-  ///   Conversation::builder().placeholder("Choose your favorite co-worker!")
-  ///                          .action_id("favorite_coworker")
+  ///   Conversation::builder().placeholder("Choose your favorite channel!")
+  ///                          .action_id("favorite_channel")
   ///                          .build()
   ///                          .into();
   ///
