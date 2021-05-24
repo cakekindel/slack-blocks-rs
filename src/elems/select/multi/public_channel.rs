@@ -54,7 +54,7 @@ impl<'a> PublicChannel<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   ///
   /// let select = select::multi::PublicChannel::builder().placeholder(
   ///                           r#"Hey I really would appreciate it if you chose
