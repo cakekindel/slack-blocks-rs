@@ -75,8 +75,8 @@ pub mod build {
   /// ```
   /// use std::convert::TryFrom;
   ///
-  /// use slack_blocks::{block_elements::{BlockElement, DatePicker},
-  ///                    blocks::{Actions, Block}};
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    elems::{BlockElement, DatePicker}};
   ///
   /// let picker: BlockElement =
   ///   DatePicker::builder().action_id("foo").build().into();
@@ -145,7 +145,7 @@ pub mod build {
     /// The initial date that is selected when the element is loaded.
     ///
     /// ```
-    /// use slack_blocks::block_elements::DatePicker;
+    /// use slack_blocks::elems::DatePicker;
     ///
     /// DatePicker::builder().action_id("foo")
     ///                      .initial_date(01, 05, 2021)
@@ -175,13 +175,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `DatePickerBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::DatePicker;
+    /// use slack_blocks::elems::DatePicker;
     ///
     /// let foo = DatePicker::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::{block_elements::DatePicker, compose::Opt};
+    /// use slack_blocks::{compose::Opt, elems::DatePicker};
     ///
     /// let foo = DatePicker::builder().action_id("foo").build();
     /// ```

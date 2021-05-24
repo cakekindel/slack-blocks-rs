@@ -144,7 +144,7 @@ pub mod build {
   ///  ```
   ///  use std::convert::TryFrom;
   ///
-  ///  use slack_blocks::{block_elements::{select::Static, BlockElement},
+  ///  use slack_blocks::{elems::{select::Static, BlockElement},
   ///                     blocks::{Actions, Block},
   ///                     compose::{Opt, OptGroup}};
   ///

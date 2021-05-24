@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{block_elements::{select, Radio, TextInput},
-            compose::text,
+use crate::{compose::text,
             convert,
+            elems::{select, Radio, TextInput},
             val_helpr::ValidationResult};
 
 /// # Input Block
@@ -53,13 +53,13 @@ impl<'a> Contents<'a> {
   ///     For the kinds of Elements supported by
   ///     Input blocks, see the `InputElement` enum.
   ///     For info about Block Elements in general,
-  ///     see the `block_elements` module.
+  ///     see the `elems` module.
   ///
   /// [text object 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::Select;
+  /// use slack_blocks::elems::Select;
   /// use slack_blocks::blocks;
   ///
   /// let label = "On a scale from 1 - 5, how angsty are you?";
@@ -97,7 +97,7 @@ impl<'a> Contents<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::Select;
+  /// use slack_blocks::elems::Select;
   /// use slack_blocks::blocks;
   ///
   /// let label = "On a scale from 1 - 5, how angsty are you?";
@@ -130,7 +130,7 @@ impl<'a> Contents<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::Select;
+  /// use slack_blocks::elems::Select;
   /// use slack_blocks::blocks;
   ///
   /// # use std::error::Error;
@@ -162,7 +162,7 @@ impl<'a> Contents<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::Select;
+  /// use slack_blocks::elems::Select;
   /// use slack_blocks::blocks;
   ///
   /// let label = "On a scale from 1 - 5, how angsty are you?";
@@ -200,7 +200,7 @@ impl<'a> Contents<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::Select;
+  /// use slack_blocks::elems::Select;
   /// use slack_blocks::blocks;
   ///
   /// let label = "On a scale from 1 - 5, how angsty are you?";

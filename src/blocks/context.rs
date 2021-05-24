@@ -1,10 +1,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{block_elements::Image,
-            convert,
-            text,
-            val_helpr::ValidationResult};
+use crate::{convert, elems::Image, text, val_helpr::ValidationResult};
 
 /// # Context Block
 ///

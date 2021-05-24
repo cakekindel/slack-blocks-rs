@@ -67,9 +67,9 @@ impl<'a> Opt<'a> {
   /// ```
   /// use std::convert::TryFrom;
   ///
-  /// use slack_blocks::{block_elements::{select::Static, BlockElement},
-  ///                    blocks::Actions,
+  /// use slack_blocks::{blocks::Actions,
   ///                    compose::Opt,
+  ///                    elems::{select::Static, BlockElement},
   ///                    text};
   ///
   /// struct City {
@@ -398,9 +398,9 @@ pub mod build {
   /// ```
   /// use std::convert::TryFrom;
   ///
-  /// use slack_blocks::{block_elements::{select::Static, BlockElement},
-  ///                    blocks::{Actions, Block},
-  ///                    compose::Opt};
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    compose::Opt,
+  ///                    elems::{select::Static, BlockElement}};
   /// let langs = vec![("Rust", "rs"), ("Haskell", "hs"), ("NodeJS", "node")];
   ///
   /// let langs =

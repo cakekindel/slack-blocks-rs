@@ -69,7 +69,7 @@ impl<'a> TextInput<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::TextInput;
+  /// use slack_blocks::elems::TextInput;
   ///
   /// let long_string = || std::iter::repeat('a').take(256).collect::<String>();
   ///
@@ -115,7 +115,7 @@ pub mod build {
   /// # Examples
   ///
   /// ```
-  /// use slack_blocks::{blocks::{Block, Input}, block_elements::TextInput};
+  /// use slack_blocks::{blocks::{Block, Input}, elems::TextInput};
   ///
   /// let text_input = TextInput::builder()
   ///                            .action_id("plate_num")
@@ -191,7 +191,7 @@ pub mod build {
     /// # Examples
     ///
     /// ```
-    /// use slack_blocks::{blocks::{Block, Input}, block_elements::TextInput};
+    /// use slack_blocks::{blocks::{Block, Input}, elems::TextInput};
     ///
     /// let text_input = TextInput::builder()
     ///                            .action_id("plate_num")
@@ -273,7 +273,7 @@ pub mod build {
     /// Set `min_length` and/or `max_length` with a rust range literal (**Optional**)
     ///
     /// ```
-    /// use slack_blocks::block_elements::TextInput;
+    /// use slack_blocks::elems::TextInput;
     ///
     /// TextInput::builder().action_id("vanity_plate")
     ///                     .placeholder("enter your desired custom license plate")
@@ -281,7 +281,7 @@ pub mod build {
     /// ```
     ///
     /// ```
-    /// use slack_blocks::block_elements::TextInput;
+    /// use slack_blocks::elems::TextInput;
     ///
     /// TextInput::builder().action_id("first_name")
     ///                     .placeholder("enter your first name")
@@ -289,7 +289,7 @@ pub mod build {
     /// ```
     ///
     /// ```
-    /// use slack_blocks::block_elements::TextInput;
+    /// use slack_blocks::elems::TextInput;
     ///
     /// TextInput::builder()
     ///           .action_id("does nothing")
@@ -322,13 +322,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `TextInputBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::TextInput;
+    /// use slack_blocks::elems::TextInput;
     ///
     /// let sel = TextInput::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::block_elements::TextInput;
+    /// use slack_blocks::elems::TextInput;
     ///
     /// let sel = TextInput::builder().action_id("bar").build();
     /// ```

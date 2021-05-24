@@ -68,7 +68,7 @@ mod compose {
 }
 
 mod block_elements {
-  use slack_blocks::block_elements::*;
+  use slack_blocks::elems::*;
   use test_data::*;
 
   use super::*;

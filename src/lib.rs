@@ -48,22 +48,19 @@
 #[macro_use]
 extern crate validator_derive;
 
-pub mod block_elements;
 pub mod blocks;
 pub mod compose;
+pub mod elems;
 
-// this shouldn't work, how am I allowed to leak private types??
 mod build;
 mod val_helpr;
 
-/// `block_elements` will be renamed to `elements` before 1.0.0.
-pub use block_elements as elems;
-#[doc(inline)]
-pub use block_elements::BlockElement;
 #[doc(inline)]
 pub use blocks::Block;
 #[doc(inline)]
 pub use compose::text;
+#[doc(inline)]
+pub use elems::BlockElement;
 
 mod macros {
   #[macro_export]

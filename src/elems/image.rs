@@ -70,8 +70,8 @@ pub mod build {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{block_elements::Image,
-  ///                    blocks::{Block, Context}};
+  /// use slack_blocks::{blocks::{Block, Context},
+  ///                    elems::Image};
   ///
   /// let img = Image::builder().image_url("foo").alt_text("bar").build();
   ///
@@ -130,13 +130,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `ImageBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::Image;
+    /// use slack_blocks::elems::Image;
     ///
     /// let foo = Image::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::{block_elements::Image, compose::Opt};
+    /// use slack_blocks::{compose::Opt, elems::Image};
     ///
     /// let foo = Image::builder().image_url("https://foo.com/bar.png")
     ///                           .alt_text("pic of bar")

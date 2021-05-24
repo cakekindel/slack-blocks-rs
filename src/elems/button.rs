@@ -67,9 +67,9 @@ impl Button {
   /// # Example
   /// ```
   /// use slack_blocks::blocks::{Block, actions};
-  /// use slack_blocks::block_elements;
+  /// use slack_blocks::elems;
   ///
-  /// let btn = block_elements::Button::from_text_and_action_id("Button", "123");
+  /// let btn = elems::Button::from_text_and_action_id("Button", "123");
   /// let actions_block: Block = actions::Contents::from_action_elements(vec![btn.into()]).into();
   /// // < send block to slack's API >
   /// ```
@@ -99,9 +99,9 @@ impl Button {
   /// # Example
   /// ```
   /// use slack_blocks::blocks::{Block, actions};
-  /// use slack_blocks::block_elements;
+  /// use slack_blocks::elems;
   ///
-  /// let btn = block_elements::Button::from_text_and_action_id("Go to cheese!", "123").with_url("https://www.cheese.com/");
+  /// let btn = elems::Button::from_text_and_action_id("Go to cheese!", "123").with_url("https://www.cheese.com/");
   /// let actions_block: Block = actions::Contents::from_action_elements(vec![btn.into()]).into();
   /// // < send block to slack's API >
   /// ```
@@ -119,9 +119,9 @@ impl Button {
   /// # Example
   /// ```
   /// use slack_blocks::blocks::{Block, actions};
-  /// use slack_blocks::block_elements;
+  /// use slack_blocks::elems;
   ///
-  /// let btn = block_elements::Button::from_text_and_action_id("Click me!", "123")
+  /// let btn = elems::Button::from_text_and_action_id("Click me!", "123")
   ///     .with_value("<something that will help your system better act on the interaction>");
   /// let actions_block: Block = actions::Contents::from_action_elements(vec![btn.into()]).into();
   /// // < send block to slack's API >
@@ -143,7 +143,7 @@ impl Button {
   /// # Example
   /// ```
   /// use slack_blocks::blocks::{Block, actions};
-  /// use slack_blocks::block_elements::{Button, button::Style};
+  /// use slack_blocks::elems::{Button, button::Style};
   ///
   /// let confirm_btn = Button::from_text_and_action_id("Confirm!", "123")
   ///     .with_style(Style::Primary);
@@ -178,7 +178,7 @@ impl Button {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::Button;
+  /// use slack_blocks::elems::Button;
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///

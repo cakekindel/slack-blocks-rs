@@ -74,7 +74,7 @@ impl<'a> External<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   ///
   /// let placeholder = r#"Hey I really would appreciate it if you chose
   ///         a channel relatively soon, so that we can figure out

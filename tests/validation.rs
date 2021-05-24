@@ -1,7 +1,5 @@
 use select::PublicChannel;
-use slack_blocks::{block_elements,
-                   block_elements::{select, BlockElement},
-                   blocks::{actions,
+use slack_blocks::{blocks::{actions,
                             context,
                             file,
                             image,
@@ -13,7 +11,9 @@ use slack_blocks::{block_elements,
                              text,
                              ConversationFilter,
                              Opt,
-                             OptGroup}};
+                             OptGroup},
+                   elems,
+                   elems::{select, BlockElement}};
 use text::ToSlackPlaintext;
 
 mod common;
@@ -110,7 +110,7 @@ should_fail!(
     Block::Actions(
        common::vec_of_len(
            actions::BlockElement::SelectStatic(
-             block_elements::select::Static::builder()
+             elems::select::Static::builder()
                                             .placeholder("bar")
                                             .action_id("foo")
                                             .options(vec![])
@@ -153,7 +153,7 @@ should_fail!(
         input::Contents
             ::from_label_and_element(
                 common::string_of_len(2001),
-                block_elements::select::PublicChannel
+                elems::select::PublicChannel
                     ::from_placeholder_and_action_id("fart", "")
             )
     )
@@ -165,7 +165,7 @@ should_fail!(
         input::Contents
             ::from_label_and_element(
                 "",
-                block_elements::select::PublicChannel
+                elems::select::PublicChannel
                     ::from_placeholder_and_action_id("fart", "")
             )
             .with_hint(common::string_of_len(2001))
@@ -178,7 +178,7 @@ should_fail!(
         input::Contents
             ::from_label_and_element(
                 "",
-                block_elements::select::PublicChannel
+                elems::select::PublicChannel
                     ::from_placeholder_and_action_id("fart", "")
             )
             .with_block_id(common::string_of_len(256))
@@ -299,7 +299,7 @@ should_fail!(
 should_fail!(
     button_with_long_text:
     BlockElement::Button(
-        block_elements::Button
+        elems::Button
             ::from_text_and_action_id(common::string_of_len(76), "")
     )
 );
@@ -307,7 +307,7 @@ should_fail!(
 should_fail!(
     button_with_long_action_id:
     BlockElement::Button(
-        block_elements::Button
+        elems::Button
             ::from_text_and_action_id("", common::string_of_len(256))
     )
 );
@@ -315,7 +315,7 @@ should_fail!(
 should_fail!(
     button_with_long_url:
     BlockElement::Button(
-        block_elements::Button
+        elems::Button
             ::from_text_and_action_id("", "")
             .with_url(common::string_of_len(3001))
     )
@@ -324,7 +324,7 @@ should_fail!(
 should_fail!(
     button_with_long_value:
     BlockElement::Button(
-        block_elements::Button
+        elems::Button
             ::from_text_and_action_id("", "")
             .with_value(common::string_of_len(2001))
     )

@@ -97,7 +97,7 @@ impl Contents {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{block_elements::select, blocks, compose};
+  /// use slack_blocks::{blocks, compose};
   ///
   /// # use std::error::Error;
   /// # pub fn main() -> Result<(), Box<dyn Error>> {

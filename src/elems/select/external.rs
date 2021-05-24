@@ -94,7 +94,7 @@ impl<'a> External<'a> {
   /// use std::convert::TryFrom;
   /// use std::iter;
   ///
-  /// use slack_blocks::block_elements::{BlockElement, select};
+  /// use slack_blocks::elems::{BlockElement, select};
   /// use slack_blocks::blocks;
   /// use slack_blocks::text;
   /// use text::ToSlackPlaintext;
@@ -141,7 +141,7 @@ impl<'a> External<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Actions},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{text, Confirm, text::ToSlackPlaintext},
   /// };
   ///
@@ -188,7 +188,7 @@ impl<'a> External<'a> {
   ///
   /// use slack_blocks::{
   ///   blocks::{Block, Actions},
-  ///   block_elements::{BlockElement, select::Select},
+  ///   elems::{BlockElement, select::Select},
   ///   compose::{text, text::ToSlackPlaintext},
   /// };
   ///
@@ -226,9 +226,9 @@ impl<'a> External<'a> {
   /// ```
   /// use std::{convert::TryFrom, iter};
   ///
-  /// use slack_blocks::{block_elements::{select::Select, BlockElement},
-  ///                    blocks::{Actions, Block},
-  ///                    compose::{opt::Opt, text, text::ToSlackPlaintext}};
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    compose::{opt::Opt, text, text::ToSlackPlaintext},
+  ///                    elems::{select::Select, BlockElement}};
   ///
   /// # use std::error::Error;
   /// # pub fn main() -> Result<(), Box<dyn Error>> {
@@ -267,7 +267,7 @@ impl<'a> External<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::block_elements::select;
+  /// use slack_blocks::elems::select;
   ///
   /// let select = select::External::from_placeholder_and_action_id(
   ///         r#"Hey I really would appreciate it if you chose
@@ -320,7 +320,7 @@ pub mod build {
   /// ```
   /// use std::convert::TryFrom;
   ///
-  /// use slack_blocks::{block_elements::{select::External, BlockElement},
+  /// use slack_blocks::{elems::{select::External, BlockElement},
   ///                    blocks::{Actions, Block},
   ///                    compose::Opt};
   ///
@@ -569,13 +569,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `ExternalBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::select::External;
+    /// use slack_blocks::elems::select::External;
     ///
     /// let sel = External::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::block_elements::select::External;
+    /// use slack_blocks::elems::select::External;
     ///
     /// let sel = External::builder().placeholder("foo")
     ///                              .action_id("bar")
@@ -603,13 +603,13 @@ pub mod build {
     /// Make sure all required setter methods have been called. See docs for `ExternalBuilder`.
     ///
     /// ```compile_fail
-    /// use slack_blocks::block_elements::select::External;
+    /// use slack_blocks::elems::select::External;
     ///
     /// let sel = External::builder().build(); // Won't compile!
     /// ```
     ///
     /// ```
-    /// use slack_blocks::block_elements::select::External;
+    /// use slack_blocks::elems::select::External;
     ///
     /// let sel = External::builder().placeholder("foo")
     ///                              .action_id("bar")
