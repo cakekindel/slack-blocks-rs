@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.17.0 (2021-05-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename block_elements -> elems (#141)
+
+### Features
+
+* rename block_elements -> elems ([#141](https://github.com/cakekindel/slack-blocks-rs/issues/141)) ([3a44daa](https://github.com/cakekindel/slack-blocks-rs/commit/3a44daa6ebef9ab16802a6fdcddaf723acf586e6))
+
 ### 0.16.10 (2021-05-24)
 
 
