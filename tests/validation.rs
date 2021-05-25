@@ -1,11 +1,12 @@
 use select::PublicChannel;
 use slack_blocks::{blocks::{actions,
-                            context,
-                            file,
-                            image,
-                            input,
-                            section,
-                            Block},
+                            Actions,
+                            Block,
+                            Context,
+                            File,
+                            Image,
+                            Input,
+                            Section},
                    compose,
                    compose::{conversation_filter::ConversationKind,
                              text,
@@ -42,21 +43,21 @@ macro_rules! should_fail {
 should_fail!(
     section_with_long_block_id:
     Block::Section(
-        section::Contents::from_text(text::Plain::from("")).with_block_id(common::string_of_len(256))
+        Section::from_text(text::Plain::from("")).with_block_id(common::string_of_len(256))
     )
 );
 
 should_fail!(
     section_with_long_text:
     Block::Section(
-        section::Contents::from_text(text::Plain::from(common::string_of_len(3001)))
+        Section::from_text(text::Plain::from(common::string_of_len(3001)))
     )
 );
 
 should_fail!(
   section_with_long_field:
     Block::Section(
-      section::Contents::from_fields(
+      Section::from_fields(
         vec![text::Plain::from(common::string_of_len(2001)).into()],
       ),
     )
@@ -65,7 +66,7 @@ should_fail!(
 should_fail!(
     section_with_many_fields:
     Block::Section(
-        section::Contents::from_fields(common::vec_of_len(text::Plain::from("").into(), 11))
+        Section::from_fields(common::vec_of_len(text::Plain::from("").into(), 11))
     )
 );
 
@@ -73,25 +74,25 @@ should_fail!(
 should_fail!(
     file_with_long_block_id:
     Block::File(
-        file::Contents::from_external_id("").with_block_id(common::string_of_len(256))
+        File::from_external_id("").with_block_id(common::string_of_len(256))
     )
 );
 
 // ## Image Block Validation
 should_fail!(
     image_with_long_url:
-    Block::Image(image::Contents::from_alt_text_and_url("", common::string_of_len(3001)))
+    Block::Image(Image::from_alt_text_and_url("", common::string_of_len(3001)))
 );
 
 should_fail!(
     image_with_long_alt_text:
-    Block::Image(image::Contents::from_alt_text_and_url(common::string_of_len(2001), ""))
+    Block::Image(Image::from_alt_text_and_url(common::string_of_len(2001), ""))
 );
 
 should_fail!(
     image_with_long_block_id:
     Block::Image(
-        image::Contents::from_alt_text_and_url("", "")
+        Image::from_alt_text_and_url("", "")
             .with_block_id(common::string_of_len(256))
     )
 );
@@ -99,7 +100,7 @@ should_fail!(
 should_fail!(
     image_with_long_title:
     Block::Image(
-        image::Contents::from_alt_text_and_url("", "")
+        Image::from_alt_text_and_url("", "")
             .with_title(common::string_of_len(2001))
     )
 );
@@ -124,7 +125,7 @@ should_fail!(
 should_fail!(
     actions_with_long_block_id:
     Block::Actions(
-        actions::Contents::new().with_block_id(common::string_of_len(256))
+        Actions::new().with_block_id(common::string_of_len(256))
     )
 );
 
@@ -142,7 +143,7 @@ should_fail!(
 should_fail!(
     context_with_long_block_id:
     Block::Context(
-        context::Contents::new().with_block_id(common::string_of_len(256))
+        Context::new().with_block_id(common::string_of_len(256))
     )
 );
 
@@ -150,7 +151,7 @@ should_fail!(
 should_fail!(
     input_with_long_label:
     Block::Input(
-        input::Contents
+        Input
             ::from_label_and_element(
                 common::string_of_len(2001),
                 elems::select::PublicChannel
@@ -162,7 +163,7 @@ should_fail!(
 should_fail!(
     input_with_long_hint:
     Block::Input(
-        input::Contents
+        Input
             ::from_label_and_element(
                 "",
                 elems::select::PublicChannel
@@ -175,7 +176,7 @@ should_fail!(
 should_fail!(
     input_with_long_block_id:
     Block::Input(
-        input::Contents
+        Input
             ::from_label_and_element(
                 "",
                 elems::select::PublicChannel
