@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.19.2 (2021-05-25)
+
+
+### Features
+
+* context builder ([#147](https://github.com/cakekindel/slack-blocks-rs/issues/147)) ([da4d125](https://github.com/cakekindel/slack-blocks-rs/commit/da4d1253442f141af9332f17f6ef6583a84f7bac))
+
 ### 0.19.1 (2021-05-25)
 
 
