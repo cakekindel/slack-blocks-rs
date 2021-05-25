@@ -45,12 +45,8 @@ pub struct Actions<'a> {
   elements: Vec<SupportedElement<'a>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate_block_id")]
+  #[validate(custom = "super::validate_block_id")]
   block_id: Option<Cow<'a, str>>,
-}
-
-fn validate_block_id(id: &Cow<str>) -> ValidatorResult {
-  below_len("Actions.block_id", 255, id)
 }
 
 impl<'a> Actions<'a> {
