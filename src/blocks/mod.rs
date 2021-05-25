@@ -9,6 +9,8 @@
 //!
 //! [building block layouts 🔗]: https://api.slack.com/block-kit/building
 
+use std::fmt;
+
 use serde::{Deserialize, Serialize};
 
 use crate::convert;
@@ -21,7 +23,7 @@ pub use actions::Actions;
 #[doc(inline)]
 pub mod context;
 #[doc(inline)]
-pub use context::Contents as Context;
+pub use context::Context;
 
 #[doc(inline)]
 pub mod file;
@@ -89,8 +91,6 @@ pub enum Block<'a> {
   File(File),
 }
 
-use std::fmt;
-
 impl fmt::Display for Block<'_> {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     let kind = match self {
@@ -140,3 +140,8 @@ convert!(impl<'a> From<Section<'a>> for Block<'a>      => |a| Block::Section(a))
 convert!(impl     From<Image>       for Block<'static> => |a| Block::Image(a));
 convert!(impl<'a> From<Context<'a>> for Block<'a>      => |a| Block::Context(a));
 convert!(impl     From<File>        for Block<'static> => |a| Block::File(a));
+
+fn validate_block_id(id: &std::borrow::Cow<str>)
+                     -> crate::val_helpr::ValidatorResult {
+  crate::val_helpr::below_len("block_id", 255, id)
+}
