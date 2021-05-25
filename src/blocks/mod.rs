@@ -28,7 +28,7 @@ pub use context::Context;
 #[doc(inline)]
 pub mod file;
 #[doc(inline)]
-pub use file::Contents as File;
+pub use file::File;
 
 #[doc(inline)]
 pub mod image;
@@ -88,7 +88,7 @@ pub enum Block<'a> {
   Input(Input<'a>),
 
   /// # File Block
-  File(File),
+  File(File<'a>),
 }
 
 impl fmt::Display for Block<'_> {
@@ -139,7 +139,7 @@ convert!(impl<'a> From<Input<'a>>   for Block<'a>      => |a| Block::Input(a));
 convert!(impl<'a> From<Section<'a>> for Block<'a>      => |a| Block::Section(a));
 convert!(impl     From<Image>       for Block<'static> => |a| Block::Image(a));
 convert!(impl<'a> From<Context<'a>> for Block<'a>      => |a| Block::Context(a));
-convert!(impl     From<File>        for Block<'static> => |a| Block::File(a));
+convert!(impl<'a> From<File<'a>>    for Block<'a>      => |a| Block::File(a));
 
 fn validate_block_id(id: &std::borrow::Cow<str>)
                      -> crate::val_helpr::ValidatorResult {
