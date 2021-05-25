@@ -38,7 +38,7 @@ pub use image::Image;
 #[doc(inline)]
 pub mod input;
 #[doc(inline)]
-pub use input::Contents as Input;
+pub use input::Input;
 
 #[doc(inline)]
 pub mod section;
