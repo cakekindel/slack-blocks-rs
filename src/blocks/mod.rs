@@ -33,7 +33,7 @@ pub use file::File;
 #[doc(inline)]
 pub mod image;
 #[doc(inline)]
-pub use image::Contents as Image;
+pub use image::Image;
 
 #[doc(inline)]
 pub mod input;
@@ -76,7 +76,7 @@ pub enum Block<'a> {
   Divider,
 
   /// # Image Block
-  Image(Image),
+  Image(Image<'a>),
 
   /// # Actions Block
   Actions(Actions<'a>),
@@ -134,12 +134,12 @@ impl<'a> Block<'a> {
   }
 }
 
-convert!(impl<'a> From<Actions<'a>> for Block<'a>      => |a| Block::Actions(a));
-convert!(impl<'a> From<Input<'a>>   for Block<'a>      => |a| Block::Input(a));
-convert!(impl<'a> From<Section<'a>> for Block<'a>      => |a| Block::Section(a));
-convert!(impl     From<Image>       for Block<'static> => |a| Block::Image(a));
-convert!(impl<'a> From<Context<'a>> for Block<'a>      => |a| Block::Context(a));
-convert!(impl<'a> From<File<'a>>    for Block<'a>      => |a| Block::File(a));
+convert!(impl<'a> From<Actions<'a>> for Block<'a> => |a| Block::Actions(a));
+convert!(impl<'a> From<Input<'a>>   for Block<'a> => |a| Block::Input(a));
+convert!(impl<'a> From<Section<'a>> for Block<'a> => |a| Block::Section(a));
+convert!(impl<'a> From<Image<'a>>   for Block<'a> => |a| Block::Image(a));
+convert!(impl<'a> From<Context<'a>> for Block<'a> => |a| Block::Context(a));
+convert!(impl<'a> From<File<'a>>    for Block<'a> => |a| Block::File(a));
 
 fn validate_block_id(id: &std::borrow::Cow<str>)
                      -> crate::val_helpr::ValidatorResult {
