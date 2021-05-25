@@ -131,7 +131,7 @@ dependencies = [
 
 [[package]]
 name = "slack-blocks"
-version = "0.19.2"
+version = "0.19.3"
 dependencies = [
  "lazy_static",
  "serde",
