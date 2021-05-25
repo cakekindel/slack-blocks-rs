@@ -59,7 +59,7 @@ impl<'a> OptGroup<'a> {
   /// # Example
   /// ```
   /// use slack_blocks::blocks::Block;
-  /// use slack_blocks::blocks::section::Contents as Section;
+  /// use slack_blocks::blocks::section::Section;
   /// use slack_blocks::blocks::Actions;
   /// use slack_blocks::text::{Mrkdwn};
   /// use slack_blocks::compose::{OptGroup, Opt};

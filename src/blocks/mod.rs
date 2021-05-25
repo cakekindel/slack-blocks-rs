@@ -43,7 +43,7 @@ pub use input::Contents as Input;
 #[doc(inline)]
 pub mod section;
 #[doc(inline)]
-pub use section::Contents as Section;
+pub use section::Section;
 
 type ValidationResult = Result<(), validator::ValidationErrors>;
 

@@ -266,7 +266,7 @@ pub mod build {
              state: PhantomData::<_> }
     }
 
-    /// Add an `element` (**Required**)
+    /// Add an `element` (**Required**, can be called many times)
     ///
     /// Add an interactive [element object 🔗]
     ///

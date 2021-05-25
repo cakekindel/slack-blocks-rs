@@ -232,7 +232,7 @@ pub mod build {
              state: PhantomData::<_> }
     }
 
-    /// Add an `element` (**Required**)
+    /// Add an `element` (**Required**, can be called many times)
     ///
     /// A composition object; Must be image elements or text objects.
     ///
