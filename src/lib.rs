@@ -45,7 +45,6 @@
 //! [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/
 //! [Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
 
-#![warn(missing_doc_code_examples)]
 #![deny(missing_docs)]
 #![cfg_attr(not(test),
             forbid(missing_copy_implementations,
