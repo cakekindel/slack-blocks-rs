@@ -58,6 +58,7 @@ impl<'a> Context<'a> {
   /// let block: Block = context.into();
   /// // < send block to slack's API >
   /// ```
+  #[deprecated(since = "0.19.2", note = "use Context::builder")]
   pub fn new() -> Self {
     Default::default()
   }
@@ -85,6 +86,7 @@ impl<'a> Context<'a> {
   ///
   /// // < send block to slack's API >
   /// ```
+  #[deprecated(since = "0.19.2", note = "use Context::builder")]
   pub fn with_block_id(mut self, block_id: impl Into<Cow<'a, str>>) -> Self {
     self.block_id = Some(block_id.into());
     self
@@ -112,6 +114,7 @@ impl<'a> Context<'a> {
   /// let block: Block = context.into();
   /// // < send block to slack's API >
   /// ```
+  #[deprecated(since = "0.19.2", note = "use Context::builder")]
   pub fn with_element(mut self,
                       element: impl Into<self::ImageOrText<'a>>)
                       -> Self {
@@ -144,6 +147,7 @@ impl<'a> Context<'a> {
   ///   // < send block to slack's API >
   /// }
   /// ```
+  #[deprecated(since = "0.19.2", note = "use Context::builder")]
   pub fn from_context_elements(elements: impl IntoIterator<Item = impl Into<ImageOrText<'a>>>)
                                -> Self {
     elements.into_iter()
