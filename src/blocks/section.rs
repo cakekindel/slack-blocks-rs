@@ -139,7 +139,7 @@ impl<'a> Contents<'a> {
            accessory: None }
   }
 
-  /// Set a unique `block_id` to identify this instance of an File Block.
+  /// Set a unique `block_id` to identify this instance of an Section Block.
   ///
   /// # Arguments
   ///
@@ -152,23 +152,6 @@ impl<'a> Contents<'a> {
   ///     If a message is updated, use a new `block_id`.
   ///
   /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
-  ///
-  /// # example
-  /// ```
-  /// use slack_blocks::blocks;
-  ///
-  /// # fn upload_file_to_slack(s: &str) -> String { String::new() }
-  /// # use std::error::Error;
-  /// # pub fn main() -> Result<(), Box<dyn Error>> {
-  /// let file_id = upload_file_to_slack("https://www.cheese.com/cheese-wheel.png");
-  ///
-  /// let block = blocks::file::Contents::from_external_id(file_id)
-  ///     .with_block_id("my_file_in_a_block_1234");
-  ///
-  /// // < send to slack API >
-  /// # Ok(())
-  /// # }
-  /// ```
   pub fn with_block_id(mut self, block_id: impl Into<Cow<'a, str>>) -> Self {
     self.block_id = Some(block_id.into());
     self
