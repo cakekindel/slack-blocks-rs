@@ -10,6 +10,8 @@
 //! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#input
 //! [slack's guide to using modals 🔗]: https://api.slack.com/surfaces/modals/using#gathering_input
 
+use std::borrow::Cow;
+
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
@@ -31,15 +33,15 @@ use crate::{compose::text,
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#input
 /// [slack's guide to using modals 🔗]: https://api.slack.com/surfaces/modals/using#gathering_input
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct Contents<'a> {
+pub struct Input<'a> {
   #[validate(custom = "validate::label")]
   label: text::Text,
 
   element: SupportedElement<'a>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 255))]
-  block_id: Option<String>,
+  #[validate(custom = "super::validate_block_id")]
+  block_id: Option<Cow<'a, str>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(custom = "validate::hint")]
@@ -52,7 +54,13 @@ pub struct Contents<'a> {
   optional: Option<bool>,
 }
 
-impl<'a> Contents<'a> {
+impl<'a> Input<'a> {
+  /// Build a new input block
+  ///
+  /// For example, see `blocks::input::build::InputBuilder`.
+  pub fn builder() -> build::InputBuilderInit<'a> {
+    build::InputBuilderInit::new()
+  }
   /// Create an Input Block from a text Label and interactive element.
   ///
   /// # Arguments
@@ -79,19 +87,19 @@ impl<'a> Contents<'a> {
   /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
   ///     .choose_from_public_channels();
   ///
-  /// let block = blocks::input::Contents::from_label_and_element(label, input);
+  /// let block = blocks::Input::from_label_and_element(label, input);
   ///
   /// // < send to slack API >
   /// ```
   pub fn from_label_and_element(label: impl Into<text::Plain>,
                                 element: impl Into<SupportedElement<'a>>)
                                 -> Self {
-    Contents { label: label.into().into(),
-               element: element.into(),
-               block_id: None,
-               hint: None,
-               dispatch_action: None,
-               optional: None }
+    Input { label: label.into().into(),
+            element: element.into(),
+            block_id: None,
+            hint: None,
+            dispatch_action: None,
+            optional: None }
   }
 
   /// Set a unique `block_id` to identify this instance of an Input Block.
@@ -117,15 +125,14 @@ impl<'a> Contents<'a> {
   /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
   ///     .choose_from_public_channels();
   ///
-  /// let block = blocks::input
-  ///     ::Contents
+  /// let block = blocks::Input
   ///     ::from_label_and_element(label, input)
   ///     .with_block_id("angst_rating_12345");
   ///
   /// // < send to slack API >
   /// ```
-  pub fn with_block_id(mut self, block_id: impl ToString) -> Self {
-    self.block_id = Some(block_id.to_string());
+  pub fn with_block_id(mut self, block_id: impl Into<Cow<'a, str>>) -> Self {
+    self.block_id = Some(block_id.into());
     self
   }
 
@@ -152,8 +159,7 @@ impl<'a> Contents<'a> {
   /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
   ///     .choose_from_public_channels();
   ///
-  /// let block = blocks::input
-  ///     ::Contents
+  /// let block = blocks::Input
   ///     ::from_label_and_element(label, input)
   ///     .with_hint("PSST hey! Don't let them know how angsty you are!");
   ///
@@ -182,8 +188,7 @@ impl<'a> Contents<'a> {
   /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
   ///     .choose_from_public_channels();
   ///
-  /// let block = blocks::input
-  ///     ::Contents
+  /// let block = blocks::Input
   ///     ::from_label_and_element(label, input)
   ///     .with_hint("PSST hey! Don't even answer that!")
   ///     .with_optional(true);
@@ -221,8 +226,7 @@ impl<'a> Contents<'a> {
   ///     .choose_from_public_channels();
   /// let long_string = std::iter::repeat(' ').take(2001).collect::<String>();
   ///
-  /// let block = blocks::input
-  ///     ::Contents
+  /// let block = blocks::Input
   ///     ::from_label_and_element(label, input)
   ///     .with_block_id(long_string);
   ///
@@ -232,6 +236,168 @@ impl<'a> Contents<'a> {
   /// ```
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
+  }
+}
+
+/// Input block builder
+pub mod build {
+  use std::marker::PhantomData;
+
+  use super::*;
+  use crate::build::*;
+
+  /// Compile-time markers for builder methods
+  #[allow(non_camel_case_types)]
+  pub mod method {
+    /// InputBuilder.element
+    #[derive(Clone, Copy, Debug)]
+    pub struct element;
+
+    /// InputBuilder.label
+    #[derive(Clone, Copy, Debug)]
+    pub struct label;
+  }
+
+  /// Initial state for `InputBuilder`
+  pub type InputBuilderInit<'a> =
+    InputBuilder<'a,
+                 RequiredMethodNotCalled<method::element>,
+                 RequiredMethodNotCalled<method::label>>;
+
+  /// Build an Input block
+  ///
+  /// Allows you to construct safely, with compile-time checks
+  /// on required setter methods.
+  ///
+  /// # Required Methods
+  /// `InputBuilder::build()` is only available if these methods have been called:
+  ///  - `element`
+  ///
+  /// # Example
+  /// ```
+  /// use slack_blocks::{blocks::Input,
+  ///                    compose::text::ToSlackPlaintext,
+  ///                    elems::TextInput};
+  ///
+  /// let block =
+  ///   Input::builder().label("foo".plaintext())
+  ///                   .element(TextInput::builder().action_id("foo").build())
+  ///                   .build();
+  /// ```
+  #[derive(Debug)]
+  pub struct InputBuilder<'a, Element, Label> {
+    label: Option<text::Text>,
+    element: Option<SupportedElement<'a>>,
+    hint: Option<text::Text>,
+    block_id: Option<Cow<'a, str>>,
+    optional: Option<bool>,
+    dispatch_action: Option<bool>,
+    state: PhantomData<(Element, Label)>,
+  }
+
+  impl<'a, E, L> InputBuilder<'a, E, L> {
+    /// Create a new InputBuilder
+    pub fn new() -> Self {
+      Self { label: None,
+             element: None,
+             hint: None,
+             block_id: None,
+             optional: None,
+             dispatch_action: None,
+             state: PhantomData::<_> }
+    }
+
+    /// Set `element` (**Required**)
+    ///
+    /// An interactive `block_element` that will be used to gather
+    /// the input for this block.
+    ///
+    /// For the kinds of Elements supported by
+    /// Input blocks, see the `SupportedElement` enum.
+    pub fn element<El>(self,
+                       element: El)
+                       -> InputBuilder<'a, Set<method::element>, L>
+      where El: Into<SupportedElement<'a>>
+    {
+      InputBuilder { label: self.label,
+                     element: Some(element.into()),
+                     hint: self.hint,
+                     block_id: self.block_id,
+                     optional: self.optional,
+                     dispatch_action: self.dispatch_action,
+                     state: PhantomData::<_> }
+    }
+
+    /// Set `label` (**Required**)
+    ///
+    /// A label that appears above an input element in the form of
+    /// a [text object 🔗] that must have type of `plain_text`.
+    ///
+    /// Maximum length for the text in this field is 2000 characters.
+    ///
+    /// [text object 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
+    pub fn label<T>(self, label: T) -> InputBuilder<'a, E, Set<method::label>>
+      where T: Into<text::Plain>
+    {
+      InputBuilder { label: Some(label.into().into()),
+                     element: self.element,
+                     hint: self.hint,
+                     block_id: self.block_id,
+                     optional: self.optional,
+                     dispatch_action: self.dispatch_action,
+                     state: PhantomData::<_> }
+    }
+
+    /// Set `block_id` (Optional)
+    ///
+    /// A string acting as a unique identifier for a block.
+    ///
+    /// You can use this `block_id` when you receive an interaction payload
+    /// to [identify the source of the action 🔗].
+    ///
+    /// If not specified, a `block_id` will be generated.
+    ///
+    /// Maximum length for this field is 255 characters.
+    ///
+    /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
+    pub fn block_id<S>(mut self, block_id: S) -> Self
+      where S: Into<Cow<'a, str>>
+    {
+      self.block_id = Some(block_id.into());
+      self
+    }
+  }
+
+  impl<'a> InputBuilder<'a, Set<method::element>, Set<method::label>> {
+    /// All done building, now give me a darn actions block!
+    ///
+    /// > `no method name 'build' found for struct 'InputBuilder<...>'`?
+    /// Make sure all required setter methods have been called. See docs for `InputBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::blocks::Input;
+    ///
+    /// let foo = Input::builder().build(); // Won't compile!
+    /// ```
+    ///
+    /// ```
+    /// use slack_blocks::{blocks::Input,
+    ///                    compose::text::ToSlackPlaintext,
+    ///                    elems::TextInput};
+    ///
+    /// let block =
+    ///   Input::builder().label("foo".plaintext())
+    ///                   .element(TextInput::builder().action_id("foo").build())
+    ///                   .build();
+    /// ```
+    pub fn build(self) -> Input<'a> {
+      Input { element: self.element.unwrap(),
+              label: self.label.unwrap(),
+              hint: self.hint,
+              dispatch_action: self.dispatch_action,
+              optional: self.optional,
+              block_id: self.block_id }
+    }
   }
 }
 
