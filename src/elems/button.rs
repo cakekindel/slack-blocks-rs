@@ -79,7 +79,7 @@ impl<'a> Button<'a> {
     build::ButtonBuilderInit::new()
   }
 
-  /// Create a `button::Contents` from a text label and ID for your app
+  /// Create a `Button` from a text label and ID for your app
   /// to be able to identify what was pressed.
   ///
   /// # Arguments
@@ -97,11 +97,12 @@ impl<'a> Button<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::blocks::{Block, actions};
-  /// use slack_blocks::elems;
+  /// use slack_blocks::{blocks::{Actions, Block},
+  ///                    elems};
   ///
   /// let btn = elems::Button::from_text_and_action_id("Button", "123");
-  /// let actions_block: Block = actions::Contents::from_action_elements(vec![btn.into()]).into();
+  /// let actions_block: Block =
+  ///   Actions::from_action_elements(vec![btn.into()]).into();
   /// // < send block to slack's API >
   /// ```
   #[deprecated(since = "0.17.3", note = "use Button::builder instead")]
@@ -130,11 +131,11 @@ impl<'a> Button<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::blocks::{Block, actions};
+  /// use slack_blocks::blocks::{Block, Actions};
   /// use slack_blocks::elems;
   ///
   /// let btn = elems::Button::from_text_and_action_id("Go to cheese!", "123").with_url("https://www.cheese.com/");
-  /// let actions_block: Block = actions::Contents::from_action_elements(vec![btn.into()]).into();
+  /// let actions_block: Block = Actions::from_action_elements(vec![btn.into()]).into();
   /// // < send block to slack's API >
   /// ```
   #[deprecated(since = "0.17.3", note = "use Button::builder instead")]
@@ -151,12 +152,12 @@ impl<'a> Button<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::blocks::{Block, actions};
+  /// use slack_blocks::blocks::{Block, Actions};
   /// use slack_blocks::elems;
   ///
   /// let btn = elems::Button::from_text_and_action_id("Click me!", "123")
   ///     .with_value("<something that will help your system better act on the interaction>");
-  /// let actions_block: Block = actions::Contents::from_action_elements(vec![btn.into()]).into();
+  /// let actions_block: Block = Actions::from_action_elements(vec![btn.into()]).into();
   /// // < send block to slack's API >
   /// ```
   #[deprecated(since = "0.17.3", note = "use Button::builder instead")]
@@ -176,7 +177,7 @@ impl<'a> Button<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::blocks::{Block, actions};
+  /// use slack_blocks::blocks::{Block, Actions};
   /// use slack_blocks::elems::{Button, button::Style};
   ///
   /// let confirm_btn = Button::from_text_and_action_id("Confirm!", "123")
@@ -185,7 +186,7 @@ impl<'a> Button<'a> {
   /// let deny_btn = Button::from_text_and_action_id("Deny!", "123")
   ///     .with_style(Style::Danger);
   ///
-  /// let actions_block: Block = actions::Contents::from_action_elements(
+  /// let actions_block: Block = Actions::from_action_elements(
   ///     vec![confirm_btn.into(), deny_btn.into()]
   /// ).into();
   /// // < send block to slack's API >
