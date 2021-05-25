@@ -45,7 +45,7 @@ use crate::{compose::text, elems::BlockElement, val_helpr::ValidationResult};
 /// [home tabs 🔗]: https://api.slack.com/surfaces/tabs
 /// [block elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
-pub struct Contents<'a> {
+pub struct Section<'a> {
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate(custom = "validate::fields")]
   fields: Option<Cow<'a, [text::Text]>>,
@@ -65,7 +65,14 @@ pub struct Contents<'a> {
   accessory: Option<BlockElement<'a>>,
 }
 
-impl<'a> Contents<'a> {
+impl<'a> Section<'a> {
+  /// Build a new section block
+  ///
+  /// For example, see `blocks::section::build::SectionBuilder`.
+  pub fn builder() -> build::SectionBuilderInit<'a> {
+    build::SectionBuilderInit::new()
+  }
+
   /// Construct a Section block from a collection of text objects
   ///
   /// # Arguments
@@ -127,8 +134,7 @@ impl<'a> Contents<'a> {
   /// ```
   /// use slack_blocks::{blocks, compose::text};
   ///
-  /// let block =
-  ///   blocks::section::Contents::from_text(text::Plain::from("I am a section!"));
+  /// let block = blocks::Section::from_text(text::Plain::from("I am a section!"));
   ///
   /// // < send to slack API >
   /// ```
@@ -176,8 +182,7 @@ impl<'a> Contents<'a> {
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
-  /// let block = blocks::section
-  ///     ::Contents
+  /// let block = blocks::Section
   ///     ::from_text(text::Plain::from("file_id"))
   ///     .with_block_id(long_string);
   ///
@@ -190,6 +195,165 @@ impl<'a> Contents<'a> {
   }
 }
 
+/// Section block builder
+pub mod build {
+  use std::marker::PhantomData;
+
+  use super::*;
+  use crate::build::*;
+
+  /// Compile-time markers for builder methods
+  #[allow(non_camel_case_types)]
+  pub mod method {
+    /// SectionBuilder.text
+    #[derive(Clone, Copy, Debug)]
+    pub struct text;
+  }
+
+  /// Initial state for `SectionBuilder`
+  pub type SectionBuilderInit<'a> =
+    SectionBuilder<'a, RequiredMethodNotCalled<method::text>>;
+
+  /// Build an Section block
+  ///
+  /// Allows you to construct safely, with compile-time checks
+  /// on required setter methods.
+  ///
+  /// # Required Methods
+  /// `SectionBuilder::build()` is only available if these methods have been called:
+  ///  - `element`
+  ///
+  /// # Example
+  /// ```
+  /// use slack_blocks::{blocks::Section, elems::Image, text::ToSlackPlaintext};
+  ///
+  /// let block =
+  ///   Section::builder().text("foo".plaintext())
+  ///                     .accessory(Image::builder().image_url("foo.png")
+  ///                                                .alt_text("pic of foo")
+  ///                                                .build())
+  ///                     .build();
+  /// ```
+  #[derive(Debug)]
+  pub struct SectionBuilder<'a, Text> {
+    accessory: Option<BlockElement<'a>>,
+    text: Option<text::Text>,
+    fields: Option<Vec<text::Text>>,
+    block_id: Option<Cow<'a, str>>,
+    state: PhantomData<Text>,
+  }
+
+  impl<'a, E> SectionBuilder<'a, E> {
+    /// Create a new SectionBuilder
+    pub fn new() -> Self {
+      Self { accessory: None,
+             text: None,
+             fields: None,
+             block_id: None,
+             state: PhantomData::<_> }
+    }
+
+    /// Set `accessory` (Optional)
+    pub fn accessory<B>(mut self, acc: B) -> Self
+      where B: Into<BlockElement<'a>>
+    {
+      self.accessory = Some(acc.into());
+      self
+    }
+
+    /// Add `text` (**Required**, can be called many times)
+    ///
+    /// One or many [text objects 🔗] to populate the block with.
+    ///
+    /// # If called once:
+    /// Sets the `text` field of the section block.
+    ///
+    /// Maximum length for the text in this field is 3000 characters.
+    ///
+    /// # If called multiple times:
+    /// Sets the `fields` field of the section block.
+    ///
+    /// Fields will be rendered in a compact format that allows for
+    /// 2 columns of side-by-side text.
+    /// Maximum number of items is 10.
+    ///
+    /// Maximum length for the text in each item is 2000 characters.
+    ///
+    /// [text objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
+    pub fn text<T>(self, text: T) -> SectionBuilder<'a, Set<method::text>>
+      where T: Into<text::Text>
+    {
+      let (text, fields) = match (self.text, self.fields) {
+        | (Some(t), None) => (None, Some(vec![t, text.into()])),
+        | (None, None) => (Some(text.into()), None),
+        | (None, Some(mut fs)) => {
+          fs.push(text.into());
+          (None, Some(fs))
+        },
+        | (Some(_), Some(_)) => {
+          unreachable!("fields and text should never both be set.")
+        },
+      };
+
+      SectionBuilder { accessory: self.accessory,
+                       text,
+                       fields,
+                       block_id: self.block_id,
+                       state: PhantomData::<_> }
+    }
+
+    /// Set `block_id` (Optional)
+    ///
+    /// A string acting as a unique identifier for a block.
+    ///
+    /// You can use this `block_id` when you receive an interaction payload
+    /// to [identify the source of the action 🔗].
+    ///
+    /// If not specified, a `block_id` will be generated.
+    ///
+    /// Maximum length for this field is 255 characters.
+    ///
+    /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
+    pub fn block_id<S>(mut self, block_id: S) -> Self
+      where S: Into<Cow<'a, str>>
+    {
+      self.block_id = Some(block_id.into());
+      self
+    }
+  }
+
+  impl<'a> SectionBuilder<'a, Set<method::text>> {
+    /// All done building, now give me a darn actions block!
+    ///
+    /// > `no method name 'build' found for struct 'SectionBuilder<...>'`?
+    /// Make sure all required setter methods have been called. See docs for `SectionBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::blocks::Section;
+    ///
+    /// let foo = Section::builder().build(); // Won't compile!
+    /// ```
+    ///
+    /// ```
+    /// use slack_blocks::{blocks::Section,
+    ///                    compose::text::ToSlackPlaintext,
+    ///                    elems::Image};
+    ///
+    /// let block =
+    ///   Section::builder().text("foo".plaintext())
+    ///                     .accessory(Image::builder().image_url("foo.png")
+    ///                                                .alt_text("pic of foo")
+    ///                                                .build())
+    ///                     .build();
+    /// ```
+    pub fn build(self) -> Section<'a> {
+      Section { text: self.text,
+                fields: self.fields.map(|fs| fs.into()),
+                accessory: self.accessory,
+                block_id: self.block_id }
+    }
+  }
+}
 mod validate {
   use super::*;
   use crate::{compose::text,
