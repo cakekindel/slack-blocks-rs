@@ -174,8 +174,8 @@ impl<'a> Opt<'a> {
   /// ```
   /// use slack_blocks::text;
   /// use slack_blocks::blocks::Block;
-  /// use slack_blocks::blocks::section::Contents as Section;
-  /// use slack_blocks::blocks::actions::Contents as Actions;
+  /// use slack_blocks::blocks::Section;
+  /// use slack_blocks::blocks::Actions;
   /// use slack_blocks::compose::Opt;
   ///
   /// let cities = vec![
@@ -236,8 +236,8 @@ impl<'a> Opt<'a> {
   /// ```
   /// use slack_blocks::text;
   /// use slack_blocks::blocks::Block;
-  /// use slack_blocks::blocks::section::Contents as Section;
-  /// use slack_blocks::blocks::actions::Contents as Actions;
+  /// use slack_blocks::blocks::Section;
+  /// use slack_blocks::blocks::Actions;
   /// use slack_blocks::compose::Opt;
   ///
   /// let options = vec![
@@ -289,8 +289,8 @@ impl<'a, T, U> Opt<'a, T, U> {
   /// ```
   /// use slack_blocks::text;
   /// use slack_blocks::blocks::Block;
-  /// use slack_blocks::blocks::section::Contents as Section;
-  /// use slack_blocks::blocks::actions::Contents as Actions;
+  /// use slack_blocks::blocks::Section;
+  /// use slack_blocks::blocks::Actions;
   /// use slack_blocks::compose::Opt;
   ///
   /// let options = vec![
@@ -369,8 +369,8 @@ impl<'a, U> Opt<'a, text::Plain, U> {
   /// ```
   /// use slack_blocks::text;
   /// use slack_blocks::blocks::Block;
-  /// use slack_blocks::blocks::section::Contents as Section;
-  /// use slack_blocks::blocks::actions::Contents as Actions;
+  /// use slack_blocks::blocks::Section;
+  /// use slack_blocks::blocks::Actions;
   /// use slack_blocks::compose::Opt;
   ///
   /// let cities = vec![

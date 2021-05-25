@@ -7,7 +7,8 @@
 //! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
 //! [elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 
-use std::convert::{TryFrom, TryInto};
+use std::{borrow::Cow,
+          convert::{TryFrom, TryInto}};
 
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -21,7 +22,7 @@ use crate::{convert,
                     Overflow,
                     Radio,
                     TextInput},
-            val_helpr::ValidationResult};
+            val_helpr::*};
 
 /// # Actions Block
 ///
@@ -39,31 +40,42 @@ use crate::{convert,
            PartialEq,
            Serialize,
            Validate)]
-pub struct Contents<'a> {
+pub struct Actions<'a> {
   #[validate(length(max = 5))]
   elements: Vec<SupportedElement<'a>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 255))]
-  block_id: Option<String>,
+  #[validate(custom = "validate_block_id")]
+  block_id: Option<Cow<'a, str>>,
 }
 
-impl<'a> Contents<'a> {
+fn validate_block_id(id: &Cow<str>) -> ValidatorResult {
+  below_len("Actions.block_id", 255, id)
+}
+
+impl<'a> Actions<'a> {
+  /// Build a new Actions block.
+  ///
+  /// For example, see docs for ActionsBuilder.
+  pub fn builder() -> build::ActionsBuilderInit<'a> {
+    build::ActionsBuilderInit::new()
+  }
+
   /// Create an empty Actions block (shorthand for `Default::default()`)
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::blocks::{actions, Block};
+  /// use slack_blocks::blocks;
   ///
-  /// let actions = actions::Contents::new();
-  /// let block: Block = actions.into();
+  /// let actions: blocks::Block = blocks::Actions::new().into();
   /// // < send block to slack's API >
   /// ```
+  #[deprecated(since = "0.19.1", note = "use Actions::builder")]
   pub fn new() -> Self {
     Default::default()
   }
 
-  /// Set the `block_id` for interactions on an existing `actions::Contents`
+  /// Set the `block_id` for interactions on an existing `Actions`
   ///
   /// # Arguments
   /// - `block_id` - A string acting as a unique identifier for a block.
@@ -76,14 +88,15 @@ impl<'a> Contents<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::blocks::{actions, Block};
+  /// use slack_blocks::blocks::{Actions, Block};
   ///
-  /// let actions = actions::Contents::new().with_block_id("tally_ho");
+  /// let actions = Actions::new().with_block_id("tally_ho");
   /// let block: Block = actions.into();
   /// // < send block to slack's API >
   /// ```
-  pub fn with_block_id(mut self, block_id: impl ToString) -> Self {
-    self.block_id = Some(block_id.to_string());
+  #[deprecated(since = "0.19.1", note = "use Actions::builder")]
+  pub fn with_block_id(mut self, block_id: impl Into<Cow<'a, str>>) -> Self {
+    self.block_id = Some(block_id.into());
     self
   }
 
@@ -114,18 +127,19 @@ impl<'a> Contents<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{blocks::{actions, Block},
+  /// use slack_blocks::{blocks::{Actions, Block},
   ///                    compose,
   ///                    elems};
   ///
   /// # pub fn main() -> Result<(), ()> {
   /// let btn = elems::Button::from_text_and_action_id("Button", "123");
-  /// let actions = actions::Contents::from_elements(vec![btn.into()])?;
+  /// let actions = Actions::from_elements(vec![btn.into()])?;
   /// let block: Block = actions.into();
   /// // < send block to slack's API >
   /// # Ok(())
   /// # }
   /// ```
+  #[deprecated(since = "0.19.1", note = "use Actions::builder")]
   pub fn from_elements<Iter>(elements: Iter) -> Result<Self, ()>
     where Iter: IntoIterator<Item = BlockElement<'a>>
   {
@@ -161,18 +175,19 @@ impl<'a> Contents<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{blocks::{actions, Block},
+  /// use slack_blocks::{blocks::{Actions, Block},
   ///                    compose,
   ///                    elems};
   ///
   /// # pub fn main() {
   /// let btn = elems::Button::from_text_and_action_id("Button", "123");
-  /// let actions = actions::Contents::from_action_elements(vec![btn.into()]);
+  /// let actions = Actions::from_action_elements(vec![btn.into()]);
   /// let block: Block = actions.into();
   ///
   /// // < send block to slack's API >
   /// # }
   /// ```
+  #[deprecated(since = "0.19.1", note = "use Actions::builder")]
   pub fn from_action_elements<Iter>(elements: Iter) -> Self
     where Iter: IntoIterator<Item = self::SupportedElement<'a>>
   {
@@ -193,15 +208,134 @@ impl<'a> Contents<'a> {
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
-  /// let block = blocks::actions
-  ///     ::Contents
-  ///     ::from_action_elements(vec![])
-  ///     .with_block_id(long_string);
+  /// let block =
+  ///   blocks::Actions::from_action_elements(vec![]).with_block_id(long_string);
   ///
   /// assert!(matches!(block.validate(), Err(_)));
   /// ```
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
+  }
+}
+
+/// Actions block builder
+pub mod build {
+  use std::marker::PhantomData;
+
+  use super::*;
+  use crate::build::*;
+
+  /// Compile-time markers for builder methods
+  #[allow(non_camel_case_types)]
+  pub mod method {
+    /// ActionsBuilder.elements
+    #[derive(Clone, Copy, Debug)]
+    pub struct elements;
+  }
+
+  /// Initial state for `ActionsBuilder`
+  pub type ActionsBuilderInit<'a> =
+    ActionsBuilder<'a, RequiredMethodNotCalled<method::elements>>;
+
+  /// Build an Actions block
+  ///
+  /// Allows you to construct safely, with compile-time checks
+  /// on required setter methods.
+  ///
+  /// # Required Methods
+  /// `ActionsBuilder::build()` is only available if these methods have been called:
+  ///  - `element`
+  ///
+  /// # Example
+  /// ```
+  /// use slack_blocks::{blocks::Actions, elems::Button};
+  ///
+  /// let block = Actions::builder().element(Button::builder().text("Click me!")
+  ///                                                         .action_id("clicked")
+  ///                                                         .build())
+  ///                               .build();
+  /// ```
+  #[derive(Debug)]
+  pub struct ActionsBuilder<'a, Elements> {
+    elements: Option<Vec<SupportedElement<'a>>>,
+    block_id: Option<Cow<'a, str>>,
+    state: PhantomData<Elements>,
+  }
+
+  impl<'a, E> ActionsBuilder<'a, E> {
+    /// Create a new ActionsBuilder
+    pub fn new() -> Self {
+      Self { elements: None,
+             block_id: None,
+             state: PhantomData::<_> }
+    }
+
+    /// Add an `element` (**Required**)
+    ///
+    /// Add an interactive [element object 🔗]
+    ///
+    /// For a list of `BlockElement` types that are supported, see `slack_blocks::blocks::actions::SupportedElement`.
+    ///
+    /// There is a maximum of 5 elements in each action block.
+    ///
+    /// [element object 🔗]: https://api.slack.com/reference/messaging/block-elements
+    pub fn element<El>(self,
+                       element: El)
+                       -> ActionsBuilder<'a, Set<method::elements>>
+      where El: Into<SupportedElement<'a>>
+    {
+      let mut elements = self.elements.unwrap_or_default();
+      elements.push(element.into());
+
+      ActionsBuilder { block_id: self.block_id,
+                       elements: Some(elements),
+                       state: PhantomData::<_> }
+    }
+
+    /// Set `block_id` (Optional)
+    ///
+    /// A string acting as a unique identifier for a block.
+    ///
+    /// You can use this `block_id` when you receive an interaction payload
+    /// to [identify the source of the action 🔗].
+    ///
+    /// If not specified, a `block_id` will be generated.
+    ///
+    /// Maximum length for this field is 255 characters.
+    ///
+    /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
+    pub fn block_id<S>(mut self, block_id: S) -> Self
+      where S: Into<Cow<'a, str>>
+    {
+      self.block_id = Some(block_id.into());
+      self
+    }
+  }
+
+  impl<'a> ActionsBuilder<'a, Set<method::elements>> {
+    /// All done building, now give me a darn actions block!
+    ///
+    /// > `no method name 'build' found for struct 'ActionsBuilder<...>'`?
+    /// Make sure all required setter methods have been called. See docs for `ActionsBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::blocks::Actions;
+    ///
+    /// let foo = Actions::builder().build(); // Won't compile!
+    /// ```
+    ///
+    /// ```
+    /// use slack_blocks::{blocks::Actions, elems::Button};
+    ///
+    /// let block = Actions::builder().element(Button::builder().text("Click me!")
+    ///                                                         .action_id("clicked")
+    ///                                                         .build())
+    ///                               .build();
+    /// ```
+    pub fn build(self) -> Actions<'a> {
+      Actions { elements: self.elements.unwrap(),
+                block_id: self.block_id }
+    }
   }
 }
 
@@ -223,14 +357,14 @@ impl<'a> Contents<'a> {
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct SupportedElement<'a>(BlockElement<'a>);
 
-convert!(impl<'a> From<Vec<self::SupportedElement<'a>>> for Contents<'a>
+convert!(impl<'a> From<Vec<self::SupportedElement<'a>>> for Actions<'a>
     => |elements| Self {
         elements,
         ..Default::default()
     }
 );
 
-impl<'a> TryFrom<BlockElement<'a>> for Contents<'a> {
+impl<'a> TryFrom<BlockElement<'a>> for Actions<'a> {
   type Error = ();
   fn try_from(element: BlockElement<'a>) -> Result<Self, Self::Error> {
     self::SupportedElement::<'a>::try_from(element)
@@ -238,13 +372,13 @@ impl<'a> TryFrom<BlockElement<'a>> for Contents<'a> {
   }
 }
 
-impl<'a> TryFrom<Vec<BlockElement<'a>>> for Contents<'a> {
+impl<'a> TryFrom<Vec<BlockElement<'a>>> for Actions<'a> {
   type Error = ();
   fn try_from(elements: Vec<BlockElement<'a>>) -> Result<Self, Self::Error> {
     elements.into_iter()
             .map(self::SupportedElement::<'a>::try_from)
             .collect::<Result<Vec<_>, _>>()
-            .map(self::Contents::<'a>::from)
+            .map(self::Actions::<'a>::from)
   }
 }
 

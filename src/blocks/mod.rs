@@ -16,7 +16,7 @@ use crate::convert;
 #[doc(inline)]
 pub mod actions;
 #[doc(inline)]
-pub use actions::Contents as Actions;
+pub use actions::Actions;
 
 #[doc(inline)]
 pub mod context;
