@@ -54,10 +54,10 @@ use serde::{Deserialize, Serialize};
 /// </details>
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Contents {
-  text: String,
+  pub(super) text: String,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  verbatim: Option<bool>,
+  pub(super) verbatim: Option<bool>,
 }
 
 impl Contents {

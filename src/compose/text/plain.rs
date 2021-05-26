@@ -9,10 +9,10 @@ use serde::{Deserialize, Serialize};
 /// Only formatting available is emojis.
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
 pub struct Contents {
-  text: String,
+  pub(super) text: String,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  emoji: Option<bool>,
+  pub(super) emoji: Option<bool>,
 }
 
 impl Contents {
