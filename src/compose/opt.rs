@@ -565,6 +565,7 @@ pub mod build {
     ///
     /// assert_eq!(xml, equiv)
     /// ```
+    #[cfg(feature = "xml")]
     pub fn child<T: Into<text::Text>>(
       self,
       text: T)

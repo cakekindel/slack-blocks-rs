@@ -346,6 +346,7 @@ pub mod build {
       self
     }
   }
+
   impl<'a, L> InputBuilder<'a, RequiredMethodNotCalled<method::element>, L> {
     /// Set `element` (**Required**)
     ///
@@ -369,6 +370,7 @@ pub mod build {
     }
 
     /// XML child alias for `element`
+    #[cfg(feature = "xml")]
     pub fn child<El>(self,
                      element: El)
                      -> InputBuilder<'a, Set<method::element>, L>
