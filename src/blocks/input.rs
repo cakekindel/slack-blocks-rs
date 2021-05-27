@@ -307,27 +307,6 @@ pub mod build {
              state: PhantomData::<_> }
     }
 
-    /// Set `element` (**Required**)
-    ///
-    /// An interactive `block_element` that will be used to gather
-    /// the input for this block.
-    ///
-    /// For the kinds of Elements supported by
-    /// Input blocks, see the `SupportedElement` enum.
-    pub fn element<El>(self,
-                       element: El)
-                       -> InputBuilder<'a, Set<method::element>, L>
-      where El: Into<SupportedElement<'a>>
-    {
-      InputBuilder { label: self.label,
-                     element: Some(element.into()),
-                     hint: self.hint,
-                     block_id: self.block_id,
-                     optional: self.optional,
-                     dispatch_action: self.dispatch_action,
-                     state: PhantomData::<_> }
-    }
-
     /// Set `label` (**Required**)
     ///
     /// A label that appears above an input element in the form of
@@ -365,6 +344,37 @@ pub mod build {
     {
       self.block_id = Some(block_id.into());
       self
+    }
+  }
+  impl<'a, L> InputBuilder<'a, RequiredMethodNotCalled<method::element>, L> {
+    /// Set `element` (**Required**)
+    ///
+    /// An interactive `block_element` that will be used to gather
+    /// the input for this block.
+    ///
+    /// For the kinds of Elements supported by
+    /// Input blocks, see the `SupportedElement` enum.
+    pub fn element<El>(self,
+                       element: El)
+                       -> InputBuilder<'a, Set<method::element>, L>
+      where El: Into<SupportedElement<'a>>
+    {
+      InputBuilder { label: self.label,
+                     element: Some(element.into()),
+                     hint: self.hint,
+                     block_id: self.block_id,
+                     optional: self.optional,
+                     dispatch_action: self.dispatch_action,
+                     state: PhantomData::<_> }
+    }
+
+    /// XML child alias for `element`
+    pub fn child<El>(self,
+                     element: El)
+                     -> InputBuilder<'a, Set<method::element>, L>
+      where El: Into<SupportedElement<'a>>
+    {
+      self.element(element)
     }
   }
 

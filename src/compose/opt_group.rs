@@ -11,7 +11,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use super::{opt::{AnyText, NoUrl},
+use super::{opt::{AllowUrl, AnyText, NoUrl},
             text,
             Opt};
 use crate::val_helpr::ValidationResult;
@@ -53,8 +53,8 @@ impl<'a> OptGroup<'a> {
   /// - `opts` - An array of [option objects 🔗] that belong to
   ///     this specific group. Maximum of 100 items.
   ///
-  /// [option objects 🔗]: https://api.slack.comCURRENT_PAGEoption
-  /// [`plain_text` only text object 🔗]: https://api.slack.comCURRENT_PAGEtext
+  /// [option objects 🔗]: https://api.slack.com/reference/block-kit/block-elements#option
+  /// [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
   ///
   /// # Example
   /// ```
@@ -264,7 +264,7 @@ pub mod build {
                         state: PhantomData::<_> }
     }
 
-    /// Set the options of this group (**Required**)
+    /// Set the options of this group (**Required**, or `option`)
     ///
     /// An array of [option objects 🔗] that belong to
     /// this specific group.
@@ -296,6 +296,50 @@ pub mod build {
     {
       self.label = Some(label.into().into());
       self.cast_state()
+    }
+  }
+
+  // First call to `option` SETS the builder's "text kind" and "whether url was set"
+  // marker type parameters
+  impl<'a, T, U, L>
+    OptGroupBuilder<'a, T, U, RequiredMethodNotCalled<method::options>, L>
+  {
+    /// Append an option to this group (**Required**, or `options`)
+    ///
+    /// Maximum of 100 items.
+    pub fn option<T2, U2>(
+      self,
+      option: Opt<'a, T2, U2>)
+      -> OptGroupBuilder<'a, T2, U2, Set<method::options>, L> {
+      OptGroupBuilder { label: self.label,
+                        options: Some(vec![option.into()]),
+                        state: PhantomData::<_> }
+    }
+
+    /// XML child alias for `option`.
+    #[cfg(feature = "xml")]
+    pub fn child<T2, U2>(
+      self,
+      option: Opt<'a, T2, U2>)
+      -> OptGroupBuilder<'a, T2, U2, Set<method::options>, L> {
+      self.option::<T2, U2>(option)
+    }
+  }
+
+  // Subsequent calls must be the same type as the first call.
+  impl<'a, T, U, L> OptGroupBuilder<'a, T, U, Set<method::options>, L> {
+    /// Append an option to this group (**Required**, or `options`)
+    ///
+    /// Maximum of 100 items.
+    pub fn option(mut self, option: Opt<'a, T, U>) -> Self {
+      self.options.as_mut().unwrap().push(option);
+      self
+    }
+
+    /// XML child alias for `option`.
+    #[cfg(feature = "xml")]
+    pub fn child(self, option: Opt<'a, T, U>) -> Self {
+      self.option(option)
     }
   }
 

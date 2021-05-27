@@ -129,6 +129,15 @@ pub mod build {
                      state: PhantomData::<_> }
     }
 
+    /// Alias of `image_url`.
+    pub fn src<S>(self,
+                  image_url: S)
+                  -> ImageBuilder<'a, Set<method::image_url>, A>
+      where S: Into<Cow<'a, str>>
+    {
+      self.image_url(image_url)
+    }
+
     /// Set `alt_text` (**Required**)
     ///
     /// A plain-text summary of the image.
@@ -142,6 +151,15 @@ pub mod build {
       ImageBuilder { image_url: self.image_url,
                      alt_text: Some(alt_text.into()),
                      state: PhantomData::<_> }
+    }
+
+    /// Alias of `alt_text`.
+    pub fn alt<S>(self,
+                  alt_text: S)
+                  -> ImageBuilder<'a, U, Set<method::alt_text>>
+      where S: Into<Cow<'a, str>>
+    {
+      self.alt_text(alt_text)
     }
   }
 

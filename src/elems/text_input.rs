@@ -258,11 +258,14 @@ pub mod build {
       self
     }
 
-    /// Set `multiline` to `true` (**Optional**)
+    /// Set `multiline` (**Optional**)
     ///
-    /// Indicates that the input will be a larger textarea, rather than a single line.
-    pub fn multiline(mut self) -> Self {
-      self.multiline = Some(true);
+    /// Indicates that the input will be a larger textarea,
+    /// rather than a single line.
+    ///
+    /// Default is `false`.
+    pub fn multiline(mut self, multiline: bool) -> Self {
+      self.multiline = Some(multiline);
       self
     }
 

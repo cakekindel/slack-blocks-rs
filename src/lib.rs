@@ -57,6 +57,9 @@
 #[macro_use]
 extern crate validator_derive;
 
+#[cfg(feature = "xml")]
+pub mod mox;
+
 #[doc(inline)]
 pub mod blocks;
 #[doc(inline)]

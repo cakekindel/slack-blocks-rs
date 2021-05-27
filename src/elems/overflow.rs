@@ -47,9 +47,9 @@ pub struct Overflow<'a> {
   #[validate(length(max = 255))]
   action_id: Cow<'a, str>,
 
-  #[validate(custom = "validate_options")]
-  // TODO: validate opts contained in cow
-  options: Cow<'a, [MyOpt<'a>]>,
+  #[validate(length(min = 2, max = 5))]
+  #[validate]
+  options: Vec<MyOpt<'a>>,
 
   #[validate]
   confirm: Option<Confirm>,
@@ -160,7 +160,7 @@ pub mod build {
   #[derive(Debug)]
   pub struct OverflowBuilder<'a, A, O> {
     action_id: Option<Cow<'a, str>>,
-    options: Option<Cow<'a, [MyOpt<'a>]>>,
+    options: Option<Vec<MyOpt<'a>>>,
     confirm: Option<Confirm>,
     state: PhantomData<(A, O)>,
   }
@@ -209,13 +209,38 @@ pub mod build {
     /// Maximum number of options is 5, minimum is 2.
     ///
     /// [option objects 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option
-    pub fn options<T>(mut self,
-                      options: T)
-                      -> OverflowBuilder<'a, A, Set<method::options>>
-      where T: Into<Cow<'a, [MyOpt<'a>]>>
-    {
-      self.options = Some(options.into());
+    pub fn options<U>(mut self,
+                      options: Vec<Opt<'a, text::Plain, U>>)
+                      -> OverflowBuilder<'a, A, Set<method::options>> {
+      self.options =
+        Some(options.into_iter().map(|o| o.as_allow_url()).collect());
       self.cast_state()
+    }
+
+    /// Append an option to `options`
+    ///
+    /// Maximum number of options is 5, minimum is 2.
+    pub fn option<U>(mut self,
+                     option: Opt<'a, text::Plain, U>)
+                     -> OverflowBuilder<'a, A, Set<method::options>> {
+      let options = match self.options {
+        | Some(mut options) => {
+          options.push(option.as_allow_url());
+          options
+        },
+        | None => vec![option.as_allow_url()],
+      };
+
+      self.options = Some(options);
+      self.cast_state()
+    }
+
+    /// Allows using an XML child to append an option.
+    #[cfg(feature = "xml")]
+    pub fn child<U>(self,
+                    option: Opt<'a, text::Plain, U>)
+                    -> OverflowBuilder<'a, A, Set<method::options>> {
+      self.option(option)
     }
 
     /// Set `confirm` (Optional)
