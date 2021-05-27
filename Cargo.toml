@@ -11,11 +11,13 @@ homepage = "https://github.com/cakekindel/slack-block-kit-rs"
 repository = "https://github.com/cakekindel/slack-block-kit-rs"
 readme = "README.md"
 
-keywords = ["slack", "model", "models", "validation", "json"]
+keywords = ["slack", "messages", "models", "ergonomic", "fully-documented", "json"]
 categories = ["data-structures"]
 
 [features]
+unstable = ["xml", "validation"]
 xml = []
+validation = []
 
 [badges]
 maintenance = { status = "actively-developed" }
