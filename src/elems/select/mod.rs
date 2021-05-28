@@ -255,19 +255,19 @@ pub mod build {
   pub struct SelectBuilder<Count, DataSource>(PhantomData<(DataSource, Count)>);
 
   impl<C, D> SelectBuilder<C, D> {
-    /// FIXME
+    /// Construct a new select builder
     pub fn new() -> Self {
       Self(PhantomData::<_>)
     }
 
-    /// FIXME
+    /// Set the multiplicity of the Select (**Required**)
     pub fn kind<C2>(self, _num: C2) -> SelectBuilder<Set<C2>, D> {
       SelectBuilder(PhantomData::<_>)
     }
   }
 
   impl<C, D> SelectBuilder<Set<C>, D> {
-    /// FIXME
+    /// Set the data source of the Select (**Required**)
     pub fn choose_from<D2: data_source::SelectSubBuilder<C>>(
       self,
       _choose: D2)
