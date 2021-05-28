@@ -11,7 +11,7 @@ homepage = "https://github.com/cakekindel/slack-block-kit-rs"
 repository = "https://github.com/cakekindel/slack-block-kit-rs"
 readme = "README.md"
 
-keywords = ["slack", "messages", "models", "ergonomic", "fully-documented", "json"]
+keywords = ["slack", "messages", "models", "ergonomic", "fully-documented"]
 categories = ["data-structures"]
 
 [features]
