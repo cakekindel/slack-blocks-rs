@@ -143,7 +143,7 @@ dependencies = [
 
 [[package]]
 name = "slack-blocks"
-version = "0.19.9"
+version = "0.20.0"
 dependencies = [
  "lazy_static",
  "mox",

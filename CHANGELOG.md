@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.20.0 (2021-05-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* xml macro support (minor breaking)
+
+### Features
+
+* xml macro support (minor breaking) ([51b9239](https://github.com/cakekindel/slack-blocks-rs/commit/51b9239cf1fdedab9c706364a657a027875c110d))
+
 ### 0.19.9 (2021-05-28)
 
 
