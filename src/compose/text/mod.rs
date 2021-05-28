@@ -363,7 +363,10 @@ pub mod build {
     /// ```
     /// use slack_blocks::text::Text;
     ///
-    /// let foo = Text::builder().mrkdwn().emoji().text("foo :joy:").build();
+    /// let foo = Text::builder().mrkdwn()
+    ///                          .verbatim()
+    ///                          .text("foo :joy:")
+    ///                          .build();
     /// ```
     pub fn build(self) -> Mrkdwn {
       match self.text.unwrap() {

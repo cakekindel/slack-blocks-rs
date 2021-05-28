@@ -90,8 +90,7 @@ impl<'a> Checkboxes<'a> {
   /// let opts = repeat(&opt, 11).map(|o| o.clone()).collect::<Vec<_>>();
   ///
   /// let input = Checkboxes::builder().action_id(long_string)
-  ///                                  .options(&opts)
-  ///                                  .initial_options(&opts)
+  ///                                  .options(opts)
   ///                                  .build();
   ///
   /// assert!(matches!(input.validate(), Err(_)))
@@ -171,8 +170,8 @@ pub mod build {
   ///
   /// let boxes: BlockElement =
   ///   Checkboxes::builder().action_id("state_picker")
-  ///                        .options(&states)
-  ///                        .initial_options(vec![state_opt(usa::arizona())])
+  ///                        .options(states)
+  ///                        .initial_options(vec![state_opt(usa::arizona()).into()])
   ///                        .build()
   ///                        .into();
   ///
