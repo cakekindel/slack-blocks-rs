@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.20.1 (2021-05-28)
+
+
+### Bug Fixes
+
+* cargo had >5 keywords ([24defec](https://github.com/cakekindel/slack-blocks-rs/commit/24defec482b9811bf75743c0721215b495c6235e))
+
 ## 0.20.0 (2021-05-28)
 
 
