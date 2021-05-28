@@ -108,6 +108,57 @@ pub mod build {
     pub struct plain_or_mrkdwn;
   }
 
+  /// "Text Kind" for XML macro
+  #[allow(non_camel_case_types)]
+  #[cfg(feature = "xml")]
+  pub mod kind {
+    use super::*;
+    // This trick is kind of nasty. Essentially, I want the API to look like
+    // `<text plain>"Foo"</text>`, not `<text_plain>"Foo"</text_plain>`,
+    // with an attribute setting the text kind.
+    //
+    // mox does not support nullary function attributes, so I _could_ make
+    // `TextBuilder.plain()` and `TextBuilder.mrkdwn()` accept a unit argument,
+    // but that would look fugly and impact non-XML use-cases.
+    // (`<text plain=()>"Foo"</text>`, `Text::builder().plain(()).text("Foo").build()`)
+    //
+    // So I settled on having types named `mrkdwn` and `plain` exported from `crate::mox`
+    // and a `TextMethod.kind()` method -
+    // (`<text kind=mrkdwn></text>`)
+    // this feels good to write, looks good to read, the only cons are implementation complexity
+    // and potential clash with locals named `mrkdwn` or `plain`.
+    /// Static marker trait tying the token "mrkdwn" to the type "Mrkdwn",
+    /// and "plain" to "Plain"
+    pub trait TextKind<T> {
+      /// Invoke `TextBuilder.mrkdwn` or `TextBuilder.plain`
+      fn set_kind<M>(self, builder: TextBuilder<Text, M>) -> TextBuilder<T, M>;
+    }
+
+    /// Markdown text
+    #[derive(Copy, Clone, Debug)]
+    pub struct mrkdwn;
+
+    /// Plain text
+    #[derive(Copy, Clone, Debug)]
+    pub struct plain;
+
+    impl TextKind<Mrkdwn> for mrkdwn {
+      fn set_kind<M>(self,
+                     builder: TextBuilder<Text, M>)
+                     -> TextBuilder<Mrkdwn, M> {
+        builder.mrkdwn()
+      }
+    }
+
+    impl TextKind<Plain> for plain {
+      fn set_kind<M>(self,
+                     builder: TextBuilder<Text, M>)
+                     -> TextBuilder<Plain, M> {
+        builder.plain()
+      }
+    }
+  }
+
   /// Initial state for Text Builder
   pub type TextBuilderInit =
     TextBuilder<Text, RequiredMethodNotCalled<method::text>>;
@@ -172,9 +223,55 @@ pub mod build {
                     text_value: self.text_value,
                     state: PhantomData::<_> }
     }
+
+    /// Alias of `text` for XML macros, allowing text
+    /// to be set as a string literal instead of an attribute.
+    ///
+    /// ```
+    /// use mox::mox;
+    /// use slack_blocks::mox::*;
+    ///
+    /// let as_attr = mox! {
+    ///   <text kind=plain text="Foo" />
+    /// };
+    ///
+    /// let as_child = mox! {
+    ///   <text kind=plain>"Foo"</text>
+    /// };
+    ///
+    /// assert_eq!(as_attr, as_child);
+    /// ```
+    #[cfg(feature = "xml")]
+    pub fn child(self,
+                 t: impl AsRef<str>)
+                 -> TextBuilder<T, Set<method::text>> {
+      self.text(t)
+    }
   }
 
   impl<M> TextBuilder<Text, M> {
+    /// Set the kind of the text you're building (**Required**)
+    ///
+    /// Intended to be used as an XML attribute with `build::kind::mrkdwn` or `build::kind::plain`
+    ///
+    /// ```
+    /// use mox::mox;
+    /// use slack_blocks::{mox::*, text};
+    ///
+    /// let xml = mox! {<text kind=plain>"Foo"</text>};
+    ///
+    /// let builder = text::Plain::from("Foo");
+    ///
+    /// assert_eq!(xml, builder)
+    /// ```
+    #[cfg(feature = "xml")]
+    pub fn kind<T, K>(self, kind: K) -> TextBuilder<T, M>
+      where T: Into<Text>,
+            K: kind::TextKind<T>
+    {
+      kind.set_kind(self)
+    }
+
     /// Set the text you're building to be `plain_text` (**Required**)
     pub fn plain(self) -> TextBuilder<Plain, M> {
       let text = Some(Plain::from(self.text_value.unwrap_or_default()).into());
@@ -226,7 +323,7 @@ pub mod build {
     }
   }
 
-  impl<T: Into<Text>> TextBuilder<T, Set<method::text>> {
+  impl TextBuilder<Plain, Set<method::text>> {
     /// All done building, now give me a darn text object!
     ///
     /// > `no method name 'build' found for struct 'TextBuilder<...>'`?
@@ -243,8 +340,39 @@ pub mod build {
     ///
     /// let foo = Text::builder().plain().emoji().text("foo :joy:").build();
     /// ```
-    pub fn build(self) -> Text {
-      self.text.unwrap().into()
+    pub fn build(self) -> Plain {
+      match self.text.unwrap() {
+        | Text::Plain(p) => p,
+        | _ => unreachable!("type marker says this should be plain."),
+      }
+    }
+  }
+
+  impl TextBuilder<Mrkdwn, Set<method::text>> {
+    /// All done building, now give me a darn text object!
+    ///
+    /// > `no method name 'build' found for struct 'TextBuilder<...>'`?
+    /// Make sure all required setter methods have been called. See docs for `TextBuilder`.
+    ///
+    /// ```compile_fail
+    /// use slack_blocks::text::Text;
+    ///
+    /// let foo = Text::builder().build(); // Won't compile!
+    /// ```
+    ///
+    /// ```
+    /// use slack_blocks::text::Text;
+    ///
+    /// let foo = Text::builder().mrkdwn()
+    ///                          .verbatim()
+    ///                          .text("foo :joy:")
+    ///                          .build();
+    /// ```
+    pub fn build(self) -> Mrkdwn {
+      match self.text.unwrap() {
+        | Text::Mrkdwn(p) => p,
+        | _ => unreachable!("type marker says this should be markdown."),
+      }
     }
   }
 }

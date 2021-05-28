@@ -232,6 +232,16 @@ pub mod build {
              state: PhantomData::<_> }
     }
 
+    /// Alias of `element` for appending an element with an XML child.
+    #[cfg(feature = "xml")]
+    pub fn child<El>(self,
+                     element: El)
+                     -> ContextBuilder<'a, Set<method::elements>>
+      where El: Into<ImageOrText<'a>>
+    {
+      self.element(element)
+    }
+
     /// Add an `element` (**Required**, can be called many times)
     ///
     /// A composition object; Must be image elements or text objects.

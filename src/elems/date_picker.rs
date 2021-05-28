@@ -164,10 +164,10 @@ pub mod build {
     /// use slack_blocks::elems::DatePicker;
     ///
     /// DatePicker::builder().action_id("foo")
-    ///                      .initial_date(01, 05, 2021)
+    ///                      .initial_date((01, 05, 2021))
     ///                      .build();
     /// ```
-    pub fn initial_date(mut self, day: u8, month: u8, year: u16) -> Self {
+    pub fn initial_date(mut self, (day, month, year): (u8, u8, u16)) -> Self {
       self.initial_date = Some(format!("{}-{}-{}", year, month, day));
       self
     }

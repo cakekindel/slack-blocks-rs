@@ -32,7 +32,7 @@ args = ["--locked", "test", "--jobs", "1", "--doc", "--", "--quiet"]
 
 [tasks.doctest]
 command = "cargo"
-args = ["--locked", "test", "--doc", "--", "--quiet"]
+args = ["--locked", "test", "--features", "xml", "--doc", "--", "--quiet"]
 
 [tasks.test]
 command = "cargo"

@@ -242,6 +242,13 @@ pub mod build {
       self
     }
 
+    /// Alias for `image_url`.
+    pub fn src<S>(self, image_url: S) -> ImageBuilder<'a, Set<method::url>, Alt>
+      where S: Into<Cow<'a, str>>
+    {
+      self.image_url(image_url)
+    }
+
     /// Set `image_url` (**Required**)
     ///
     /// The URL of the image to be displayed.
@@ -276,6 +283,13 @@ pub mod build {
                      title: self.title,
                      block_id: self.block_id,
                      state: PhantomData::<_> }
+    }
+
+    /// Alias for `alt_text`.
+    pub fn alt<S>(self, alt_text: S) -> ImageBuilder<'a, Url, Set<method::alt>>
+      where S: Into<Cow<'a, str>>
+    {
+      self.alt_text(alt_text)
     }
 
     /// Set `block_id` (Optional)

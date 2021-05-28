@@ -19,6 +19,7 @@ use validator::Validate;
 use crate::{compose::{opt::{AnyText, NoUrl},
                       Confirm,
                       Opt},
+            text,
             val_helpr::*};
 
 type MyOpt<'a> = Opt<'a, AnyText, NoUrl>;
@@ -89,8 +90,7 @@ impl<'a> Checkboxes<'a> {
   /// let opts = repeat(&opt, 11).map(|o| o.clone()).collect::<Vec<_>>();
   ///
   /// let input = Checkboxes::builder().action_id(long_string)
-  ///                                  .options(&opts)
-  ///                                  .initial_options(&opts)
+  ///                                  .options(opts)
   ///                                  .build();
   ///
   /// assert!(matches!(input.validate(), Err(_)))
@@ -170,8 +170,8 @@ pub mod build {
   ///
   /// let boxes: BlockElement =
   ///   Checkboxes::builder().action_id("state_picker")
-  ///                        .options(&states)
-  ///                        .initial_options(vec![state_opt(usa::arizona())])
+  ///                        .options(states)
+  ///                        .initial_options(vec![state_opt(usa::arizona()).into()])
   ///                        .build()
   ///                        .into();
   ///
@@ -182,8 +182,8 @@ pub mod build {
   #[derive(Debug)]
   pub struct CheckboxesBuilder<'a, A, O> {
     action_id: Option<Cow<'a, str>>,
-    options: Option<Cow<'a, [MyOpt<'a>]>>,
-    initial_options: Option<Cow<'a, [MyOpt<'a>]>>,
+    options: Option<Vec<MyOpt<'a>>>,
+    initial_options: Option<Vec<MyOpt<'a>>>,
     confirm: Option<Confirm>,
     state: PhantomData<(A, O)>,
   }
@@ -196,21 +196,6 @@ pub mod build {
              initial_options: None,
              confirm: None,
              state: PhantomData::<_> }
-    }
-
-    fn convert_options<I, Op>(options: I) -> Cow<'a, [MyOpt<'a>]>
-      where I: Into<Cow<'a, [Op]>>,
-            Op: 'a + Into<MyOpt<'a>> + Clone
-    {
-      // TODO: this type hell I've painted myself into requires that Opts must be
-      //       owned and explicitly converted from `Opt<text::Plain>` -> `Opt<AnyText>`.
-      //       If there was a better solution at the type level this wouldn't have to do
-      //       this potential clone.
-      options.into() // Cow<[Op]>
-             .into_owned()
-             .into_iter()
-             .map(|o| -> MyOpt<'a> { o.into() })
-             .collect()
     }
 
     /// Set `action_id` (Optional)
@@ -236,6 +221,15 @@ pub mod build {
                           state: PhantomData::<_> }
     }
 
+    /// Append an `option` to `options`
+    #[cfg(feature = "xml")]
+    pub fn child<T: Into<text::Text>>(
+      self,
+      option: Opt<'a, T, NoUrl>)
+      -> CheckboxesBuilder<'a, A, Set<method::options>> {
+      self.option(option)
+    }
+
     /// Set `options` (**Required**)
     ///
     /// An array of [option objects 🔗].
@@ -243,14 +237,34 @@ pub mod build {
     /// A maximum of 10 options are allowed.
     ///
     /// [option objects 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option
-    pub fn options<I, Op>(self,
-                          options: I)
-                          -> CheckboxesBuilder<'a, A, Set<method::options>>
-      where I: Into<Cow<'a, [Op]>>,
-            Op: 'a + Into<MyOpt<'a>> + Clone
-    {
+    pub fn options<T: Into<text::Text>>(
+      self,
+      options: Vec<Opt<'a, T, NoUrl>>)
+      -> CheckboxesBuilder<'a, A, Set<method::options>> {
       CheckboxesBuilder { action_id: self.action_id,
-                          options: Some(Self::convert_options(options)),
+                          options: Some(options.into_iter()
+                                               .map(|o| o.into())
+                                               .collect()),
+                          initial_options: self.initial_options,
+                          confirm: self.confirm,
+                          state: PhantomData::<_> }
+    }
+
+    /// Append an `option` to `options`
+    pub fn option<T: Into<text::Text>>(
+      self,
+      option: Opt<'a, T, NoUrl>)
+      -> CheckboxesBuilder<'a, A, Set<method::options>> {
+      let options = match self.options {
+        | Some(mut options) => {
+          options.push(option.into());
+          options
+        },
+        | None => vec![option.into()],
+      };
+
+      CheckboxesBuilder { action_id: self.action_id,
+                          options: Some(options),
                           initial_options: self.initial_options,
                           confirm: self.confirm,
                           state: PhantomData::<_> }
@@ -264,11 +278,8 @@ pub mod build {
     /// These options will be selected when the checkbox group initially loads.
     ///
     /// [option objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
-    pub fn initial_options<I, Op>(mut self, options: I) -> Self
-      where I: Into<Cow<'a, [Op]>>,
-            Op: 'a + Into<MyOpt<'a>> + Clone
-    {
-      self.initial_options = Some(Self::convert_options(options));
+    pub fn initial_options(mut self, options: Vec<MyOpt<'a>>) -> Self {
+      self.initial_options = Some(options);
       self
     }
 
@@ -307,8 +318,8 @@ pub mod build {
     /// ```
     pub fn build(self) -> Checkboxes<'a> {
       Checkboxes { action_id: self.action_id.unwrap(),
-                   options: self.options.unwrap(),
-                   initial_options: self.initial_options,
+                   options: self.options.unwrap().into(),
+                   initial_options: self.initial_options.map(|os| os.into()),
                    confirm: self.confirm }
     }
   }

@@ -11,8 +11,13 @@ homepage = "https://github.com/cakekindel/slack-block-kit-rs"
 repository = "https://github.com/cakekindel/slack-block-kit-rs"
 readme = "README.md"
 
-keywords = ["slack", "model", "models", "validation", "json"]
+keywords = ["slack", "messages", "models", "ergonomic", "fully-documented", "json"]
 categories = ["data-structures"]
+
+[features]
+unstable = ["xml", "validation"]
+xml = ["mox"]
+validation = []
 
 [badges]
 maintenance = { status = "actively-developed" }
@@ -22,6 +27,8 @@ serde = { version = "^1", features = ["derive"] }
 serde_json = "^1"
 validator = "0.10.0"
 validator_derive = "0.10.0"
+mox = { version = "0.12", optional = true }
 
 [dev-dependencies]
 lazy_static = "1.4.0"
+mox = "0.12"

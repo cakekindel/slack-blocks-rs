@@ -216,6 +216,37 @@ pub mod build {
                      state: PhantomData::<_> }
     }
 
+    /// Append an option to `options`
+    ///
+    /// A maximum of 10 options are allowed.
+    pub fn option<T2: Into<text::Text>>(
+      self,
+      opt: Opt<'a, T2, NoUrl>)
+      -> RadioBuilder<'a, T2, A, Set<method::options>> {
+      let options = match self.options {
+        | Some(mut os) => {
+          os.push(opt.into());
+          os
+        },
+        | None => vec![opt.into()],
+      };
+
+      RadioBuilder { action_id: self.action_id,
+                     options: Some(options),
+                     initial_option: self.initial_option,
+                     confirm: self.confirm,
+                     state: PhantomData::<_> }
+    }
+
+    /// Allows using XML children to append options to the group.
+    #[cfg(feature = "xml")]
+    pub fn child<T2: Into<text::Text>>(
+      self,
+      opt: Opt<'a, T2, NoUrl>)
+      -> RadioBuilder<'a, T2, A, Set<method::options>> {
+      self.option(opt)
+    }
+
     /// Sets `confirm` (Optional)
     ///
     /// A [confirm object 🔗] that defines an optional confirmation dialog that appears

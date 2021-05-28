@@ -302,6 +302,32 @@ pub mod build {
                        state: PhantomData::<_> }
     }
 
+    /// Alias of `text` for XML macros, allowing fields
+    /// to be used as child elements.
+    ///
+    /// ```
+    /// use mox::mox;
+    /// use slack_blocks::{mox::*, text};
+    ///
+    /// let as_attr = mox! {
+    ///   <section_block text={text::Plain::from("Foo")} />
+    /// };
+    ///
+    /// let as_child = mox! {
+    ///   <section_block>
+    ///     <text kind=plain>"Foo"</text>
+    ///   </section_block>
+    /// };
+    ///
+    /// assert_eq!(as_attr, as_child);
+    /// ```
+    #[cfg(feature = "xml")]
+    pub fn child<T>(self, text: T) -> SectionBuilder<'a, Set<method::text>>
+      where T: Into<text::Text>
+    {
+      self.text(text)
+    }
+
     /// Set `block_id` (Optional)
     ///
     /// A string acting as a unique identifier for a block.

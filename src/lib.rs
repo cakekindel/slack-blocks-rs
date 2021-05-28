@@ -1,46 +1,71 @@
 //! This crate brings Slack's terrific [Block Kit 🔗] to
 //! the Rust ecosystem.
 //!
-//! This crate should hopefully come in handy if you need to
-//! build some rich functionality, or just want to send some
-//! slack messages without having to know Block Kit.
+//! Inside, you'll find models for all of Slack's Layout Blocks,
+//! Block Elements, and Composition Objects.
 //!
-//! Inside, you'll find simple models with an API that is
-//! thoroughly documented and (hopefully) easy to use.
+//! Every model has builders that leverage Rust's type system
+//! to help you make sure what you're sending to Slack is 100% valid to them.
 //!
-//! This is currently being actively developed so watch the repo for a
-//! stable v1 release!
+//! ## Troubleshooting common compiler errors
+//! `Method build not found for ...Builder` - Dig into the error message,
+//! you'll find something like `RequiredMethodNotCalled<method::foo>`,
+//! meaning you need to call `.foo()` before you can call `.build()`!
+//!
+//! # Example
+//! Using an example from Slack's Documentation:
+//! ```json
+//! {
+//!   "type": "section",
+//!   "text": {
+//!     "text": "*Sally* has requested you set the deadline for the Nano launch project",
+//!     "type": "mrkdwn"
+//!   },
+//!   "accessory": {
+//!     "type": "datepicker",
+//!     "action_id": "datepicker123",
+//!     "initial_date": "1990-04-28",
+//!     "placeholder": {
+//!       "type": "plain_text",
+//!       "text": "Select a date"
+//!     }
+//!   }
+//! }
+//! ```
+//!
+//! You can use raw Builders like so:
+//! ```rust
+//! use slack_blocks::{text::ToSlackMarkdown, blocks::Section, elems::DatePicker};
+//!
+//! let section = Section::builder()
+//!                       .text("*Sally* has requested you set the deadline for the Nano launch project".markdown())
+//!                       .accessory(DatePicker::builder()
+//!                                             .action_id("datepicker123")
+//!                                             .initial_date((28, 4, 1990))
+//!                                             .placeholder("Select a date")
+//!                                             .build()
+//!                       )
+//!                       .build();
+//! ```
+//!
+//! Or enable the `unstable` feature and use xml macros:
+//! ```rust
+//! use slack_blocks::mox::*;
+//!
+//! let pick_date = blox! {
+//!   <date_picker action_id="datepicker123"
+//!                placeholder="Select a date"
+//!                initial_date=(28, 4, 1990) />
+//! };
+//!
+//! let section = blox! {
+//!   <section_block accessory=pick_date>
+//!     <text kind=plain>"*Sally* has requested you set the deadline for the Nano launch project"</text>
+//!   </section_block>
+//! };
+//! ```
 //!
 //! [Block Kit 🔗]: https://api.slack.com/block-kit
-//!
-//! # Build / Test / Format
-//! This crate uses [`cargo-make`] for script consistency, in Makefile.toml you'll find:
-//!   - `cargo make fmt`: Format all files according to configured style `rustfmt.toml`
-//!   - `cargo make test`: Run all tests
-//!   - `cargo make doctest`: Run doc tests only
-//!   - `cargo make tdd`: Watch files for changes, and run `cargo make test` on each change
-//!   - `cargo make ci`: Run tests, check that code is formatted and no lint violations.
-//!                      This is run as a quality gate for all pull requests.
-//!
-//! # Contributing
-//!
-//! If you're interested in contributing, head over to the [issues] and see what's left to
-//! do to get this crate fully usable and stable - at the time of writing there are a few
-//! big-picture things left to do:
-//!
-//! - Implement Block Elements ([#61](https://github.com/cakekindel/slack-blocks-rs/issues/61))
-//! - ~~Implement Composition Objects ([#63](https://github.com/cakekindel/slack-blocks-rs/issues/63))~~
-//! - Remove the `validator` crate from the public API ([#9](https://github.com/cakekindel/slack-blocks-rs/issues/9))
-//! - Add a `validation` crate feature ([#8](https://github.com/cakekindel/slack-blocks-rs/issues/8))
-//!
-//! And this doesn't block a v1.0.0, but is definitely something I'm interested in doing for this crate,
-//! that will make it a lot nicer to interact with:
-//! - Add a proc-macro of some kind that allows easy creation of block messages (#??)
-//!
-//! This repo follows [Conventional Commits] in order to fully automate the semver process,
-//! but you don't _need_ to follow this convention since the repo is configured for Squash
-//! commits on merge.
-//!
 //! [`cargo-make`]: https://github.com/sagiegurari/cargo-make/
 //! [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/
 //! [Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
@@ -56,6 +81,9 @@
 
 #[macro_use]
 extern crate validator_derive;
+
+#[cfg(feature = "xml")]
+pub mod mox;
 
 #[doc(inline)]
 pub mod blocks;

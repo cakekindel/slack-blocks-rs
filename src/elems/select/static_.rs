@@ -160,11 +160,6 @@ pub mod build {
   ///  - `action_id`
   ///  - `options` or `option_groups`
   ///
-  /// NOTE: I'm experimenting with an API that deviates from the `from_foo_and_bar`.
-  ///       If you're a user of this library, please give me feedback in the repository
-  ///       as to which pattern you like more. This will most likely be the new builder pattern
-  ///       for every structure in this crate.
-  ///
   /// # Example
   /// ```
   /// use std::convert::TryFrom;
@@ -199,6 +194,65 @@ pub mod build {
     initial_options: Option<Cow<'a, [StaticOptOrOptGroup<'a>]>>,
     max_selected_items: Option<u32>,
     state: PhantomData<(Multi, Placeholder, ActionId, Options)>,
+  }
+
+  /// Allows the builder to statically take in "either an opt or opt group" and
+  /// enforce that the same type is used as a child later.
+  #[cfg(feature = "xml")]
+  pub trait AppendOptOrOptGroup<'a, Multi, Placeholder, ActionId> {
+    /// The builder state after adding the opt / opt group
+    type Output;
+
+    /// Add this opt / opt group to the builder
+    fn add_to(self,
+              builder: StaticBuilder<'a,
+                            Multi,
+                            Placeholder,
+                            ActionId,
+                            RequiredMethodNotCalled<method::options>>)
+              -> Self::Output;
+  }
+
+  #[cfg(feature = "xml")]
+  impl<'a, Multi, Placeholder, ActionId>
+    AppendOptOrOptGroup<'a, Multi, Placeholder, ActionId>
+    for Opt<'a, text::Plain, NoUrl>
+  {
+    type Output = StaticBuilder<'a,
+                                Multi,
+                                Placeholder,
+                                ActionId,
+                                Set<(method::options, StaticOpt<'a>)>>;
+    fn add_to(self,
+              builder: StaticBuilder<'a,
+                            Multi,
+                            Placeholder,
+                            ActionId,
+                            RequiredMethodNotCalled<method::options>>)
+              -> Self::Output {
+      builder.option(self)
+    }
+  }
+
+  #[cfg(feature = "xml")]
+  impl<'a, Multi, Placeholder, ActionId>
+    AppendOptOrOptGroup<'a, Multi, Placeholder, ActionId>
+    for OptGroup<'a, text::Plain, NoUrl>
+  {
+    type Output = StaticBuilder<'a,
+                                Multi,
+                                Placeholder,
+                                ActionId,
+                                Set<(method::options, StaticOptGroup<'a>)>>;
+    fn add_to(self,
+              builder: StaticBuilder<'a,
+                            Multi,
+                            Placeholder,
+                            ActionId,
+                            RequiredMethodNotCalled<method::options>>)
+              -> Self::Output {
+      builder.option_group(self)
+    }
   }
 
   /// Initial state for StaticBuilder.
@@ -397,7 +451,21 @@ pub mod build {
     }
   }
 
-  impl<'a, M, P, A, O> StaticBuilder<'a, M, P, A, RequiredMethodNotCalled<O>> {
+  impl<'a, M, P, A>
+    StaticBuilder<'a, M, P, A, RequiredMethodNotCalled<method::options>>
+  {
+    /// Append an Opt or OptGroup as a child XML element.
+    ///
+    /// The type signature trickery here infers whether you've passed
+    /// an Opt or OptGroup, and will ensure the following children will
+    /// be the same type.
+    #[cfg(feature = "xml")]
+    pub fn child<Opt>(self, child: Opt) -> Opt::Output
+      where Opt: AppendOptOrOptGroup<'a, M, P, A>
+    {
+      child.add_to(self)
+    }
+
     /// Set `options` (this or `Self::option_groups` is **Required**)
     ///
     /// An array of [option objects 🔗].
@@ -411,6 +479,29 @@ pub mod build {
       where Iter: IntoIterator<Item = StaticOpt<'a>>
     {
       self.options = Some(options.into_iter().collect::<Vec<_>>());
+      self.cast_state()
+    }
+
+    /// Append an option to `options`
+    ///
+    /// Maximum number of options is 100.
+    pub fn option(
+      mut self,
+      option: impl Into<StaticOpt<'a>>)
+      -> StaticBuilder<'a, M, P, A, Set<(method::options, StaticOpt<'a>)>> {
+      self.options = Some(vec![option.into()]);
+      self.cast_state()
+    }
+
+    /// Append an option_group to `option_groups`
+    ///
+    /// Maximum number of option groups is 100.
+    pub fn option_group(
+      mut self,
+      option: impl Into<StaticOptGroup<'a>>)
+      -> StaticBuilder<'a, M, P, A, Set<(method::options, StaticOptGroup<'a>)>>
+    {
+      self.option_groups = Some(vec![option.into()]);
       self.cast_state()
     }
 
@@ -428,6 +519,44 @@ pub mod build {
     {
       self.option_groups = Some(groups.into_iter().collect::<Vec<_>>());
       self.cast_state()
+    }
+  }
+
+  impl<'a, M, P, A>
+    StaticBuilder<'a, M, P, A, Set<(method::options, StaticOpt<'a>)>>
+  {
+    /// Append an option to `options`
+    ///
+    /// Maximum number of options is 100.
+    pub fn option(mut self, option: impl Into<StaticOpt<'a>>) -> Self {
+      self.options.as_mut().unwrap().push(option.into());
+      self
+    }
+
+    /// Append an Opt as a child XML element.
+    #[cfg(feature = "xml")]
+    pub fn child(self, option: impl Into<StaticOpt<'a>>) -> Self {
+      self.option(option)
+    }
+  }
+
+  impl<'a, M, P, A>
+    StaticBuilder<'a, M, P, A, Set<(method::options, StaticOptGroup<'a>)>>
+  {
+    /// Append an option_group to `option_groups`
+    ///
+    /// Maximum number of option groups is 100.
+    pub fn option_group(mut self,
+                        option: impl Into<StaticOptGroup<'a>>)
+                        -> Self {
+      self.option_groups.as_mut().unwrap().push(option.into());
+      self.cast_state()
+    }
+
+    /// Append an OptGroup as a child XML element.
+    #[cfg(feature = "xml")]
+    pub fn child(self, option: impl Into<StaticOptGroup<'a>>) -> Self {
+      self.option_group(option)
     }
   }
 

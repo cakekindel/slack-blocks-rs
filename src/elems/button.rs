@@ -366,6 +366,14 @@ pub mod build {
                       state: PhantomData::<_> }
     }
 
+    /// Alias for `text`
+    #[cfg(feature = "xml")]
+    pub fn child(self,
+                 text: impl Into<text::Plain>)
+                 -> ButtonBuilder<'a, Set<method::text>, A> {
+      self.text(text)
+    }
+
     /// Set `text` (**Required**)
     ///
     /// A plain [text object 🔗] that defines the button's text.

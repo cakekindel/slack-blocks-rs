@@ -21,7 +21,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use super::text;
-use crate::{build::*, val_helpr::ValidationResult};
+use crate::{build::*, convert, val_helpr::ValidationResult};
 
 /// Opt supports text::Plain and text::Mrkdwn.
 #[derive(Copy,
@@ -55,6 +55,8 @@ pub struct NoUrl;
            Serialize,
            Validate)]
 pub struct AllowUrl;
+
+convert!(impl From<NoUrl> for AllowUrl => |_| AllowUrl);
 
 /// # Option Object
 /// [slack api docs 🔗]
@@ -267,6 +269,17 @@ impl<'a> Opt<'a> {
           description: None,
           url: None,
           marker: std::marker::PhantomData }
+  }
+}
+
+impl<'a, U> Opt<'a, text::Plain, U> {
+  /// Ensure the type flags of the opt say "AllowUrl", used to mix NoUrl and AllowUrl in overflow menus.
+  pub(crate) fn as_allow_url(self) -> Opt<'a, text::Plain, AllowUrl> {
+    Opt { text: self.text,
+          value: self.value,
+          description: self.description,
+          url: self.url,
+          marker: PhantomData::<(text::Plain, AllowUrl)> }
   }
 }
 
@@ -534,7 +547,52 @@ pub mod build {
     }
   }
 
-  impl<'a, T, V, U> OptBuilder<'a, RequiredMethodNotCalled<T>, V, U> {
+  impl<'a, V, U> OptBuilder<'a, RequiredMethodNotCalled<method::text>, V, U> {
+    /// Alias for `text`, allowing you to set the text of the option like so:
+    /// ```
+    /// use mox::mox;
+    /// use slack_blocks::{compose::Opt, mox::*, text};
+    ///
+    /// let xml = mox! {
+    ///   <option value="foo">
+    ///     <text kind=plain>"Foo"</text>
+    ///   </option>
+    /// };
+    ///
+    /// let equiv = Opt::builder().value("foo")
+    ///                           .text(text::Plain::from("Foo"))
+    ///                           .build();
+    ///
+    /// assert_eq!(xml, equiv)
+    /// ```
+    #[cfg(feature = "xml")]
+    pub fn child<T: Into<text::Text>>(
+      self,
+      text: T)
+      -> OptBuilder<'a, Set<(method::text, T)>, V, U> {
+      self.text(text)
+    }
+
+    /// Set `text` (**Required**)
+    ///
+    /// A [text object 🔗] that defines the text shown in the option on the menu.
+    /// Overflow, select, and multi-select menus
+    /// can only use `plain_text` objects,
+    /// while radio buttons and checkboxes
+    /// can use `mrkdwn` text objects.
+    ///
+    /// Maximum length for the `text` in this field is 75 characters.
+    ///
+    /// [text object 🔗]: https://api.slack.com#text
+    pub fn text<Txt>(mut self,
+                     text: Txt)
+                     -> OptBuilder<'a, Set<(method::text, Txt)>, V, U>
+      where Txt: Into<text::Text>
+    {
+      self.text = Some(text.into());
+      self.cast_state()
+    }
+
     /// Set `text` (**Required**)
     ///
     /// A [text object 🔗] that defines the text shown in the option on the menu.
@@ -573,26 +631,6 @@ pub mod build {
       where Txt: Into<text::Mrkdwn>
     {
       self.text(text.into())
-    }
-
-    /// Set `text` (**Required**)
-    ///
-    /// A [text object 🔗] that defines the text shown in the option on the menu.
-    /// Overflow, select, and multi-select menus
-    /// can only use `plain_text` objects,
-    /// while radio buttons and checkboxes
-    /// can use `mrkdwn` text objects.
-    ///
-    /// Maximum length for the `text` in this field is 75 characters.
-    ///
-    /// [text object 🔗]: https://api.slack.com#text
-    pub fn text<Txt>(mut self,
-                     text: Txt)
-                     -> OptBuilder<'a, Set<(method::text, Txt)>, V, U>
-      where Txt: Into<text::Text>
-    {
-      self.text = Some(text.into());
-      self.cast_state()
     }
   }
 
