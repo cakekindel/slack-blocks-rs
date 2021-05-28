@@ -232,11 +232,11 @@ pub mod build {
     /// use slack_blocks::mox::*;
     ///
     /// let as_attr = mox! {
-    ///   <text_plain text="Foo" />
+    ///   <text kind=plain text="Foo" />
     /// };
     ///
     /// let as_child = mox! {
-    ///   <text_plain>"Foo"</text_plain>
+    ///   <text kind=plain>"Foo"</text>
     /// };
     ///
     /// assert_eq!(as_attr, as_child);

@@ -310,13 +310,13 @@ pub mod build {
     /// use slack_blocks::{mox::*, text};
     ///
     /// let as_attr = mox! {
-    ///   <section text={text::Plain::from("Foo")} />
+    ///   <section_block text={text::Plain::from("Foo")} />
     /// };
     ///
     /// let as_child = mox! {
-    ///   <section>
+    ///   <section_block>
     ///     <text kind=plain>"Foo"</text>
-    ///   </section>
+    ///   </section_block>
     /// };
     ///
     /// assert_eq!(as_attr, as_child);

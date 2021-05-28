@@ -551,7 +551,7 @@ pub mod build {
     /// Alias for `text`, allowing you to set the text of the option like so:
     /// ```
     /// use mox::mox;
-    /// use slack_blocks::mox::*;
+    /// use slack_blocks::{compose::Opt, mox::*, text};
     ///
     /// let xml = mox! {
     ///   <option value="foo">
