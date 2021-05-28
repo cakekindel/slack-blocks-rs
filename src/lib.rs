@@ -1,10 +1,6 @@
 //! This crate brings Slack's terrific [Block Kit 🔗] to
 //! the Rust ecosystem.
 //!
-//! This crate should hopefully come in handy if you need to
-//! build some rich functionality, or just want to send some
-//! slack messages without having to know Block Kit.
-//!
 //! Inside, you'll find models for all of Slack's Layout Blocks,
 //! Block Elements, and Composition Objects.
 //!
