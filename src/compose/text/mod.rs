@@ -111,6 +111,7 @@ pub mod build {
   /// "Text Kind" for XML macro
   #[allow(non_camel_case_types)]
   #[cfg(feature = "xml")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
   pub mod kind {
     use super::*;
     // This trick is kind of nasty. Essentially, I want the API to look like
@@ -242,6 +243,7 @@ pub mod build {
     /// assert_eq!(as_attr, as_child);
     /// ```
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child(self,
                  t: impl AsRef<str>)
                  -> TextBuilder<T, Set<method::text>> {
@@ -265,6 +267,7 @@ pub mod build {
     /// assert_eq!(xml, builder)
     /// ```
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn kind<T, K>(self, kind: K) -> TextBuilder<T, M>
       where T: Into<Text>,
             K: kind::TextKind<T>

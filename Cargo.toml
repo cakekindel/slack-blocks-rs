@@ -19,6 +19,10 @@ unstable = ["xml", "validation"]
 xml = ["mox"]
 validation = []
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [badges]
 maintenance = { status = "actively-developed" }
 

@@ -322,6 +322,7 @@ pub mod build {
     /// assert_eq!(as_attr, as_child);
     /// ```
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child<T>(self, text: T) -> SectionBuilder<'a, Set<method::text>>
       where T: Into<text::Text>
     {

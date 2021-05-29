@@ -318,6 +318,7 @@ pub mod build {
 
     /// XML child alias for `option`.
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child<T2, U2>(
       self,
       option: Opt<'a, T2, U2>)
@@ -338,6 +339,7 @@ pub mod build {
 
     /// XML child alias for `option`.
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child(self, option: Opt<'a, T, U>) -> Self {
       self.option(option)
     }

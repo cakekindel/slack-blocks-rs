@@ -368,6 +368,7 @@ pub mod build {
 
     /// Alias for `text`
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child(self,
                  text: impl Into<text::Plain>)
                  -> ButtonBuilder<'a, Set<method::text>, A> {

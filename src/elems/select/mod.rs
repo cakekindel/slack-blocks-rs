@@ -120,6 +120,7 @@ convert!(impl<'a> From<PublicChannel<'a>> for Select<'a> => |e| Select::PublicCh
 
 /// Select builder
 #[cfg(feature = "xml")]
+#[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
 pub mod build {
   use std::marker::PhantomData;
 
