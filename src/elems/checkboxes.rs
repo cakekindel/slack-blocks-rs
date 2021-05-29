@@ -223,6 +223,7 @@ pub mod build {
 
     /// Append an `option` to `options`
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child<T: Into<text::Text>>(
       self,
       option: Opt<'a, T, NoUrl>)

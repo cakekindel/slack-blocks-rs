@@ -199,6 +199,7 @@ pub mod build {
   /// Allows the builder to statically take in "either an opt or opt group" and
   /// enforce that the same type is used as a child later.
   #[cfg(feature = "xml")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
   pub trait AppendOptOrOptGroup<'a, Multi, Placeholder, ActionId> {
     /// The builder state after adding the opt / opt group
     type Output;
@@ -214,6 +215,7 @@ pub mod build {
   }
 
   #[cfg(feature = "xml")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
   impl<'a, Multi, Placeholder, ActionId>
     AppendOptOrOptGroup<'a, Multi, Placeholder, ActionId>
     for Opt<'a, text::Plain, NoUrl>
@@ -235,6 +237,7 @@ pub mod build {
   }
 
   #[cfg(feature = "xml")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
   impl<'a, Multi, Placeholder, ActionId>
     AppendOptOrOptGroup<'a, Multi, Placeholder, ActionId>
     for OptGroup<'a, text::Plain, NoUrl>
@@ -460,6 +463,7 @@ pub mod build {
     /// an Opt or OptGroup, and will ensure the following children will
     /// be the same type.
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child<Opt>(self, child: Opt) -> Opt::Output
       where Opt: AppendOptOrOptGroup<'a, M, P, A>
     {
@@ -535,6 +539,7 @@ pub mod build {
 
     /// Append an Opt as a child XML element.
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child(self, option: impl Into<StaticOpt<'a>>) -> Self {
       self.option(option)
     }
@@ -555,6 +560,7 @@ pub mod build {
 
     /// Append an OptGroup as a child XML element.
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child(self, option: impl Into<StaticOptGroup<'a>>) -> Self {
       self.option_group(option)
     }

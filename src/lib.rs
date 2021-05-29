@@ -70,6 +70,7 @@
 //! [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/
 //! [Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
 
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![deny(missing_docs)]
 #![cfg_attr(not(test),
             forbid(missing_copy_implementations,
@@ -83,6 +84,7 @@
 extern crate validator_derive;
 
 #[cfg(feature = "xml")]
+#[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
 pub mod mox;
 
 #[doc(inline)]

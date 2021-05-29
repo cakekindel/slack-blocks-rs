@@ -237,6 +237,7 @@ pub mod build {
 
     /// Allows using an XML child to append an option.
     #[cfg(feature = "xml")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child<U>(self,
                     option: Opt<'a, text::Plain, U>)
                     -> OverflowBuilder<'a, A, Set<method::options>> {
