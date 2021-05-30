@@ -303,9 +303,9 @@ pub mod build {
     /// Using a value of true will skip any preprocessing
     /// of this nature, although you can
     /// still include manual parsing strings.
-    pub fn verbatim(mut self) -> Self {
+    pub fn verbatim(mut self, verbatim: bool) -> Self {
       if let Some(Text::Mrkdwn(ref mut m)) = self.text {
-        m.verbatim = Some(true);
+        m.verbatim = Some(verbatim);
       }
 
       self
@@ -317,9 +317,9 @@ pub mod build {
     ///
     /// Indicates whether emojis in a text field should be
     /// escaped into the colon emoji format
-    pub fn emoji(mut self) -> Self {
+    pub fn emoji(mut self, emoji: bool) -> Self {
       if let Some(Text::Plain(ref mut p)) = self.text {
-        p.emoji = Some(true);
+        p.emoji = Some(emoji);
       }
 
       self

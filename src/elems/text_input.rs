@@ -53,13 +53,25 @@ struct DispatchActionConfig {
 pub struct TextInput<'a> {
   #[validate(length(max = 255))]
   action_id: Cow<'a, str>,
+
   #[validate(custom = "validate_placeholder")]
+  #[serde(skip_serializing_if = "Option::is_none")]
   placeholder: Option<text::Text>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   initial_value: Option<Cow<'a, str>>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   multiline: Option<bool>,
+
   #[validate(range(max = 3000))]
+  #[serde(skip_serializing_if = "Option::is_none")]
   min_length: Option<u32>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   max_length: Option<u32>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   dispatch_action_config: Option<DispatchActionConfig>,
 }
 

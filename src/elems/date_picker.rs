@@ -30,10 +30,16 @@ use crate::{compose::Confirm, text, val_helpr::*};
 pub struct DatePicker<'a> {
   #[validate(length(max = 255))]
   action_id: Cow<'a, str>,
+
   #[validate(custom = "validate_placeholder")]
+  #[serde(skip_serializing_if = "Option::is_none")]
   placeholder: Option<text::Text>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   initial_date: Option<String>,
+
   #[validate]
+  #[serde(skip_serializing_if = "Option::is_none")]
   confirm: Option<Confirm>,
 }
 
@@ -168,7 +174,7 @@ pub mod build {
     ///                      .build();
     /// ```
     pub fn initial_date(mut self, (day, month, year): (u8, u8, u16)) -> Self {
-      self.initial_date = Some(format!("{}-{}-{}", year, month, day));
+      self.initial_date = Some(format!("{:02}-{:02}-{}", year, month, day));
       self
     }
 
