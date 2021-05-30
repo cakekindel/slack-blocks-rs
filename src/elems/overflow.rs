@@ -52,6 +52,7 @@ pub struct Overflow<'a> {
   options: Vec<MyOpt<'a>>,
 
   #[validate]
+  #[serde(skip_serializing_if = "Option::is_none")]
   confirm: Option<Confirm>,
 }
 

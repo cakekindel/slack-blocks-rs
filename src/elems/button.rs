@@ -333,6 +333,19 @@ pub mod build {
       self
     }
 
+    /// Set `url` (Optional)
+    ///
+    /// A URL to load in the user's browser when the button is clicked.
+    ///
+    /// Maximum length for this field is 3000 characters.
+    ///
+    /// If you're using url, you'll still receive an interaction payload
+    /// and will need to send an acknowledgement response.
+    pub fn url(mut self, url: impl Into<Cow<'a, str>>) -> Self {
+      self.url = Some(url.into());
+      self
+    }
+
     /// Set `value` (Optional)
     ///
     /// Add a meaningful value to send back to your app when this button is clicked.

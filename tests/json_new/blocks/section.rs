@@ -1,3 +1,4 @@
+use pretty_assertions::assert_eq;
 use serde_json::json;
 use slack_blocks::{blocks,
                    mox::*,
@@ -36,9 +37,7 @@ pub fn all_attributes() {
     }
   });
 
-  if actual != expected {
-    panic!("Expected {:#?}\n\nGot {:#?}", expected, actual);
-  }
+  assert_eq!(actual, expected);
 }
 
 #[test]
@@ -90,9 +89,7 @@ pub fn docs_ex_2() {
     ]
   });
 
-  if actual != expected {
-    panic!("Expected {:#?}\n\nGot {:#?}", expected, actual);
-  }
+  assert_eq!(actual, expected);
 }
 
 #[test]
@@ -125,7 +122,5 @@ pub fn docs_ex_3() {
     }
   });
 
-  if actual != expected {
-    panic!("Expected {:#?}\n\nGot {:#?}", expected, actual);
-  }
+  assert_eq!(actual, expected);
 }

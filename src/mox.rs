@@ -3,12 +3,14 @@
 //! This module provides shorthands for builder functions
 //! to be used with `mox` or a similar "xml -> Builder" macro.
 
-pub use elems::select::build::{choose::{multi, single},
-                               data_source::{conversations,
-                                             external,
-                                             public_channels,
-                                             static_,
-                                             users}};
+pub use elems::{button::Style::{Danger as btn_danger,
+                                Primary as btn_primary},
+                select::build::{choose::{multi, single},
+                                data_source::{conversations,
+                                              external,
+                                              public_channels,
+                                              static_,
+                                              users}}};
 pub use mox::mox as blox;
 pub use text::build::kind::{mrkdwn, plain};
 
@@ -30,6 +32,40 @@ pub use mox_elems::*;
 
 mod mox_blocks {
   use super::*;
+
+  /// # Build an actions block
+  ///
+  /// ## Children
+  /// Accepts at least one, and up to 5 supported block elements as children.
+  ///
+  /// ## Example
+  /// ```
+  /// use slack_blocks::{blocks::Actions, elems::Button, mox::*, text};
+  ///
+  /// let xml = blox! {
+  ///   <actions_block>
+  ///     <button action_id="foo">"Foo"</button>
+  ///     <button action_id="bar">"Bar"</button>
+  ///   </actions_block>
+  /// };
+  ///
+  /// let equivalent =
+  ///   Actions::builder().element(Button::builder().action_id("foo")
+  ///                                               .text("Foo")
+  ///                                               .build())
+  ///                     .element(Button::builder().action_id("bar")
+  ///                                               .text("Bar")
+  ///                                               .build())
+  ///                     .build();
+  ///
+  /// assert_eq!(xml, equivalent);
+  /// ```
+  pub fn actions_block(
+    )
+      -> blocks::actions::build::ActionsBuilderInit<'static>
+  {
+    blocks::Actions::builder()
+  }
 
   /// # Build a section block
   ///

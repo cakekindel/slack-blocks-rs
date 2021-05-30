@@ -36,3 +36,4 @@ mox = { version = "0.12", optional = true }
 [dev-dependencies]
 lazy_static = "1.4.0"
 mox = "0.12"
+pretty_assertions = "0.7.2"

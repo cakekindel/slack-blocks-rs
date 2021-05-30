@@ -46,7 +46,7 @@ pub struct Static<'a> {
   #[validate]
   confirm: Option<Confirm>,
 
-  // Select One
+  #[serde(skip_serializing_if = "Option::is_none")]
   initial_option: Option<StaticOptOrOptGroup<'a>>,
 }
 

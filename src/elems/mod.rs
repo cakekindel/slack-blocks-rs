@@ -80,7 +80,6 @@ pub enum BlockElement<'a> {
   DatePicker(DatePicker<'a>),
 
   /// # Overflow Element
-  #[serde(rename = "overflow_menu")]
   Overflow(Overflow<'a>),
 
   /// # Radio Button Group

@@ -288,6 +288,17 @@ pub mod build {
                        state: PhantomData::<_> }
     }
 
+    /// Invoked by `blox!` when a child element is passed to `<actions_block>`.
+    ///
+    /// Alias of `ActionsBuilder.element`.
+    pub fn child<El>(self,
+                     element: El)
+                     -> ActionsBuilder<'a, Set<method::elements>>
+      where El: Into<SupportedElement<'a>>
+    {
+      self.element(element)
+    }
+
     /// Set `block_id` (Optional)
     ///
     /// A string acting as a unique identifier for a block.

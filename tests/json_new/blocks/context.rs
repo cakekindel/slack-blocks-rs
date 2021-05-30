@@ -1,3 +1,4 @@
+use pretty_assertions::assert_eq;
 use serde_json::json;
 use slack_blocks::{blocks,
                    mox::*,
@@ -12,6 +13,7 @@ pub fn docs_ex_1() {
       <text kind=mrkdwn>"Location: **Dogpatch**"</text>
     </context_block>
   }.into();
+
   let actual = serde_json::to_value(block).unwrap();
   let expected = json!({
     "type": "context",
@@ -28,26 +30,27 @@ pub fn docs_ex_1() {
     ]
   });
 
-  if actual != expected {
-    panic!("Expected {:#?}\n\nGot {:#?}", expected, actual);
-  }
+  assert_eq!(actual, expected);
 }
 
 #[test]
-pub fn minimal_attributes() {
+pub fn all_attributes() {
   let block: blocks::Block = blox! {
-                               <context_block>
+                               <context_block block_id="foo">
                                  <text kind=plain>"Foo"</text>
+                                 <text kind=plain>"Bar"</text>
                                </context_block>
                              }.into();
 
   let actual = serde_json::to_value(block).expect("should serialize");
   let expected = json!({
     "type": "context",
-    "elements": [{"type": "plain_text", "text": "Foo"}]
+    "block_id": "foo",
+    "elements": [
+      {"type": "plain_text", "text": "Foo"},
+      {"type": "plain_text", "text": "Bar"}
+    ]
   });
 
-  if actual != expected {
-    panic!("Expected {:#?}\n\nGot {:#?}", expected, actual);
-  }
+  assert_eq!(actual, expected);
 }

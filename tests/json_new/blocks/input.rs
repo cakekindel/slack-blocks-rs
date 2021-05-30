@@ -1,3 +1,4 @@
+use pretty_assertions::assert_eq;
 use serde_json::json;
 use slack_blocks::{blocks,
                    mox::*,
@@ -5,7 +6,7 @@ use slack_blocks::{blocks,
                    text::{ToSlackMarkdown, ToSlackPlaintext}};
 
 #[test]
-pub fn minimal_attributes() {
+pub fn docs_ex_1() {
   let label = blox! {<text kind=plain emoji=true>"Label"</text>};
   let block: blocks::Block = blox! {
                                <input_block label>
@@ -27,9 +28,7 @@ pub fn minimal_attributes() {
     }
   });
 
-  if actual != expected {
-    panic!("Expected {:#?}\n\nGot {:#?}", expected, actual);
-  }
+  assert_eq!(actual, expected);
 }
 
 #[test]
@@ -67,7 +66,5 @@ pub fn all_attributes() {
     }
   });
 
-  if actual != expected {
-    panic!("Expected {:#?}\n\nGot {:#?}", expected, actual);
-  }
+  assert_eq!(actual, expected);
 }
