@@ -1,5 +1,5 @@
-mod blocks;
+pub mod blocks;
 pub use blocks::*;
 
-mod elems;
+pub mod elems;
 pub use elems::*;

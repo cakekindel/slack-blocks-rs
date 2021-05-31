@@ -48,11 +48,16 @@ fn validate_initial_options<'a>(o: &Cow<'a, [MyOpt<'a>]>) -> ValidatorResult {
 pub struct Checkboxes<'a> {
   #[validate(length(max = 255))]
   action_id: Cow<'a, str>,
+
   #[validate(custom = "validate_options")]
   options: Cow<'a, [MyOpt<'a>]>,
+
   #[validate(custom = "validate_initial_options")]
+  #[serde(skip_serializing_if = "Option::is_none")]
   initial_options: Option<Cow<'a, [MyOpt<'a>]>>,
+
   #[validate]
+  #[serde(skip_serializing_if = "Option::is_none")]
   confirm: Option<Confirm>,
 }
 

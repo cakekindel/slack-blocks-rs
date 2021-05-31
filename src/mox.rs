@@ -605,4 +605,9 @@ mod mox_compose {
   {
     compose::OptGroup::builder()
   }
+
+  /// FIXME
+  pub fn confirm() -> compose::confirm::build::ConfirmBuilderInit {
+    compose::Confirm::builder()
+  }
 }
