@@ -238,6 +238,20 @@ pub mod build {
                      state: PhantomData::<_> }
     }
 
+    /// Sets `initial_option` (Optional)
+    ///
+    /// An [option object 🔗] that exactly matches one of the options within `options`.
+    ///
+    /// This option will be selected when the radio button group initially loads.
+    ///
+    /// [option object 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
+    pub fn initial_option<T2>(mut self, option: Opt<'a, T2, NoUrl>) -> Self
+      where T2: Into<text::Text>
+    {
+      self.initial_option = Some(option.into());
+      self
+    }
+
     /// Allows using XML children to append options to the group.
     #[cfg(feature = "xml")]
     #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
@@ -256,38 +270,6 @@ pub mod build {
     /// [confirm object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#confirm
     pub fn confirm(mut self, confirm: Confirm) -> Self {
       self.confirm = Some(confirm);
-      self
-    }
-  }
-
-  impl<'a, A> RadioBuilder<'a, text::Plain, A, Set<method::options>> {
-    /// Sets `initial_option` (Optional)
-    ///
-    /// An [option object 🔗] that exactly matches one of the options within `options`.
-    ///
-    /// This option will be selected when the radio button group initially loads.
-    ///
-    /// [option object 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
-    pub fn initial_option(mut self,
-                          option: Opt<'a, text::Plain, NoUrl>)
-                          -> Self {
-      self.initial_option = Some(option.into());
-      self
-    }
-  }
-
-  impl<'a, A> RadioBuilder<'a, text::Mrkdwn, A, Set<method::options>> {
-    /// Sets `initial_option` (Optional)
-    ///
-    /// An [option object 🔗] that exactly matches one of the options within `options`.
-    ///
-    /// This option will be selected when the radio button group initially loads.
-    ///
-    /// [option object 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
-    pub fn initial_option(mut self,
-                          option: Opt<'a, text::Mrkdwn, NoUrl>)
-                          -> Self {
-      self.initial_option = Some(option.into());
       self
     }
   }
