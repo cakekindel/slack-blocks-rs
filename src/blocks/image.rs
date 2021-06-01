@@ -52,92 +52,6 @@ impl<'a> Image<'a> {
     build::ImageBuilderInit::new()
   }
 
-  /// Create an image block, with a url and a brief description for
-  /// situations where the image cannot be rendered.
-  ///
-  /// # Arguments
-  /// - `alt_text` - A plain-text summary of the image.
-  ///     This should not contain any markup.
-  ///     Maximum length for this field is 2000 characters.
-  ///
-  /// - `image_url` - The URL of the image to be displayed.
-  ///     Maximum length for this field is 3000 characters.
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::blocks::{Block, Image};
-  ///
-  /// let url = "https://www.cheese.com/favicon.ico";
-  /// let image: Block =
-  ///   Image::from_alt_text_and_url("a small image of cheese.", url).into();
-  ///
-  /// // < send to slack api >
-  /// ```
-  #[deprecated(since = "0.19.4", note = "use Image::builder")]
-  pub fn from_alt_text_and_url(alt_text: impl Into<Cow<'a, str>>,
-                               image_url: impl Into<Cow<'a, str>>)
-                               -> Self {
-    Self { alt_text: alt_text.into(),
-           image_url: image_url.into(),
-           title: None,
-           block_id: None }
-  }
-
-  /// Set a plain-text title to be displayed next to your image
-  ///
-  /// # Arguments
-  /// - title - An optional title for the image in the form of a
-  ///     Plaintext [text object 🔗].
-  ///     Maximum length for the text in this field is 2000 characters.
-  ///
-  /// [text object 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::blocks::{Block, Image};
-  ///
-  /// let url = "https://www.cheese.com/favicon.ico";
-  /// let image: Block = Image::from_alt_text_and_url("a small image of cheese.", url)
-  ///     .with_title("here is an image of some cheese:")
-  ///     .into();
-  ///
-  /// // < send block to slack's API >
-  /// ```
-  #[deprecated(since = "0.19.4", note = "use Image::builder")]
-  pub fn with_title(mut self, title: impl Into<text::Plain>) -> Self {
-    self.title = Some(title.into().into());
-    self
-  }
-
-  /// Set the `block_id` for interactions on an existing `Image`
-  ///
-  /// # Arguments
-  /// - `block_id` - A string acting as a unique identifier for a block.
-  ///     You can use this `block_id` when you receive an interaction payload
-  ///     to [identify the source of the action 🔗].
-  ///     If not specified, a `block_id` will be generated.
-  ///     Maximum length for this field is 255 characters.
-  ///
-  /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::blocks::{Block, Image};
-  ///
-  /// let url = "https://www.cheese.com/favicon.ico";
-  /// let image: Block = Image::from_alt_text_and_url("a small image of cheese.", url)
-  ///     .with_title("here is an image of some cheese:")
-  ///     .with_block_id("msg_id_12346")
-  ///     .into();
-  ///
-  /// // < send block to slack's API >
-  /// ```
-  #[deprecated(since = "0.19.4", note = "use Image::builder")]
-  pub fn with_block_id(mut self, block_id: impl Into<Cow<'a, str>>) -> Self {
-    self.block_id = Some(block_id.into());
-    self
-  }
-
   /// Validate that this Image block agrees with Slack's model requirements
   ///
   /// # Errors
@@ -165,6 +79,7 @@ impl<'a> Image<'a> {
     Validate::validate(self)
   }
 }
+
 /// File block builder
 pub mod build {
   use std::marker::PhantomData;
