@@ -47,8 +47,6 @@ pub use overflow::Overflow;
 #[doc(inline)]
 pub use radio::Radio;
 #[doc(inline)]
-pub use select::Select;
-#[doc(inline)]
 pub use text_input::TextInput;
 
 /// # Block Elements - interactive components
@@ -175,16 +173,6 @@ convert!(impl<'a> From<Overflow<'a>> for BlockElement<'a> => |t| BlockElement::O
 convert!(impl<'a> From<DatePicker<'a>> for BlockElement<'a> => |t| BlockElement::DatePicker(t));
 convert!(impl<'a> From<Checkboxes<'a>> for BlockElement<'a> => |t| BlockElement::Checkboxes(t));
 convert!(impl<'a> From<Image<'a>> for BlockElement<'a> => |t| BlockElement::Image(t));
-
-convert!(impl<'a> From<Select<'a>> for BlockElement<'a>
-    => |s| match s {
-        Select::PublicChannel(s) => s.into(),
-        Select::Conversation(s) => s.into(),
-        Select::User(s) => s.into(),
-        Select::External(s) => s.into(),
-        Select::Static(s) => s.into(),
-    }
-);
 
 convert!(impl<'a> From<select::Static<'a>> for BlockElement<'a> => |s| BlockElement::SelectStatic(s));
 convert!(impl<'a> From<select::External<'a>> for BlockElement<'a> => |s| BlockElement::SelectExternal(s));

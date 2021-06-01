@@ -11,7 +11,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use super::{opt::{AllowUrl, AnyText, NoUrl},
+use super::{opt::{AnyText, NoUrl},
             text,
             Opt};
 use crate::val_helpr::ValidationResult;

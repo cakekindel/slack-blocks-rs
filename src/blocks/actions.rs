@@ -8,7 +8,7 @@
 //! [elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 
 use std::{borrow::Cow,
-          convert::{TryFrom, TryInto}};
+          convert::TryFrom};
 
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -231,31 +231,6 @@ pub mod build {
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct SupportedElement<'a>(BlockElement<'a>);
 
-convert!(impl<'a> From<Vec<self::SupportedElement<'a>>> for Actions<'a>
-    => |elements| Self {
-        elements,
-        ..Default::default()
-    }
-);
-
-impl<'a> TryFrom<BlockElement<'a>> for Actions<'a> {
-  type Error = ();
-  fn try_from(element: BlockElement<'a>) -> Result<Self, Self::Error> {
-    self::SupportedElement::<'a>::try_from(element)
-      .map(|el| Self::from_action_elements(std::iter::once(el)))
-  }
-}
-
-impl<'a> TryFrom<Vec<BlockElement<'a>>> for Actions<'a> {
-  type Error = ();
-  fn try_from(elements: Vec<BlockElement<'a>>) -> Result<Self, Self::Error> {
-    elements.into_iter()
-            .map(self::SupportedElement::<'a>::try_from)
-            .collect::<Result<Vec<_>, _>>()
-            .map(self::Actions::<'a>::from)
-  }
-}
-
 impl<'a> TryFrom<BlockElement<'a>> for self::SupportedElement<'a> {
   type Error = ();
   fn try_from(el: BlockElement<'a>) -> Result<Self, Self::Error> {
@@ -279,13 +254,13 @@ impl<'a> TryFrom<BlockElement<'a>> for self::SupportedElement<'a> {
 }
 
 convert!(impl<'a> From<select::PublicChannel<'a>> for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<select::Conversation<'a>> for self::SupportedElement<'a>  => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<select::User<'a>> for self::SupportedElement<'a>  => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<select::External<'a>> for self::SupportedElement<'a>  => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<select::Static<'a>> for self::SupportedElement<'a>  => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<Button<'a>> for self::SupportedElement<'a> => |b| self::SupportedElement(BlockElement::from(b)));
-convert!(impl<'a> From<Radio<'a>> for self::SupportedElement<'a> => |b| self::SupportedElement(BlockElement::from(b)));
-convert!(impl<'a> From<TextInput<'a>> for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
-convert!(impl<'a> From<DatePicker<'a>> for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
-convert!(impl<'a> From<Checkboxes<'a>> for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
-convert!(impl<'a> From<Overflow<'a>> for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
+convert!(impl<'a> From<select::Conversation<'a>>  for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
+convert!(impl<'a> From<select::User<'a>>          for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
+convert!(impl<'a> From<select::External<'a>>      for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
+convert!(impl<'a> From<select::Static<'a>>        for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
+convert!(impl<'a> From<Button<'a>>                for self::SupportedElement<'a> => |b| self::SupportedElement(BlockElement::from(b)));
+convert!(impl<'a> From<Radio<'a>>                 for self::SupportedElement<'a> => |b| self::SupportedElement(BlockElement::from(b)));
+convert!(impl<'a> From<TextInput<'a>>             for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
+convert!(impl<'a> From<DatePicker<'a>>            for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
+convert!(impl<'a> From<Checkboxes<'a>>            for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
+convert!(impl<'a> From<Overflow<'a>>              for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
