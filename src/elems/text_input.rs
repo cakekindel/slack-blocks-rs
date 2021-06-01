@@ -153,7 +153,7 @@ pub mod build {
   ///                            .build();
   ///
   /// let block: Block = Input::from_label_and_element("enter custom license plate", text_input)
-  ///                          .dispatch_block_actions()
+  ///                          .dispatch_block_actions(true)
   ///                          .into();
   /// ```
   #[derive(Debug)]
@@ -231,7 +231,7 @@ pub mod build {
     ///                            .build();
     ///
     /// let block: Block = Input::from_label_and_element("enter custom license plate", text_input)
-    ///                          .dispatch_block_actions()
+    ///                          .dispatch_block_actions(true)
     ///                          .into();
     /// ```
     pub fn action_trigger(mut self, trigger: ActionTrigger) -> Self {

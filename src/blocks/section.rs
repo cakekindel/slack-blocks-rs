@@ -225,13 +225,21 @@ pub mod build {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{blocks::Section, elems::Image, text::ToSlackPlaintext};
+  /// use slack_blocks::{blocks::Section,
+  ///                    elems::Image,
+  ///                    text,
+  ///                    text::ToSlackPlaintext};
   ///
   /// let block =
   ///   Section::builder().text("foo".plaintext())
-  ///                     .fields(vec!["foo".plaintext(),
-  ///                                  "bar".plaintext(),
-  ///                                  "baz".plaintext()])
+  ///                     .field("bar".plaintext())
+  ///                     .field("baz".plaintext())
+  ///                     // alternatively:
+  ///                     .fields(vec!["bar".plaintext(),
+  ///                                  "baz".plaintext()]
+  ///                                  .into_iter()
+  ///                                  .map(text::Text::from)
+  ///                     )
   ///                     .accessory(Image::builder().image_url("foo.png")
   ///                                                .alt_text("pic of foo")
   ///                                                .build())

@@ -77,9 +77,7 @@ mod mox_blocks {
   /// use slack_blocks::{blocks::Section, mox::*, text};
   ///
   /// let xml = blox! {
-  ///   <section_block>
-  ///     <text kind=plain>"Foo"</text>
-  ///   </section_block>
+  ///   <section_block text=blox!{<text kind=plain>"Foo"</text>} />
   /// };
   ///
   /// let equivalent = Section::builder().text(text::Plain::from("Foo")).build();
@@ -495,12 +493,10 @@ mod mox_compose {
   /// use slack_blocks::{blocks::Section, mox::*, text};
   ///
   /// let xml = blox! {
-  ///   <section_block>
-  ///     <text kind=plain>"Foo"</text>
-  ///   </section_block>
+  ///   <text kind=plain>"Foo"</text>
   /// };
   ///
-  /// let equivalent = Section::builder().text(text::Plain::from("Foo")).build();
+  /// let equivalent = text::Plain::from("Foo");
   ///
   /// assert_eq!(xml, equivalent);
   /// ```
@@ -606,7 +602,31 @@ mod mox_compose {
     compose::OptGroup::builder()
   }
 
-  /// FIXME
+  /// # Confirm
+  ///
+  /// ## Children
+  /// No children.
+  ///
+  /// ## Example
+  /// ```
+  /// use slack_blocks::{compose::Confirm, mox::*, text::ToSlackPlaintext};
+  ///
+  /// let xml = blox! {
+  ///   <confirm title="Title"
+  ///            text=blox!{<text kind=plain>"Body"</text>}
+  ///            confirm="Yes"
+  ///            deny="No"
+  ///   />
+  /// };
+  ///
+  /// let equivalent = Confirm::builder().title("Title")
+  ///                                    .text("Body".plaintext())
+  ///                                    .confirm("Yes")
+  ///                                    .deny("No")
+  ///                                    .build();
+  ///
+  /// assert_eq!(xml, equivalent);
+  /// ```
   pub fn confirm() -> compose::confirm::build::ConfirmBuilderInit {
     compose::Confirm::builder()
   }

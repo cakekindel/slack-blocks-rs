@@ -341,7 +341,10 @@ pub mod build {
     /// ```
     /// use slack_blocks::text::Text;
     ///
-    /// let foo = Text::builder().plain().emoji().text("foo :joy:").build();
+    /// let foo = Text::builder().plain()
+    ///                          .emoji(true)
+    ///                          .text("foo :joy:")
+    ///                          .build();
     /// ```
     pub fn build(self) -> Plain {
       match self.text.unwrap() {
@@ -367,7 +370,7 @@ pub mod build {
     /// use slack_blocks::text::Text;
     ///
     /// let foo = Text::builder().mrkdwn()
-    ///                          .verbatim()
+    ///                          .verbatim(true)
     ///                          .text("foo :joy:")
     ///                          .build();
     /// ```

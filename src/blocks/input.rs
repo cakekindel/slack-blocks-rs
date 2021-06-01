@@ -346,7 +346,12 @@ pub mod build {
       self
     }
 
-    /// FIXME
+    /// Set `dispatch_action` (Optional)
+    ///
+    /// Will allow the elements in this block to
+    /// dispatch block_actions payloads.
+    ///
+    /// Defaults to false.
     pub fn dispatch_actions(mut self, should: bool) -> Self {
       self.dispatch_action = Some(should);
       self
@@ -363,7 +368,12 @@ pub mod build {
       self
     }
 
-    /// FIXME
+    /// Set `hint` (Optional)
+    ///
+    /// An optional hint that appears below an input element
+    /// in a lighter grey.
+    ///
+    /// Maximum length for the text in this field is 2000 characters.
     pub fn hint<T>(mut self, hint: T) -> Self
       where T: Into<text::Plain>
     {
