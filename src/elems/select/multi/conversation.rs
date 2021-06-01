@@ -40,9 +40,11 @@ pub struct Conversation<'a> {
   pub(in crate::elems::select) default_to_current_conversation: Option<bool>,
 
   #[validate]
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) filter: Option<ConversationFilter>,
 
   #[validate(range(min = 1))]
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) max_selected_items: Option<u32>,
 }
 

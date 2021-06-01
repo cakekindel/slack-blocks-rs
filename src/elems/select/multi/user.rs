@@ -37,6 +37,7 @@ pub struct User<'a> {
   pub(in crate::elems::select) initial_users: Option<Cow<'a, [String]>>,
 
   #[validate(range(min = 1))]
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) max_selected_items: Option<u32>,
 }
 

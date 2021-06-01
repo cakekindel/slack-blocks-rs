@@ -31,6 +31,8 @@ pub struct Confirm {
 
   #[validate(custom = "validate::deny")]
   deny: text::Text,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   style: Option<ConfirmStyle>,
 }
 

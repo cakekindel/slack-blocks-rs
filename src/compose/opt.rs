@@ -83,9 +83,11 @@ pub struct Opt<'a, T = AnyText, U = NoUrl> {
   value: Cow<'a, str>,
 
   #[validate(custom = "validate::desc")]
+  #[serde(skip_serializing_if = "Option::is_none")]
   description: Option<text::Text>,
 
   #[validate(custom = "validate::url")]
+  #[serde(skip_serializing_if = "Option::is_none")]
   url: Option<Cow<'a, str>>,
 
   #[serde(skip)]

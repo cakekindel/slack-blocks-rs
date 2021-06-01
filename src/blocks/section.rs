@@ -221,14 +221,25 @@ pub mod build {
   ///
   /// # Required Methods
   /// `SectionBuilder::build()` is only available if these methods have been called:
-  ///  - `element`
+  ///  - `text` **or** `field(s)`, both may be called.
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{blocks::Section, elems::Image, text::ToSlackPlaintext};
+  /// use slack_blocks::{blocks::Section,
+  ///                    elems::Image,
+  ///                    text,
+  ///                    text::ToSlackPlaintext};
   ///
   /// let block =
   ///   Section::builder().text("foo".plaintext())
+  ///                     .field("bar".plaintext())
+  ///                     .field("baz".plaintext())
+  ///                     // alternatively:
+  ///                     .fields(vec!["bar".plaintext(),
+  ///                                  "baz".plaintext()]
+  ///                                  .into_iter()
+  ///                                  .map(text::Text::from)
+  ///                     )
   ///                     .accessory(Image::builder().image_url("foo.png")
   ///                                                .alt_text("pic of foo")
   ///                                                .build())
@@ -261,72 +272,83 @@ pub mod build {
       self
     }
 
-    /// Add `text` (**Required**, can be called many times)
+    /// Add `text` (**Required: this or `field(s)`**)
     ///
-    /// One or many [text objects 🔗] to populate the block with.
-    ///
-    /// # If called once:
-    /// Sets the `text` field of the section block.
+    /// The text for the block, in the form of a [text object 🔗].
     ///
     /// Maximum length for the text in this field is 3000 characters.
     ///
-    /// # If called multiple times:
-    /// Sets the `fields` field of the section block.
+    /// [text object 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
+    pub fn text<T>(self, text: T) -> SectionBuilder<'a, Set<method::text>>
+      where T: Into<text::Text>
+    {
+      SectionBuilder { accessory: self.accessory,
+                       text: Some(text.into()),
+                       fields: self.fields,
+                       block_id: self.block_id,
+                       state: PhantomData::<_> }
+    }
+
+    /// Set `fields` (**Required: this or `text`**)
     ///
-    /// Fields will be rendered in a compact format that allows for
+    /// A collection of [text objects 🔗].
+    ///
+    /// Any text objects included with fields will be
+    /// rendered in a compact format that allows for
     /// 2 columns of side-by-side text.
+    ///
     /// Maximum number of items is 10.
     ///
     /// Maximum length for the text in each item is 2000 characters.
     ///
     /// [text objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
-    pub fn text<T>(self, text: T) -> SectionBuilder<'a, Set<method::text>>
-      where T: Into<text::Text>
+    pub fn fields<I>(self, fields: I) -> SectionBuilder<'a, Set<method::text>>
+      where I: IntoIterator<Item = text::Text>
     {
-      let (text, fields) = match (self.text, self.fields) {
-        | (Some(t), None) => (None, Some(vec![t, text.into()])),
-        | (None, None) => (Some(text.into()), None),
-        | (None, Some(mut fs)) => {
-          fs.push(text.into());
-          (None, Some(fs))
-        },
-        | (Some(_), Some(_)) => {
-          unreachable!("fields and text should never both be set.")
-        },
-      };
-
       SectionBuilder { accessory: self.accessory,
-                       text,
-                       fields,
+                       text: self.text,
+                       fields: Some(fields.into_iter().collect()),
                        block_id: self.block_id,
                        state: PhantomData::<_> }
     }
 
-    /// Alias of `text` for XML macros, allowing fields
-    /// to be used as child elements.
+    /// Append a single field to `fields`.
+    pub fn field<T>(mut self, text: T) -> SectionBuilder<'a, Set<method::text>>
+      where T: Into<text::Text>
+    {
+      let mut fields = self.fields.take().unwrap_or_default();
+      fields.push(text.into());
+
+      self.fields(fields)
+    }
+
+    /// XML macro children, appends `fields` to the Section.
     ///
+    /// To set `text`, use the `text` attribute.
     /// ```
     /// use mox::mox;
-    /// use slack_blocks::{mox::*, text};
+    /// use slack_blocks::{blocks::Section, mox::*, text, text::ToSlackPlaintext};
     ///
-    /// let as_attr = mox! {
-    ///   <section_block text={text::Plain::from("Foo")} />
-    /// };
-    ///
-    /// let as_child = mox! {
-    ///   <section_block>
+    /// let xml = mox! {
+    ///   <section_block text={"Section".plaintext()}>
     ///     <text kind=plain>"Foo"</text>
+    ///     <text kind=plain>"Bar"</text>
     ///   </section_block>
     /// };
     ///
-    /// assert_eq!(as_attr, as_child);
+    /// let equiv = Section::builder().text("Section".plaintext())
+    ///                               .field("Foo".plaintext())
+    ///                               .field("Bar".plaintext())
+    ///                               .build();
+    ///
+    /// assert_eq!(xml, equiv);
     /// ```
     #[cfg(feature = "xml")]
     #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
     pub fn child<T>(self, text: T) -> SectionBuilder<'a, Set<method::text>>
       where T: Into<text::Text>
     {
-      self.text(text)
+      self.field(text)
     }
 
     /// Set `block_id` (Optional)
@@ -381,6 +403,7 @@ pub mod build {
     }
   }
 }
+
 mod validate {
   use super::*;
   use crate::{compose::text,

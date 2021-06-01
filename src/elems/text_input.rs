@@ -53,13 +53,25 @@ struct DispatchActionConfig {
 pub struct TextInput<'a> {
   #[validate(length(max = 255))]
   action_id: Cow<'a, str>,
+
   #[validate(custom = "validate_placeholder")]
+  #[serde(skip_serializing_if = "Option::is_none")]
   placeholder: Option<text::Text>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   initial_value: Option<Cow<'a, str>>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   multiline: Option<bool>,
+
   #[validate(range(max = 3000))]
+  #[serde(skip_serializing_if = "Option::is_none")]
   min_length: Option<u32>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   max_length: Option<u32>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   dispatch_action_config: Option<DispatchActionConfig>,
 }
 
@@ -141,7 +153,7 @@ pub mod build {
   ///                            .build();
   ///
   /// let block: Block = Input::from_label_and_element("enter custom license plate", text_input)
-  ///                          .dispatch_block_actions()
+  ///                          .dispatch_block_actions(true)
   ///                          .into();
   /// ```
   #[derive(Debug)]
@@ -209,19 +221,20 @@ pub mod build {
     /// # Examples
     ///
     /// ```
-    /// use slack_blocks::{blocks::{Block, Input}, elems::TextInput};
+    /// use slack_blocks::{blocks::{Block, Input}, elems::TextInput, elems::text_input::ActionTrigger::OnCharacterEntered};
     ///
     /// let text_input = TextInput::builder()
     ///                            .action_id("plate_num")
     ///                            .placeholder("ABC1234")
     ///                            .length(1..=7)
+    ///                            .action_trigger(OnCharacterEntered)
     ///                            .build();
     ///
     /// let block: Block = Input::from_label_and_element("enter custom license plate", text_input)
-    ///                          .dispatch_block_actions()
+    ///                          .dispatch_block_actions(true)
     ///                          .into();
     /// ```
-    pub fn trigger_action_on(mut self, trigger: ActionTrigger) -> Self {
+    pub fn action_trigger(mut self, trigger: ActionTrigger) -> Self {
       let config =
         self.dispatch_action_config
             .map(|mut c| {

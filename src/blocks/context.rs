@@ -11,7 +11,10 @@ use std::borrow::Cow;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{convert, elems::Image, text, val_helpr::ValidationResult};
+use crate::{convert,
+            elems::{BlockElement, Image},
+            text,
+            val_helpr::ValidationResult};
 
 /// # Context Block
 ///
@@ -321,12 +324,13 @@ impl<'a> From<Vec<ImageOrText<'a>>> for Context<'a> {
 /// The Composition objects supported by this block
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[allow(missing_docs)]
+#[serde(untagged)]
 pub enum ImageOrText<'a> {
   Text(text::Text),
-  Image(Image<'a>),
+  Image(BlockElement<'a>),
 }
 
 convert!(impl From<text::Text> for ImageOrText<'static> => |txt| ImageOrText::Text(txt));
-convert!(impl<'a> From<Image<'a>> for ImageOrText<'a> => |i| ImageOrText::Image(i));
+convert!(impl<'a> From<Image<'a>> for ImageOrText<'a> => |i| ImageOrText::Image(BlockElement::from(i)));
 convert!(impl From<text::Plain> for ImageOrText<'static> => |t| text::Text::from(t).into());
 convert!(impl From<text::Mrkdwn> for ImageOrText<'static> => |t| text::Text::from(t).into());

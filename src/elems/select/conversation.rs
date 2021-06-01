@@ -39,6 +39,7 @@ pub struct Conversation<'a> {
   default_to_current_conversation: Option<bool>,
 
   #[validate]
+  #[serde(skip_serializing_if = "Option::is_none")]
   filter: Option<ConversationFilter>,
 }
 

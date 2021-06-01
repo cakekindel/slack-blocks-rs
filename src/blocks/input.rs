@@ -201,8 +201,8 @@ impl<'a> Input<'a> {
   }
 
   /// Will allow the elements in this block to dispatch block_actions payloads. Defaults to false.
-  pub fn dispatch_block_actions(mut self) -> Self {
-    self.dispatch_action = Some(true);
+  pub fn dispatch_block_actions(mut self, should: bool) -> Self {
+    self.dispatch_action = Some(should);
     self
   }
 
@@ -343,6 +343,41 @@ pub mod build {
       where S: Into<Cow<'a, str>>
     {
       self.block_id = Some(block_id.into());
+      self
+    }
+
+    /// Set `dispatch_action` (Optional)
+    ///
+    /// Will allow the elements in this block to
+    /// dispatch block_actions payloads.
+    ///
+    /// Defaults to false.
+    pub fn dispatch_actions(mut self, should: bool) -> Self {
+      self.dispatch_action = Some(should);
+      self
+    }
+
+    /// Sets `optional` (**Required**)
+    ///
+    /// A boolean that indicates whether the input
+    /// element may be empty when a user submits the modal.
+    ///
+    /// Defaults to false.
+    pub fn optional(mut self, optional: bool) -> Self {
+      self.optional = Some(optional);
+      self
+    }
+
+    /// Set `hint` (Optional)
+    ///
+    /// An optional hint that appears below an input element
+    /// in a lighter grey.
+    ///
+    /// Maximum length for the text in this field is 2000 characters.
+    pub fn hint<T>(mut self, hint: T) -> Self
+      where T: Into<text::Plain>
+    {
+      self.hint = Some(hint.into().into());
       self
     }
   }

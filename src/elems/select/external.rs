@@ -41,8 +41,10 @@ pub struct External<'a> {
   #[validate(length(max = 255))]
   action_id: Cow<'a, str>,
 
+  #[serde(skip_serializing_if = "Option::is_none")]
   initial_option: Option<OptOrOptGroup<'a>>,
 
+  #[serde(skip_serializing_if = "Option::is_none")]
   min_query_length: Option<u64>,
 
   #[serde(skip_serializing_if = "Option::is_none")]

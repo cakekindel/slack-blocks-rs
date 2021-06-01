@@ -40,16 +40,19 @@ pub struct External<'a> {
   #[validate(length(max = 255))]
   pub(in crate::elems::select) action_id: Cow<'a, str>,
 
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) min_query_length: Option<u64>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   #[validate]
   pub(in crate::elems::select) confirm: Option<Confirm>,
 
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) initial_options:
     Option<Cow<'a, [OptOrOptGroup<'a>]>>,
 
   #[validate(range(min = 1))]
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) max_selected_items: Option<u32>,
 }
 
