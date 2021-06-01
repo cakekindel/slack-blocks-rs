@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.21.0 (2021-06-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* all structures should serialize correctly (#157)
+
+### Features
+
+* all structures should serialize correctly ([#157](https://github.com/cakekindel/slack-blocks-rs/issues/157)) ([8b44945](https://github.com/cakekindel/slack-blocks-rs/commit/8b44945df32c3e1cf587f28310a776bb61199a41))
+
 ### 0.20.2 (2021-05-29)
 
 ### 0.20.1 (2021-05-28)
