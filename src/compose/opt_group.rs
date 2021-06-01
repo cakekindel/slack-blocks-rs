@@ -42,62 +42,6 @@ impl<'a> OptGroup<'a> {
   pub fn builder() -> build::OptGroupBuilderInit<'a> {
     build::OptGroupBuilderInit::new()
   }
-
-  /// Construct an Option Group from a label and
-  /// collection of options in the group
-  ///
-  /// # Arguments
-  /// - `label` - A [`plain_text` only text object 🔗] that defines
-  ///     the label shown above this group of options.
-  ///     Maximum length for the `text` in this field is 75 characters.
-  /// - `opts` - An array of [option objects 🔗] that belong to
-  ///     this specific group. Maximum of 100 items.
-  ///
-  /// [option objects 🔗]: https://api.slack.com/reference/block-kit/block-elements#option
-  /// [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::blocks::Block;
-  /// use slack_blocks::blocks::section::Section;
-  /// use slack_blocks::blocks::Actions;
-  /// use slack_blocks::text::{Mrkdwn};
-  /// use slack_blocks::compose::{OptGroup, Opt};
-  ///
-  /// let prompt = "Choose your favorite city from each state!";
-  ///
-  /// let blocks: Vec<Block> = vec![
-  ///     Section::from_text(Mrkdwn::from(prompt)).into(),
-  ///     // TODO: insert option group once block elements are in place
-  ///     Actions::from_action_elements(vec![]).into(),
-  /// ];
-  ///
-  /// let groups: Vec<OptGroup<_>> = vec![
-  ///     OptGroup::from_label_and_opts(
-  ///         "Arizona",
-  ///         vec![
-  ///             Opt::from_mrkdwn_and_value("Phoenix", "az_phx"),
-  ///             // etc...
-  ///         ]
-  ///     ),
-  ///     OptGroup::from_label_and_opts(
-  ///         "California",
-  ///         vec![
-  ///             Opt::from_mrkdwn_and_value("San Diego", "ca_sd"),
-  ///             // etc...
-  ///         ]
-  ///     ),
-  /// ];
-  /// ```
-  #[deprecated(since = "0.15.0", note = "Use OptGroup::builder instead")]
-  pub fn from_label_and_opts<T, U>(label: impl Into<text::Plain>,
-                                   options: impl IntoIterator<Item = Opt<'a,
-                                                           T,
-                                                           U>>)
-                                   -> OptGroup<'a, T, U> {
-    OptGroup { label: label.into().into(),
-               options: options.into_iter().collect() }
-  }
 }
 
 impl<'a, T, U> OptGroup<'a, T, U> {

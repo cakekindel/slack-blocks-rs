@@ -78,7 +78,6 @@
                    unreachable_pub,
                    unsafe_code,
                    unused_crate_dependencies))]
-#![allow(deprecated)] // temporary
 
 #[macro_use]
 extern crate validator_derive;
