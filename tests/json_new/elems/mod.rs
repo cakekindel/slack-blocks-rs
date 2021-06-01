@@ -18,3 +18,6 @@ pub use radio::*;
 
 pub mod text_input;
 pub use text_input::*;
+
+pub mod select;
+pub use select::*;

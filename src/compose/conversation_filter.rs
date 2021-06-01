@@ -34,8 +34,13 @@ use crate::val_helpr::ValidationResult;
            Validate)]
 pub struct ConversationFilter {
   #[validate(length(min = 1, max = 4))]
+  #[serde(skip_serializing_if = "Option::is_none")]
   include: Option<Vec<ConversationKind>>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   exclude_external_shared_channels: Option<bool>,
+
+  #[serde(skip_serializing_if = "Option::is_none")]
   exclude_bot_users: Option<bool>,
 }
 

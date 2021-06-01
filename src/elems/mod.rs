@@ -114,7 +114,7 @@ pub enum BlockElement<'a> {
   MultiSelectStatic(select::multi::Static<'a>),
 
   /// # Select multiple users from the workspace
-  #[serde(rename = "multi_user_select")]
+  #[serde(rename = "multi_users_select")]
   MultiSelectUser(select::multi::User<'a>),
 
   /// # Select multiple options loaded from an external data source
@@ -125,8 +125,8 @@ pub enum BlockElement<'a> {
   #[serde(rename = "multi_conversations_select")]
   MultiSelectConversation(select::multi::Conversation<'a>),
 
-  /// # Select multiple conversations (DM, Group DM, Public Channel, Private Channel)
-  #[serde(rename = "multi_channel_select")]
+  /// # Select multiple public channels
+  #[serde(rename = "multi_channels_select")]
   MultiSelectPublicChannel(select::multi::PublicChannel<'a>),
 }
 
