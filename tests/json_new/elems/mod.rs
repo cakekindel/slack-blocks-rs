@@ -15,3 +15,6 @@ pub use overflow::*;
 
 pub mod radio;
 pub use radio::*;
+
+pub mod text_input;
+pub use text_input::*;

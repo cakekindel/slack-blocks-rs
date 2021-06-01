@@ -221,19 +221,20 @@ pub mod build {
     /// # Examples
     ///
     /// ```
-    /// use slack_blocks::{blocks::{Block, Input}, elems::TextInput};
+    /// use slack_blocks::{blocks::{Block, Input}, elems::TextInput, elems::text_input::ActionTrigger::OnCharacterEntered};
     ///
     /// let text_input = TextInput::builder()
     ///                            .action_id("plate_num")
     ///                            .placeholder("ABC1234")
     ///                            .length(1..=7)
+    ///                            .action_trigger(OnCharacterEntered)
     ///                            .build();
     ///
     /// let block: Block = Input::from_label_and_element("enter custom license plate", text_input)
     ///                          .dispatch_block_actions()
     ///                          .into();
     /// ```
-    pub fn trigger_action_on(mut self, trigger: ActionTrigger) -> Self {
+    pub fn action_trigger(mut self, trigger: ActionTrigger) -> Self {
       let config =
         self.dispatch_action_config
             .map(|mut c| {
