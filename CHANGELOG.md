@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.22.0 (2021-06-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove deprecated functionality (#158)
+
+### Features
+
+* remove deprecated functionality ([#158](https://github.com/cakekindel/slack-blocks-rs/issues/158)) ([3078178](https://github.com/cakekindel/slack-blocks-rs/commit/3078178e63d362c14121f6c7c716db946ab3b104))
+
 ## 0.21.0 (2021-06-01)
 
 
