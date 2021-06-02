@@ -2,10 +2,12 @@
 //! the Rust ecosystem.
 //!
 //! Inside, you'll find models for all of Slack's Layout Blocks,
-//! Block Elements, and Composition Objects.
+//! Block Elements, and Composition Objects. Each structure has Slack's API
+//! documentation copied in-place so you don't have to leave your editor to
+//! remember the details of the block kit API.
 //!
 //! Every model has builders that leverage Rust's type system
-//! to help you make sure what you're sending to Slack is 100% valid to them.
+//! to help you provide every required field, so you can be confident in your app.
 //!
 //! ## Troubleshooting common compiler errors
 //! `Method build not found for ...Builder` - Dig into the error message,

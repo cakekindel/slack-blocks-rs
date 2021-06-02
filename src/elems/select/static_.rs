@@ -83,14 +83,13 @@ impl<'a> Static<'a> {
   ///                  Opt::builder().text_plain(name).value(short_code).build()
   ///                });
   ///
-  /// let select: BlockElement =
+  /// let select =
   ///   Static::builder().placeholder("Choose your favorite city!")
   ///                    .action_id("fave_city")
   ///                    .options(options)
-  ///                    .build()
-  ///                    .into();
+  ///                    .build();
   ///
-  /// let block: Block = Actions::try_from(select).unwrap().into();
+  /// let block: Block = Actions::builder().element(select).build().into();
   /// ```
   pub fn builder() -> build::StaticBuilderInit<'a> {
     build::StaticBuilderInit::new()
@@ -168,17 +167,16 @@ pub mod build {
   ///                    compose::Opt,
   ///                    elems::{select::Static, BlockElement}};
   ///
-  /// let rust = Opt::from_plain_text_and_value("Rust", "rs");
+  /// let rust = Opt::builder().text_plain("Rust").value("rs").build();
   ///
-  /// let select: BlockElement =
+  /// let select =
   ///   Static::builder().placeholder("Choose your favorite programming language!")
   ///                    .options(vec![rust])
   ///                    .action_id("lang_chosen")
-  ///                    .build()
-  ///                    .into();
+  ///                    .build();
   ///
   /// let block: Block =
-  ///   Actions::try_from(select).expect("actions supports select elements")
+  ///   Actions::builder().element(select).build()
   ///                            .into();
   ///
   /// // <send block to API>

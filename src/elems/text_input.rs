@@ -152,8 +152,11 @@ pub mod build {
   ///                            .length(1..=7)
   ///                            .build();
   ///
-  /// let block: Block = Input::from_label_and_element("enter custom license plate", text_input)
-  ///                          .dispatch_block_actions(true)
+  /// let block: Block = Input::builder()
+  ///                          .label("enter custom license plate")
+  ///                          .element(text_input)
+  ///                          .dispatch_actions(true)
+  ///                          .build()
   ///                          .into();
   /// ```
   #[derive(Debug)]
@@ -230,8 +233,11 @@ pub mod build {
     ///                            .action_trigger(OnCharacterEntered)
     ///                            .build();
     ///
-    /// let block: Block = Input::from_label_and_element("enter custom license plate", text_input)
-    ///                          .dispatch_block_actions(true)
+    /// let block: Block = Input::builder()
+    ///                          .label("enter custom license plate")
+    ///                          .element(text_input)
+    ///                          .dispatch_actions(true)
+    ///                          .build()
     ///                          .into();
     /// ```
     pub fn action_trigger(mut self, trigger: ActionTrigger) -> Self {
