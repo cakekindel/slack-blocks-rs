@@ -317,6 +317,7 @@ pub mod build {
   }
 }
 
+  #[cfg(feature = "validation")]
 mod validate {
   use crate::{text, val_helpr::*};
 

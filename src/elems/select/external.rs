@@ -33,12 +33,13 @@ type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, NoUrl>;
 /// [Slack API doc guide for setting up an external data source 🔗](https://api.slack.com/reference/block-kit/block-elements#external_select__setup)
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#external_select
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize,)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct External<'a> {
-  #[validate(custom = "super::validate::placeholder")]
+  #[cfg_attr(feature = "validation", validate(custom = "super::validate::placeholder"))]
   placeholder: text::Text,
 
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -48,7 +49,7 @@ pub struct External<'a> {
   min_query_length: Option<u64>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate]
+  #[cfg_attr(feature = "validation", validate)]
   confirm: Option<Confirm>,
 }
 
@@ -100,6 +101,8 @@ impl<'a> External<'a> {
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
