@@ -7,7 +7,7 @@ pub fn docs_ex_1() {
   let opt_1 = blox! {<option value="A1" text_plain="Radio 1" />};
   let block: elems::BlockElement =
     blox! {
-      <radio_buttons action_id="this_is_an_action_id" initial_option={opt_1.clone()}>
+      <radio_buttons action_id="this_is_an_action_id" initial_option=opt_1.clone()>
         {opt_1}
         <option value="A2" text_plain="Radio 2" />
       </radio_buttons>
@@ -58,7 +58,7 @@ pub fn all_attributes() {
   let opt_1 = blox! {<option value="A1" text_plain="Radio 1" />};
   let block: elems::BlockElement =
     blox! {
-      <radio_buttons confirm action_id="this_is_an_action_id" initial_option={opt_1.clone()}>
+      <radio_buttons confirm action_id="this_is_an_action_id" initial_option=opt_1.clone()>
         {opt_1}
         <option value="A2" text_plain="Radio 2" />
       </radio_buttons>

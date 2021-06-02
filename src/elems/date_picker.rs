@@ -99,10 +99,9 @@ pub mod build {
   /// use slack_blocks::{blocks::{Actions, Block},
   ///                    elems::{BlockElement, DatePicker}};
   ///
-  /// let picker: BlockElement =
-  ///   DatePicker::builder().action_id("foo").build().into();
+  /// let picker = DatePicker::builder().action_id("foo").build();
   ///
-  /// let block: Block = Actions::try_from(picker).unwrap().into();
+  /// let block: Block = Actions::builder().element(picker).build().into();
   ///
   /// // <send block to slack API>
   /// ```

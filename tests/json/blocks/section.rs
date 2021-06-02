@@ -1,8 +1,6 @@
 use pretty_assertions::assert_eq;
 use serde_json::json;
-use slack_blocks::{blocks,
-                   mox::*,
-                   text::{ToSlackMarkdown, ToSlackPlaintext}};
+use slack_blocks::{blocks, mox::*, text::ToSlackMarkdown};
 
 #[test]
 pub fn all_attributes() {

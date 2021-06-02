@@ -7,8 +7,7 @@
 //! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
 //! [elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 
-use std::{borrow::Cow,
-          convert::{TryFrom, TryInto}};
+use std::{borrow::Cow, convert::TryFrom};
 
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -57,139 +56,6 @@ impl<'a> Actions<'a> {
     build::ActionsBuilderInit::new()
   }
 
-  /// Create an empty Actions block (shorthand for `Default::default()`)
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::blocks;
-  ///
-  /// let actions: blocks::Block = blocks::Actions::new().into();
-  /// // < send block to slack's API >
-  /// ```
-  #[deprecated(since = "0.19.1", note = "use Actions::builder")]
-  pub fn new() -> Self {
-    Default::default()
-  }
-
-  /// Set the `block_id` for interactions on an existing `Actions`
-  ///
-  /// # Arguments
-  /// - `block_id` - A string acting as a unique identifier for a block.
-  ///     You can use this `block_id` when you receive an interaction payload
-  ///     to [identify the source of the action 🔗].
-  ///     If not specified, a `block_id` will be generated.
-  ///     Maximum length for this field is 255 characters.
-  ///
-  /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::blocks::{Actions, Block};
-  ///
-  /// let actions = Actions::new().with_block_id("tally_ho");
-  /// let block: Block = actions.into();
-  /// // < send block to slack's API >
-  /// ```
-  #[deprecated(since = "0.19.1", note = "use Actions::builder")]
-  pub fn with_block_id(mut self, block_id: impl Into<Cow<'a, str>>) -> Self {
-    self.block_id = Some(block_id.into());
-    self
-  }
-
-  /// Populate an Actions block with a collection of `BlockElement`s,
-  /// which may not be supported by `Actions` blocks.
-  ///
-  /// If you _can_ create a collection of `actions::BlockElement`,
-  /// either by creating them directly or invoking `BlockElement::into`,
-  /// use `from_action_elements`.
-  ///
-  /// # Arguments
-  /// - `elements` - An array of interactive [element objects 🔗]
-  ///     For a list of `BlockElement` types that are, see `BlockElement`.
-  ///     There is a maximum of 5 elements in each action block.
-  ///
-  /// [element objects 🔗]: https://api.slack.com/reference/messaging/block-elements
-  ///
-  /// # Errors
-  /// Errors if the `BlockElement` is one that is not supported by
-  /// `Actions` blocks.
-  ///
-  /// For a list of `BlockElement` types that are supported, see `::blocks::actions::BlockElement`.
-  ///
-  /// # Runtime Validation
-  ///
-  /// **only** validates that the block elements are compatible with `Actions`,
-  /// for full runtime model validation see the `validate` method.
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::{blocks::{Actions, Block},
-  ///                    compose,
-  ///                    elems};
-  ///
-  /// # pub fn main() -> Result<(), ()> {
-  /// let btn = elems::Button::from_text_and_action_id("Button", "123");
-  /// let actions = Actions::from_elements(vec![btn.into()])?;
-  /// let block: Block = actions.into();
-  /// // < send block to slack's API >
-  /// # Ok(())
-  /// # }
-  /// ```
-  #[deprecated(since = "0.19.1", note = "use Actions::builder")]
-  pub fn from_elements<Iter>(elements: Iter) -> Result<Self, ()>
-    where Iter: IntoIterator<Item = BlockElement<'a>>
-  {
-    elements.into_iter().collect::<Vec<_>>().try_into()
-  }
-
-  /// Populate an Actions block with a collection of `BlockElement`s that
-  /// are supported by `Actions` blocks.
-  ///
-  /// This also can be called via the `From<Vec<self::SupportedElement>>` implementation.
-  ///
-  /// If you have a collection of elements that may not be supported,
-  /// see `from_elements`.
-  ///
-  /// # Arguments
-  /// - `elements` - An array of interactive [element objects 🔗]
-  ///     For a list of `BlockElement` types that are supported, see `BlockElement`.
-  ///     There is a maximum of 5 elements in each action block.
-  ///     Note that if you only ever want 1 item you can choose to pass it `Some(element)` OR `std::iter::once(element)`
-  ///     instead of a `Vec`, bypassing an expensive allocation.
-  ///     [Iterator and Option implement IntoIterator 🔗].
-  ///
-  /// [element objects 🔗]: https://api.slack.com/reference/messaging/block-elements
-  /// [Iterator and Option implement IntoIterator 🔗]: https://doc.rust-lang.org/std/iter/trait.IntoIterator.html#impl-IntoIterator-28
-  ///
-  /// # Errors
-  /// Errors if the `BlockElement` is one that is not supported by
-  /// `Actions` blocks.
-  ///
-  /// # Runtime Validation
-  /// **only** validates that the block elements are compatible with `Actions`,
-  /// for full runtime model validation see the `validate` method.
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::{blocks::{Actions, Block},
-  ///                    compose,
-  ///                    elems};
-  ///
-  /// # pub fn main() {
-  /// let btn = elems::Button::from_text_and_action_id("Button", "123");
-  /// let actions = Actions::from_action_elements(vec![btn.into()]);
-  /// let block: Block = actions.into();
-  ///
-  /// // < send block to slack's API >
-  /// # }
-  /// ```
-  #[deprecated(since = "0.19.1", note = "use Actions::builder")]
-  pub fn from_action_elements<Iter>(elements: Iter) -> Self
-    where Iter: IntoIterator<Item = self::SupportedElement<'a>>
-  {
-    elements.into_iter().collect::<Vec<_>>().into()
-  }
-
   /// Validate that this Section block agrees with Slack's model requirements
   ///
   /// # Errors
@@ -200,12 +66,16 @@ impl<'a> Actions<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{blocks, compose};
+  /// use slack_blocks::{blocks, compose, elems::Button};
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
   /// let block =
-  ///   blocks::Actions::from_action_elements(vec![]).with_block_id(long_string);
+  ///   blocks::Actions::builder().element(Button::builder().text("Click me")
+  ///                                                       .action_id("btn")
+  ///                                                       .build())
+  ///                             .block_id(long_string)
+  ///                             .build();
   ///
   /// assert!(matches!(block.validate(), Err(_)));
   /// ```
@@ -364,31 +234,6 @@ pub mod build {
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 pub struct SupportedElement<'a>(BlockElement<'a>);
 
-convert!(impl<'a> From<Vec<self::SupportedElement<'a>>> for Actions<'a>
-    => |elements| Self {
-        elements,
-        ..Default::default()
-    }
-);
-
-impl<'a> TryFrom<BlockElement<'a>> for Actions<'a> {
-  type Error = ();
-  fn try_from(element: BlockElement<'a>) -> Result<Self, Self::Error> {
-    self::SupportedElement::<'a>::try_from(element)
-      .map(|el| Self::from_action_elements(std::iter::once(el)))
-  }
-}
-
-impl<'a> TryFrom<Vec<BlockElement<'a>>> for Actions<'a> {
-  type Error = ();
-  fn try_from(elements: Vec<BlockElement<'a>>) -> Result<Self, Self::Error> {
-    elements.into_iter()
-            .map(self::SupportedElement::<'a>::try_from)
-            .collect::<Result<Vec<_>, _>>()
-            .map(self::Actions::<'a>::from)
-  }
-}
-
 impl<'a> TryFrom<BlockElement<'a>> for self::SupportedElement<'a> {
   type Error = ();
   fn try_from(el: BlockElement<'a>) -> Result<Self, Self::Error> {
@@ -412,13 +257,13 @@ impl<'a> TryFrom<BlockElement<'a>> for self::SupportedElement<'a> {
 }
 
 convert!(impl<'a> From<select::PublicChannel<'a>> for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<select::Conversation<'a>> for self::SupportedElement<'a>  => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<select::User<'a>> for self::SupportedElement<'a>  => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<select::External<'a>> for self::SupportedElement<'a>  => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<select::Static<'a>> for self::SupportedElement<'a>  => |s| self::SupportedElement(BlockElement::from(s)));
-convert!(impl<'a> From<Button<'a>> for self::SupportedElement<'a> => |b| self::SupportedElement(BlockElement::from(b)));
-convert!(impl<'a> From<Radio<'a>> for self::SupportedElement<'a> => |b| self::SupportedElement(BlockElement::from(b)));
-convert!(impl<'a> From<TextInput<'a>> for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
-convert!(impl<'a> From<DatePicker<'a>> for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
-convert!(impl<'a> From<Checkboxes<'a>> for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
-convert!(impl<'a> From<Overflow<'a>> for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
+convert!(impl<'a> From<select::Conversation<'a>>  for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
+convert!(impl<'a> From<select::User<'a>>          for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
+convert!(impl<'a> From<select::External<'a>>      for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
+convert!(impl<'a> From<select::Static<'a>>        for self::SupportedElement<'a> => |s| self::SupportedElement(BlockElement::from(s)));
+convert!(impl<'a> From<Button<'a>>                for self::SupportedElement<'a> => |b| self::SupportedElement(BlockElement::from(b)));
+convert!(impl<'a> From<Radio<'a>>                 for self::SupportedElement<'a> => |b| self::SupportedElement(BlockElement::from(b)));
+convert!(impl<'a> From<TextInput<'a>>             for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
+convert!(impl<'a> From<DatePicker<'a>>            for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
+convert!(impl<'a> From<Checkboxes<'a>>            for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));
+convert!(impl<'a> From<Overflow<'a>>              for self::SupportedElement<'a> => |t| self::SupportedElement(BlockElement::from(t)));

@@ -73,108 +73,13 @@ impl<'a> Section<'a> {
     build::SectionBuilderInit::new()
   }
 
-  /// Construct a Section block from a collection of text objects
-  ///
-  /// # Arguments
-  /// - `fields` - A collection of [text objects 🔗].
-  ///     Any text objects included with fields will be
-  ///     rendered in a compact format that allows for
-  ///     2 columns of side-by-side text.
-  ///     Maximum number of items is 10.
-  ///     Maximum length for the text in each item is 2000 characters.
-  ///
-  /// [text objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
-  ///
-  /// # Errors
-  /// Doesn't error. To validate your model against the length requirements,
-  /// use the `validate` method.
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::{blocks, compose::text};
-  ///
-  /// # use std::error::Error;
-  /// # pub fn main() -> Result<(), Box<dyn Error>> {
-  /// let fields = vec!["Left column", "Right column"].into_iter()
-  ///                                                 .map(|s: &str| -> text::Text {
-  ///                                                   text::Plain::from(s).into()
-  ///                                                 })
-  ///                                                 .collect::<Vec<_>>();
-  ///
-  /// let block = blocks::Section::from_fields(&fields);
-  ///
-  /// // < send to slack API >
-  /// # Ok(())
-  /// # }
-  /// ```
-  pub fn from_fields<I>(fields: I) -> Self
-    where I: Into<Cow<'a, [text::Text]>>
-  {
-    let fields = Some(fields.into());
-
-    Self { fields,
-           text: None,
-           block_id: None,
-           accessory: None }
-  }
-
-  /// Construct a Section block from a text object
-  ///
-  /// # Arguments
-  /// - `text` - The text for the block, in the form of a [text object 🔗].
-  ///     Maximum length for the text in this field is 3000 characters.
-  ///
-  /// [text object 🔗]: https://api.slack.com/reference/messaging/composition-objects#text
-  ///
-  /// # Errors
-  /// Doesn't error. To validate your model against the length requirements,
-  /// use the `validate` method.
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::{blocks, compose::text};
-  ///
-  /// let block = blocks::Section::from_text(text::Plain::from("I am a section!"));
-  ///
-  /// // < send to slack API >
-  /// ```
-  pub fn from_text(text: impl Into<text::Text>) -> Self {
-    Self { text: Some(text.into()),
-           fields: None,
-           block_id: None,
-           accessory: None }
-  }
-
-  /// Set a unique `block_id` to identify this instance of an Section Block.
-  ///
-  /// # Arguments
-  ///
-  /// - `block_id` - A string acting as a unique identifier for a block.
-  ///     You can use this `block_id` when you receive an interaction
-  ///     payload to [identify the source of the action 🔗].
-  ///     If not specified, one will be generated.
-  ///     Maximum length for this field is 255 characters.
-  ///     `block_id` should be unique for each message and each iteration of a message.
-  ///     If a message is updated, use a new `block_id`.
-  ///
-  /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
-  pub fn with_block_id(mut self, block_id: impl Into<Cow<'a, str>>) -> Self {
-    self.block_id = Some(block_id.into());
-    self
-  }
-
   /// Validate that this Section block agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `from_fields` was called with more than 10 fields,
-  ///     or one of the fields contains text longer than
-  ///     2000 chars
-  /// - If `from_fields` was called with one of the fields
-  ///     containing text longer than 2000 chars
-  /// - If `from_text` was called with text longer than
-  ///     3000 chars
-  /// - If `with_block_id` was called with a block id longer
-  ///     than 255 chars
+  /// - If `fields` contains more than 10 fields
+  /// - If one of `fields` longer than 2000 chars
+  /// - If `text` longer than 3000 chars
+  /// - If `block_id` longer than 255 chars
   ///
   /// # Example
   /// ```
@@ -182,13 +87,11 @@ impl<'a> Section<'a> {
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
-  /// let block = blocks::Section
-  ///     ::from_text(text::Plain::from("file_id"))
-  ///     .with_block_id(long_string);
+  /// let block = blocks::Section::builder().text(text::Plain::from("file_id"))
+  ///                                       .block_id(long_string)
+  ///                                       .build();
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
-  ///
-  /// // < send to slack API >
   /// ```
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)

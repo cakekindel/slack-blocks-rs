@@ -115,7 +115,7 @@ impl<'a> Block<'a> {
   ///
   /// let long_string = std::iter::repeat('a').take(2001).collect::<String>();
   ///
-  /// let img = Image::from_alt_text_and_url(long_string, "foo.com");
+  /// let img = Image::builder().src("foo.com").alt(long_string).build();
   ///
   /// assert!(matches!(img.validate(), Err(_)), "validation should fail!")
   /// ```

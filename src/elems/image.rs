@@ -96,8 +96,7 @@ pub mod build {
   ///
   /// let img = Image::builder().image_url("foo").alt_text("bar").build();
   ///
-  /// let block: Block =
-  ///   Context::from_context_elements(std::iter::once(img)).into();
+  /// let block: Block = Context::builder().element(img).build().into();
   ///
   /// // <send block to slack API>
   /// ```

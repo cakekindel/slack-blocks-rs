@@ -101,10 +101,6 @@ impl<'a> Overflow<'a> {
   }
 }
 
-fn validate_options<'a>(options: &Cow<'a, [MyOpt<'a>]>) -> ValidatorResult {
-  len("Overflow.options", 2..=5, options.as_ref())
-}
-
 /// Overflow menu builder
 pub mod build {
   use std::marker::PhantomData;

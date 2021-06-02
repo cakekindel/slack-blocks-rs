@@ -11,7 +11,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use super::{opt::{AllowUrl, AnyText, NoUrl},
+use super::{opt::{AnyText, NoUrl},
             text,
             Opt};
 use crate::val_helpr::ValidationResult;
@@ -42,62 +42,6 @@ impl<'a> OptGroup<'a> {
   pub fn builder() -> build::OptGroupBuilderInit<'a> {
     build::OptGroupBuilderInit::new()
   }
-
-  /// Construct an Option Group from a label and
-  /// collection of options in the group
-  ///
-  /// # Arguments
-  /// - `label` - A [`plain_text` only text object 🔗] that defines
-  ///     the label shown above this group of options.
-  ///     Maximum length for the `text` in this field is 75 characters.
-  /// - `opts` - An array of [option objects 🔗] that belong to
-  ///     this specific group. Maximum of 100 items.
-  ///
-  /// [option objects 🔗]: https://api.slack.com/reference/block-kit/block-elements#option
-  /// [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::blocks::Block;
-  /// use slack_blocks::blocks::section::Section;
-  /// use slack_blocks::blocks::Actions;
-  /// use slack_blocks::text::{Mrkdwn};
-  /// use slack_blocks::compose::{OptGroup, Opt};
-  ///
-  /// let prompt = "Choose your favorite city from each state!";
-  ///
-  /// let blocks: Vec<Block> = vec![
-  ///     Section::from_text(Mrkdwn::from(prompt)).into(),
-  ///     // TODO: insert option group once block elements are in place
-  ///     Actions::from_action_elements(vec![]).into(),
-  /// ];
-  ///
-  /// let groups: Vec<OptGroup<_>> = vec![
-  ///     OptGroup::from_label_and_opts(
-  ///         "Arizona",
-  ///         vec![
-  ///             Opt::from_mrkdwn_and_value("Phoenix", "az_phx"),
-  ///             // etc...
-  ///         ]
-  ///     ),
-  ///     OptGroup::from_label_and_opts(
-  ///         "California",
-  ///         vec![
-  ///             Opt::from_mrkdwn_and_value("San Diego", "ca_sd"),
-  ///             // etc...
-  ///         ]
-  ///     ),
-  /// ];
-  /// ```
-  #[deprecated(since = "0.15.0", note = "Use OptGroup::builder instead")]
-  pub fn from_label_and_opts<T, U>(label: impl Into<text::Plain>,
-                                   options: impl IntoIterator<Item = Opt<'a,
-                                                           T,
-                                                           U>>)
-                                   -> OptGroup<'a, T, U> {
-    OptGroup { label: label.into().into(),
-               options: options.into_iter().collect() }
-  }
 }
 
 impl<'a, T, U> OptGroup<'a, T, U> {
@@ -105,10 +49,8 @@ impl<'a, T, U> OptGroup<'a, T, U> {
   /// agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `from_label_and_opts` was called with `label`
-  ///     longer than 75 chars
-  /// - If `from_label_and_opts` was called with
-  ///     more than 100 options
+  /// - If `label` longer than 75 chars
+  /// - If `opts` contains more than 100 options
   ///
   /// # Example
   /// ```
@@ -118,8 +60,10 @@ impl<'a, T, U> OptGroup<'a, T, U> {
   ///
   /// let long_string: String = repeat(' ').take(76).collect();
   ///
-  /// let opt = Opt::from_mrkdwn_and_value("San Diego", "ca_sd");
-  /// let grp = OptGroup::from_label_and_opts(long_string, vec![opt]);
+  /// let opt = Opt::builder().text_plain("San Diego")
+  ///                         .value("ca_sd")
+  ///                         .build();
+  /// let grp = OptGroup::builder().label(long_string).option(opt).build();
   ///
   /// assert_eq!(true, matches!(grp.validate(), Err(_)));
   /// ```
@@ -222,15 +166,14 @@ pub mod build {
   ///             .build(),
   ///  ];
   ///
-  ///  let select: BlockElement =
+  ///  let select =
   ///    Static::builder().placeholder("Choose your favorite programming language!")
   ///                     .option_groups(groups)
   ///                     .action_id("lang_chosen")
-  ///                     .build()
-  ///                     .into();
+  ///                     .build();
   ///
   ///  let block: Block =
-  ///    Actions::try_from(select).expect("actions supports select elements")
+  ///    Actions::builder().element(select).build()
   ///                             .into();
   ///
   ///  // <send block to API>

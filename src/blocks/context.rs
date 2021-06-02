@@ -48,117 +48,6 @@ impl<'a> Context<'a> {
     build::ContextBuilderInit::new()
   }
 
-  /// Create an empty Context block (shorthand for `Default::default()`)
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::{blocks::{context, Block},
-  ///                    text};
-  ///
-  /// let context = context::Context::new()
-  ///     .with_element(text::Plain::from("my unformatted text"));
-  ///
-  /// let block: Block = context.into();
-  /// // < send block to slack's API >
-  /// ```
-  #[deprecated(since = "0.19.2", note = "use Context::builder")]
-  pub fn new() -> Self {
-    Default::default()
-  }
-
-  /// Set the `block_id` for interactions on an existing `context::Context`
-  ///
-  /// # Arguments
-  /// - `block_id` - A string acting as a unique identifier for a block.
-  ///     You can use this `block_id` when you receive an interaction payload
-  ///     to [identify the source of the action 🔗].
-  ///     If not specified, a `block_id` will be generated.
-  ///     Maximum length for this field is 255 characters.
-  ///
-  /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::{blocks::{context, Block},
-  ///                    text};
-  ///
-  /// let text = text::Mrkdwn::from("_flavor_ *text*");
-  /// let context: Block = context::Context::new().with_element(text)
-  ///                                             .with_block_id("msg_id_12346")
-  ///                                             .into();
-  ///
-  /// // < send block to slack's API >
-  /// ```
-  #[deprecated(since = "0.19.2", note = "use Context::builder")]
-  pub fn with_block_id(mut self, block_id: impl Into<Cow<'a, str>>) -> Self {
-    self.block_id = Some(block_id.into());
-    self
-  }
-
-  /// Add a composition object to a context block.
-  ///
-  /// This is chainable, and can be used to easily
-  /// populate the elements of a context block
-  /// right after invoking `new`.
-  ///
-  /// # Arguments
-  /// - `element` - A composition object;
-  ///     Must be image elements or text objects.
-  ///     Maximum number of items is 10.
-  ///
-  /// # Example
-  /// ```
-  /// use slack_blocks::{blocks::{context, Block},
-  ///                    text};
-  ///
-  /// let context = context::Context::new()
-  ///     .with_element(text::Plain::from("my unformatted text"));
-  ///
-  /// let block: Block = context.into();
-  /// // < send block to slack's API >
-  /// ```
-  #[deprecated(since = "0.19.2", note = "use Context::builder")]
-  pub fn with_element(mut self,
-                      element: impl Into<self::ImageOrText<'a>>)
-                      -> Self {
-    self.elements.push(element.into());
-    self
-  }
-
-  /// Construct a new `context::Context` from a collection of
-  /// composition objects that are may not be supported by Context
-  /// Blocks.
-  ///
-  /// If you _can't_ guarantee that a collection only contains image
-  /// or text objects, `from_elements` may be more ergonomic for you.
-  ///
-  /// # Arguments
-  /// - `elements` - An array of composition objects;
-  ///     Must be image elements or text objects.
-  ///     Maximum number of items is 10.
-  ///
-  /// # Examples
-  /// ```
-  /// use slack_blocks::{blocks::{context, Block},
-  ///                    text};
-  ///
-  /// pub fn main() {
-  ///   let objs: Vec<text::Mrkdwn> = vec![text::Mrkdwn::from("*s i c k*"),
-  ///                                      text::Mrkdwn::from("*t i g h t*"),];
-  ///   let context = context::Context::from_context_elements(objs);
-  ///   let block: Block = context.into();
-  ///   // < send block to slack's API >
-  /// }
-  /// ```
-  #[deprecated(since = "0.19.2", note = "use Context::builder")]
-  pub fn from_context_elements(elements: impl IntoIterator<Item = impl Into<ImageOrText<'a>>>)
-                               -> Self {
-    elements.into_iter()
-            .map(|i| i.into())
-            .collect::<Vec<_>>()
-            .into()
-  }
-
   /// Validate that this Context block agrees with Slack's model requirements
   ///
   /// # Errors
@@ -169,11 +58,13 @@ impl<'a> Context<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::blocks;
+  /// use slack_blocks::{blocks::Context, text::ToSlackPlaintext};
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
-  /// let block = blocks::context::Context::new().with_block_id(long_string);
+  /// let block = Context::builder().element("foo".plaintext())
+  ///                               .block_id(long_string)
+  ///                               .build();
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   /// ```
