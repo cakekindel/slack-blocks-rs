@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.23.0 (2021-06-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename mox->blox (#159)
+
+### Features
+
+* rename mox->blox ([#159](https://github.com/cakekindel/slack-blocks-rs/issues/159)) ([77e98ee](https://github.com/cakekindel/slack-blocks-rs/commit/77e98ee2f969e1973c9f974ba8b9833e95d79213))
+
 ## 0.22.0 (2021-06-02)
 
 
