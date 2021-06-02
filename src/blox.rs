@@ -37,7 +37,7 @@ mod blox_blocks {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Actions, elems::Button, blox::*, text};
+  /// use slack_blocks::{blocks::Actions, blox::*, elems::Button, text};
   ///
   /// let xml = blox! {
   ///   <actions_block>
@@ -97,7 +97,7 @@ mod blox_blocks {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Input, elems::TextInput, blox::*, text};
+  /// use slack_blocks::{blocks::Input, blox::*, elems::TextInput, text};
   ///
   /// let xml = blox! {
   ///   <input_block label="foo">
@@ -123,7 +123,7 @@ mod blox_blocks {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Context, elems::Image, blox::*, text};
+  /// use slack_blocks::{blocks::Context, blox::*, elems::Image, text};
   ///
   /// let xml = blox! {
   ///   <context_block>
@@ -203,7 +203,7 @@ mod blox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{elems::TextInput, blox::*};
+  /// use slack_blocks::{blox::*, elems::TextInput};
   ///
   /// let xml: TextInput = blox! {
   ///   <text_input action_id="name_input"
@@ -235,7 +235,7 @@ mod blox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{elems::Image, blox::*};
+  /// use slack_blocks::{blox::*, elems::Image};
   ///
   /// let xml: Image = blox! {
   ///   <img src="https://foo.com/bar.png" alt="a pic of bar" />
@@ -258,7 +258,7 @@ mod blox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{elems::Button, blox::*};
+  /// use slack_blocks::{blox::*, elems::Button};
   ///
   /// let xml: Button = blox! {
   ///   <button action_id="click_me">"Click me!"</button>
@@ -281,7 +281,7 @@ mod blox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{compose::Opt, elems::Checkboxes, blox::*};
+  /// use slack_blocks::{blox::*, compose::Opt, elems::Checkboxes};
   ///
   /// let xml: Checkboxes = blox! {
   ///   <checkboxes action_id="chex">
@@ -325,7 +325,7 @@ mod blox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{elems::DatePicker, blox::*};
+  /// use slack_blocks::{blox::*, elems::DatePicker};
   ///
   /// let xml = blox! {
   ///   <date_picker action_id="pick_birthday" placeholder="Pick your birthday!" />
@@ -351,7 +351,7 @@ mod blox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{compose::Opt, elems::Overflow, blox::*};
+  /// use slack_blocks::{blox::*, compose::Opt, elems::Overflow};
   ///
   /// let xml = blox! {
   ///   <overflow action_id="menu">
@@ -383,7 +383,7 @@ mod blox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Input, compose::Opt, elems::Radio, blox::*};
+  /// use slack_blocks::{blocks::Input, blox::*, compose::Opt, elems::Radio};
   ///
   /// let xml = blox! {
   ///   <input_block label="Pick your favorite cheese!">
@@ -511,7 +511,7 @@ mod blox_compose {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{compose::Opt, blox::*};
+  /// use slack_blocks::{blox::*, compose::Opt};
   ///
   /// let xml = blox! {
   ///   <option value="foo">
@@ -540,8 +540,8 @@ mod blox_compose {
   ///
   /// ## Example - Options known at compile-time
   /// ```
-  /// use slack_blocks::{compose::{Opt, OptGroup},
-  ///                    blox::*};
+  /// use slack_blocks::{blox::*,
+  ///                    compose::{Opt, OptGroup}};
   ///
   /// let xml = blox! {
   ///   <option_group label="foos_and_bars">
@@ -564,8 +564,8 @@ mod blox_compose {
   ///
   /// ## Example - Dynamic vec of options
   /// ```
-  /// use slack_blocks::{compose::{Opt, OptGroup},
-  ///                    blox::*};
+  /// use slack_blocks::{blox::*,
+  ///                    compose::{Opt, OptGroup}};
   ///
   /// # fn uuid() -> String {"foo".to_string()}
   /// # fn random_word() -> String {"foo".to_string()}
@@ -606,7 +606,7 @@ mod blox_compose {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{compose::Confirm, blox::*, text::ToSlackPlaintext};
+  /// use slack_blocks::{blox::*, compose::Confirm, text::ToSlackPlaintext};
   ///
   /// let xml = blox! {
   ///   <confirm title="Title"

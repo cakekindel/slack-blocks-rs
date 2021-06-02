@@ -316,7 +316,7 @@ pub mod build {
   impl<'a, V, U> OptBuilder<'a, RequiredMethodNotCalled<method::text>, V, U> {
     /// Alias for `text`, allowing you to set the text of the option like so:
     /// ```
-    /// use slack_blocks::{compose::Opt, blox::*, text};
+    /// use slack_blocks::{blox::*, compose::Opt, text};
     ///
     /// let xml = blox! {
     ///   <option value="foo">
