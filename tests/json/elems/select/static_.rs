@@ -1,6 +1,6 @@
 use pretty_assertions::assert_eq;
 use serde_json::json;
-use slack_blocks::{elems::{select, BlockElement},
+use slack_blocks::{elems::{BlockElement},
                    mox::*};
 
 #[test]

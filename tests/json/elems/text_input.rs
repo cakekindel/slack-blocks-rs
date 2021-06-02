@@ -38,8 +38,8 @@ pub fn action_trigger() {
         />
     }.into();
 
-  let actual = serde_json::to_value(input).unwrap();
-  let expected = json!({
+  let _actual = serde_json::to_value(input).unwrap();
+  let _expected = json!({
     "type": "plain_text_input",
     "multiline": true,
     "dispatch_action_config": {
