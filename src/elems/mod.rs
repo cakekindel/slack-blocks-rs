@@ -15,7 +15,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{convert, val_helpr::ValidationResult};
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
+use crate::convert;
 
 #[doc(inline)]
 pub mod button;
@@ -141,6 +143,8 @@ impl<'a> BlockElement<'a> {
   ///
   /// assert_eq!(elem.validate(), btn.validate())
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     use BlockElement::*;
 

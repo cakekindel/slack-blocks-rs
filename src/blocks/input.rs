@@ -32,19 +32,21 @@ use crate::{compose::text,
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#input
 /// [slack's guide to using modals 🔗]: https://api.slack.com/surfaces/modals/using#gathering_input
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Input<'a> {
-  #[validate(custom = "validate::label")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::label"))]
   label: text::Text,
 
   element: SupportedElement<'a>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "super::validate_block_id")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate_block_id"))]
   block_id: Option<Cow<'a, str>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate::hint")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::hint"))]
   hint: Option<text::Text>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -94,6 +96,8 @@ impl<'a> Input<'a> {
   ///
   /// // < send to slack API >
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }

@@ -82,6 +82,7 @@
                    unused_crate_dependencies))]
 
 #[macro_use]
+#[cfg(feature = "validation")]
 extern crate validator_derive;
 
 #[cfg(feature = "blox")]
@@ -96,6 +97,7 @@ pub mod compose;
 pub mod elems;
 
 mod build;
+#[cfg(feature = "validation")]
 mod val_helpr;
 
 #[doc(inline)]

@@ -18,11 +18,14 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
 use crate::{compose::{opt::AllowUrl, Confirm, Opt},
             text,
             val_helpr::*};
+#[cfg(feature = "validation")]
+use crate::val_helpr::*;
 
 type MyOpt<'a> = Opt<'a, text::Plain, AllowUrl>;
 
@@ -42,16 +45,17 @@ type MyOpt<'a> = Opt<'a, text::Plain, AllowUrl>;
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#overflow
 /// [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
-#[derive(Clone, Debug, Hash, PartialEq, Ser, De, Validate)]
+#[derive(Clone, Debug, Hash, PartialEq, Ser, De, )]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Overflow<'a> {
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   action_id: Cow<'a, str>,
 
-  #[validate(length(min = 2, max = 5))]
-  #[validate]
+  #[cfg_attr(feature = "validation", validate(length(min = 2, max = 5)))]
+  #[cfg_attr(feature = "validation", validate)]
   options: Vec<MyOpt<'a>>,
 
-  #[validate]
+  #[cfg_attr(feature = "validation", validate)]
   #[serde(skip_serializing_if = "Option::is_none")]
   confirm: Option<Confirm>,
 }
@@ -96,6 +100,8 @@ impl<'a> Overflow<'a> {
   ///
   /// assert!(matches!(input.validate(), Err(_)))
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }

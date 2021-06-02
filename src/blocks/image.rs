@@ -20,27 +20,22 @@ use crate::{compose::text, val_helpr::ValidationResult};
 /// A simple image block, designed to make those cat photos really pop.
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#image
-#[derive(Clone,
-           Debug,
-           Default,
-           Deserialize,
-           Hash,
-           PartialEq,
-           Serialize,
-           Validate)]
+#[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Image<'a> {
-  #[validate(length(max = 3000))]
+  #[cfg_attr(feature = "validation", validate(length(max = 3000)))]
   image_url: Cow<'a, str>,
 
-  #[validate(length(max = 2000))]
+  #[cfg_attr(feature = "validation", validate(length(max = 2000)))]
   alt_text: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate::title")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::title"))]
   title: Option<text::Text>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "super::validate_block_id")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate_block_id"))]
   block_id: Option<Cow<'a, str>>,
 }
 
@@ -77,6 +72,8 @@ impl<'a> Image<'a> {
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }

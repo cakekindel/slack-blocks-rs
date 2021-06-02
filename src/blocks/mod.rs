@@ -119,6 +119,8 @@ impl<'a> Block<'a> {
   ///
   /// assert!(matches!(img.validate(), Err(_)), "validation should fail!")
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     use Block::*;
 

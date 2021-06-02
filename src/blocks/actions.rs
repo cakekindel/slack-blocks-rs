@@ -10,6 +10,8 @@
 use std::{borrow::Cow, convert::TryFrom};
 
 use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "validation")]
 use validator::Validate;
 
 use crate::{convert,
@@ -31,20 +33,15 @@ use crate::{convert,
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
 /// [elements 🔗]: https://api.slack.com/reference/messaging/block-elements
-#[derive(Clone,
-           Debug,
-           Default,
-           Deserialize,
-           Hash,
-           PartialEq,
-           Serialize,
-           Validate)]
+#[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Actions<'a> {
-  #[validate(length(max = 5))]
+  #[cfg_attr(feature = "validation", validate(length(max = 5)))]
   elements: Vec<SupportedElement<'a>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "super::validate_block_id")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate_block_id"))]
   block_id: Option<Cow<'a, str>>,
 }
 
@@ -59,10 +56,8 @@ impl<'a> Actions<'a> {
   /// Validate that this Section block agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `with_block_id` was called with a block id longer
-  ///     than 255 chars
-  /// - If `from_elements` or `from_action_elements` was
-  ///     called with more than 5 elements.
+  /// - If `block_id` longer than 255 chars
+  /// - If `elements` contains more than 5 elements
   ///
   /// # Example
   /// ```
@@ -79,6 +74,8 @@ impl<'a> Actions<'a> {
   ///
   /// assert!(matches!(block.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
