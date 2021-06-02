@@ -145,8 +145,7 @@ pub mod build {
   ///                             .action_id("emoji_picker")
   ///                             .build();
   ///
-  /// let block: Block =
-  ///   Actions::from_action_elements(std::iter::once(radio.into())).into();
+  /// let block: Block = Actions::builder().element(radio).build().into();
   ///
   /// // <send block to slack API>
   /// ```

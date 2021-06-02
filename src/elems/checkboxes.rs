@@ -173,14 +173,13 @@ pub mod build {
   /// let states: Vec<Opt<_, _>> =
   ///   usa::get_states().into_iter().map(state_opt).collect();
   ///
-  /// let boxes: BlockElement =
+  /// let boxes =
   ///   Checkboxes::builder().action_id("state_picker")
   ///                        .options(states)
   ///                        .initial_options(vec![state_opt(usa::arizona()).into()])
-  ///                        .build()
-  ///                        .into();
+  ///                        .build();
   ///
-  /// let block: Block = Actions::try_from(boxes).unwrap().into();
+  /// let block: Block = Actions::builder().element(boxes).build().into();
   ///
   /// // <send block to slack API>
   /// ```

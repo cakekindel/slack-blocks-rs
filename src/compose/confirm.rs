@@ -48,23 +48,23 @@ impl Confirm {
   /// agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `from_parts` was called with `title` longer than 100 chars
-  /// - If `from_parts` was called with `text` longer than 300 chars
-  /// - If `from_parts` was called with `confirm` longer than 30 chars
-  /// - If `from_parts` was called with `deny` longer than 30 chars
+  /// - If `title` longer than 100 chars
+  /// - If `text` longer than 300 chars
+  /// - If `confirm` longer than 30 chars
+  /// - If `deny` longer than 30 chars
   ///
   /// # Example
   /// ```
   /// use slack_blocks::compose::{Confirm, ConfirmStyle};
   /// use slack_blocks::text;
   ///
-  /// let dialog = Confirm::from_parts(
-  ///         "Are you sure?",
-  ///         text::Mrkdwn::from("Are you _sure_ you're sure?\nThis action is permanent."),
-  ///         "I'm sure.",
-  ///         "I'm not sure! Oh, geez, I just don't know! Help me decide, please??? Gosh, this is scary...",
-  ///     )
-  ///     .with_style(ConfirmStyle::Danger);
+  /// let dialog = Confirm::builder().title(
+  ///         "Are you sure?",).text(
+  ///         text::Mrkdwn::from("Are you _sure_ you're sure?\nThis action is permanent."),).confirm(
+  ///         "I'm sure.",).deny(
+  ///         "I'm not sure! Oh, geez, I just don't know! Help me decide, please??? Gosh, this is scary...",)
+  ///     .style(ConfirmStyle::Danger)
+  ///     .build();
   ///
   /// assert_eq!(true, matches!(dialog.validate(), Err(_)));
   /// ```

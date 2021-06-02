@@ -144,20 +144,19 @@ pub mod build {
   /// # Examples
   ///
   /// ```
-  /// use slack_blocks::{blocks::{Block, Input}, elems::TextInput};
+  /// use slack_blocks::{blocks::{Block, Input},
+  ///                    elems::TextInput};
   ///
-  /// let text_input = TextInput::builder()
-  ///                            .action_id("plate_num")
-  ///                            .placeholder("ABC1234")
-  ///                            .length(1..=7)
-  ///                            .build();
+  /// let text_input = TextInput::builder().action_id("plate_num")
+  ///                                      .placeholder("ABC1234")
+  ///                                      .length(1..=7)
+  ///                                      .build();
   ///
-  /// let block: Block = Input::builder()
-  ///                          .label("enter custom license plate")
-  ///                          .element(text_input)
-  ///                          .dispatch_actions(true)
-  ///                          .build()
-  ///                          .into();
+  /// let block: Block = Input::builder().label("enter custom license plate")
+  ///                                    .element(text_input)
+  ///                                    .dispatch_actions(true)
+  ///                                    .build()
+  ///                                    .into();
   /// ```
   #[derive(Debug)]
   pub struct TextInputBuilder<'a, A> {
@@ -224,21 +223,21 @@ pub mod build {
     /// # Examples
     ///
     /// ```
-    /// use slack_blocks::{blocks::{Block, Input}, elems::TextInput, elems::text_input::ActionTrigger::OnCharacterEntered};
+    /// use slack_blocks::{blocks::{Block, Input},
+    ///                    elems::{text_input::ActionTrigger::OnCharacterEntered,
+    ///                            TextInput}};
     ///
-    /// let text_input = TextInput::builder()
-    ///                            .action_id("plate_num")
-    ///                            .placeholder("ABC1234")
-    ///                            .length(1..=7)
-    ///                            .action_trigger(OnCharacterEntered)
-    ///                            .build();
+    /// let text_input = TextInput::builder().action_id("plate_num")
+    ///                                      .placeholder("ABC1234")
+    ///                                      .length(1..=7)
+    ///                                      .action_trigger(OnCharacterEntered)
+    ///                                      .build();
     ///
-    /// let block: Block = Input::builder()
-    ///                          .label("enter custom license plate")
-    ///                          .element(text_input)
-    ///                          .dispatch_actions(true)
-    ///                          .build()
-    ///                          .into();
+    /// let block: Block = Input::builder().label("enter custom license plate")
+    ///                                    .element(text_input)
+    ///                                    .dispatch_actions(true)
+    ///                                    .build()
+    ///                                    .into();
     /// ```
     pub fn action_trigger(mut self, trigger: ActionTrigger) -> Self {
       let config =

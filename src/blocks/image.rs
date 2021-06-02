@@ -70,8 +70,10 @@ impl<'a> Image<'a> {
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
-  /// let block =
-  ///   blocks::Image::from_alt_text_and_url("", "").with_block_id(long_string);
+  /// let block = blocks::Image::builder().image_url("")
+  ///                                     .alt("")
+  ///                                     .block_id(long_string)
+  ///                                     .build();
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   /// ```

@@ -82,12 +82,10 @@ impl<'a> Button<'a> {
   /// Validate that this Button element agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `from_text_and_action_id` was called with an action_id longer
-  ///     than 255 chars
-  /// - If `from_text_and_action_id` was called with text longer
-  ///     than 75 chars
-  /// - If `with_url` was called with url longer than 3000 chars
-  /// - If `with_value` was called with url longer than 2000 chars
+  /// - If `action_id` is longer than 255 chars
+  /// - If `text` is longer than 75 chars
+  /// - If `url` is longer than 3000 chars
+  /// - If `value` is longer than 2000 chars
   ///
   /// # Example
   /// ```
@@ -95,7 +93,9 @@ impl<'a> Button<'a> {
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
-  /// let btn = Button::from_text_and_action_id("Button", long_string);
+  /// let btn = Button::builder().text("Button")
+  ///                            .action_id(long_string)
+  ///                            .build();
   ///
   /// assert_eq!(true, matches!(btn.validate(), Err(_)));
   /// ```
@@ -156,13 +156,11 @@ pub mod build {
   ///
   /// use slack_blocks::{blocks, elems};
   ///
-  /// let button: elems::BlockElement = elems::Button::builder().text("do stuff!")
-  ///                                                           .action_id("stuff")
-  ///                                                           .build()
-  ///                                                           .into();
+  /// let button = elems::Button::builder().text("do stuff!")
+  ///                                      .action_id("stuff")
+  ///                                      .build();
   /// let block: blocks::Block =
-  ///   blocks::Actions::try_from(button).expect("Actions block supports buttons")
-  ///                                    .into();
+  ///   blocks::Actions::builder().element(button).build().into();
   /// ```
   #[derive(Debug)]
   pub struct ButtonBuilder<'a, Text, ActionId> {

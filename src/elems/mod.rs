@@ -135,11 +135,11 @@ impl<'a> BlockElement<'a> {
   /// use slack_blocks::elems::{BlockElement, Button};
   ///
   /// let text = std::iter::repeat('a').take(76).collect::<String>();
-  /// let btn = Button::from_text_and_action_id(text, "");
+  /// let btn = Button::builder().text(text).action_id("").build();
   ///
-  /// let elem = BlockElement::from(btn);
+  /// let elem = BlockElement::from(btn.clone());
   ///
-  /// assert!(matches!(elem.validate(), Err(_)))
+  /// assert_eq!(elem.validate(), btn.validate())
   /// ```
   pub fn validate(&self) -> ValidationResult {
     use BlockElement::*;

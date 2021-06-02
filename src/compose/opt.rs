@@ -110,9 +110,7 @@ impl<'a> Opt<'a> {
   ///
   /// # Examples
   /// ```
-  /// use std::convert::TryFrom;
-  ///
-  /// use slack_blocks::{blocks::Actions,
+  /// use slack_blocks::{blocks::{Actions, Block},
   ///                    compose::Opt,
   ///                    elems::{select::Static, BlockElement},
   ///                    text};
@@ -138,14 +136,12 @@ impl<'a> Opt<'a> {
   ///                  Opt::builder().text_plain(name).value(short_code).build()
   ///                });
   ///
-  /// let select: BlockElement =
-  ///   Static::builder().placeholder("Choose your favorite city!")
-  ///                    .action_id("fave_city")
-  ///                    .options(options)
-  ///                    .build()
-  ///                    .into();
+  /// let select = Static::builder().placeholder("Choose your favorite city!")
+  ///                               .action_id("fave_city")
+  ///                               .options(options)
+  ///                               .build();
   ///
-  /// let block = Actions::try_from(select);
+  /// let block: Block = Actions::builder().element(select).build().into();
   /// ```
   pub fn builder() -> build::OptBuilderInit<'a> {
     build::OptBuilderInit::new()
@@ -169,12 +165,10 @@ impl<'a, T, U> Opt<'a, T, U> {
   /// agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `from_plain_text_and_value` or `from_mrkdwn_and_value`
-  ///     was called with `text` longer than 75 chars
-  /// - If `from_plain_text_and_value` or `from_mrkdwn_and_value`
-  ///     was called with `value` longer than 75 chars
-  /// - If `with_url` was called with url longer than 3000 chars
-  /// - If `with_description` was called with text longer than 75 chars
+  /// - If `text` longer than 75 chars
+  /// - If `value` longer than 75 chars
+  /// - If `url` longer than 3000 chars
+  /// - If `description` longer than 75 chars
   ///
   /// # Example
   /// ```
@@ -184,7 +178,9 @@ impl<'a, T, U> Opt<'a, T, U> {
   ///
   /// let long_string: String = repeat(' ').take(76).collect();
   ///
-  /// let opt = Opt::from_plain_text_and_value("My Option", long_string);
+  /// let opt = Opt::builder().text_plain("My Option")
+  ///                         .value(long_string)
+  ///                         .build();
   ///
   /// assert_eq!(true, matches!(opt.validate(), Err(_)));
   /// ```
@@ -244,16 +240,13 @@ pub mod build {
   ///                      Opt::builder().text_plain(name).value(code).build()
   ///                    });
   ///
-  /// let select: BlockElement =
+  /// let select =
   ///   Static::builder().placeholder("Choose your favorite programming language!")
   ///                    .options(langs)
   ///                    .action_id("lang_chosen")
-  ///                    .build()
-  ///                    .into();
+  ///                    .build();
   ///
-  /// let block: Block =
-  ///   Actions::try_from(select).expect("actions supports select elements")
-  ///                            .into();
+  /// let block: Block = Actions::builder().element(select).build().into();
   ///
   /// // <send block to API>
   /// ```

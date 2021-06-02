@@ -76,15 +76,10 @@ impl<'a> Section<'a> {
   /// Validate that this Section block agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `from_fields` was called with more than 10 fields,
-  ///     or one of the fields contains text longer than
-  ///     2000 chars
-  /// - If `from_fields` was called with one of the fields
-  ///     containing text longer than 2000 chars
-  /// - If `from_text` was called with text longer than
-  ///     3000 chars
-  /// - If `with_block_id` was called with a block id longer
-  ///     than 255 chars
+  /// - If `fields` contains more than 10 fields
+  /// - If one of `fields` longer than 2000 chars
+  /// - If `text` longer than 3000 chars
+  /// - If `block_id` longer than 255 chars
   ///
   /// # Example
   /// ```
@@ -92,13 +87,11 @@ impl<'a> Section<'a> {
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
-  /// let block = blocks::Section
-  ///     ::from_text(text::Plain::from("file_id"))
-  ///     .with_block_id(long_string);
+  /// let block = blocks::Section::builder().text(text::Plain::from("file_id"))
+  ///                                       .block_id(long_string)
+  ///                                       .build();
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
-  ///
-  /// // < send to slack API >
   /// ```
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)

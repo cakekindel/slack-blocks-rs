@@ -58,11 +58,13 @@ impl<'a> Context<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::blocks;
+  /// use slack_blocks::{blocks::Context, text::ToSlackPlaintext};
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
-  /// let block = blocks::context::Context::new().with_block_id(long_string);
+  /// let block = Context::builder().element("foo".plaintext())
+  ///                               .block_id(long_string)
+  ///                               .build();
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   /// ```

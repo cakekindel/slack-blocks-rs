@@ -83,11 +83,10 @@ impl<'a> Static<'a> {
   ///                  Opt::builder().text_plain(name).value(short_code).build()
   ///                });
   ///
-  /// let select =
-  ///   Static::builder().placeholder("Choose your favorite city!")
-  ///                    .action_id("fave_city")
-  ///                    .options(options)
-  ///                    .build();
+  /// let select = Static::builder().placeholder("Choose your favorite city!")
+  ///                               .action_id("fave_city")
+  ///                               .options(options)
+  ///                               .build();
   ///
   /// let block: Block = Actions::builder().element(select).build().into();
   /// ```
@@ -175,9 +174,7 @@ pub mod build {
   ///                    .action_id("lang_chosen")
   ///                    .build();
   ///
-  /// let block: Block =
-  ///   Actions::builder().element(select).build()
-  ///                            .into();
+  /// let block: Block = Actions::builder().element(select).build().into();
   ///
   /// // <send block to API>
   /// ```

@@ -44,7 +44,7 @@ impl<'a> User<'a> {
   ///                    elems::{select, BlockElement},
   ///                    text};
   ///
-  /// let select=
+  /// let select =
   ///   select::User::builder().placeholder("Choose your favorite coworker!")
   ///                          .action_id("fave_fren")
   ///                          .build();
@@ -68,14 +68,15 @@ impl<'a> User<'a> {
   /// use slack_blocks::elems::select;
   ///
   /// let select = select::User::builder().placeholder(
-  ///         r#"Hey I really would appreciate it if you chose
+  ///                           r#"Hey I really would appreciate it if you chose
   ///         a channel relatively soon, so that we can figure out
   ///         where we need to send this poll, ok? it's kind of
   ///         important that you specify where this poll should be
   ///         sent, in case we haven't made that super clear.
-  ///         If you understand, could you pick a channel, already??"#,).action_id(
-  ///         "ABC123"
-  ///     ).build();
+  ///         If you understand, could you pick a channel, already??"#,
+  /// )
+  ///              .action_id("ABC123")
+  ///              .build();
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
@@ -127,14 +128,11 @@ pub mod build {
   ///                    compose::Opt,
   ///                    elems::{select::User, BlockElement}};
   ///
-  /// let select=
-  ///   User::builder().placeholder("Choose your favorite co-worker!")
-  ///                  .action_id("favorite_coworker")
-  ///                  .build();
+  /// let select = User::builder().placeholder("Choose your favorite co-worker!")
+  ///                             .action_id("favorite_coworker")
+  ///                             .build();
   ///
-  /// let block: Block =
-  ///   Actions::builder().element(select).build()
-  ///                            .into();
+  /// let block: Block = Actions::builder().element(select).build().into();
   ///
   /// // <send block to API>
   /// ```

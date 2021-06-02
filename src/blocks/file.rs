@@ -47,14 +47,15 @@ impl<'a> File<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{blocks, compose};
+  /// use slack_blocks::{blocks::File, compose};
   ///
   /// # use std::error::Error;
   /// # pub fn main() -> Result<(), Box<dyn Error>> {
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
-  /// let block =
-  ///   blocks::File::from_external_id("file_id").with_block_id(long_string);
+  /// let block = File::builder().external_id("file_id")
+  ///                            .block_id(long_string)
+  ///                            .build();
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   ///

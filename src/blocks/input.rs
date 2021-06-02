@@ -74,17 +74,21 @@ impl<'a> Input<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::elems::Select;
-  /// use slack_blocks::blocks;
+  /// use slack_blocks::{blocks, elems::select};
   ///
-  /// let label = "On a scale from 1 - 5, how angsty are you?";
-  /// let input = Select::from_placeholder_and_action_id("Pick a channel...", "ABC123")
-  ///     .choose_from_public_channels();
+  /// let select =
+  ///   select::PublicChannel::builder().placeholder("Pick a channel...")
+  ///                                   .action_id("ABC123")
+  ///                                   .build();
+  ///
   /// let long_string = std::iter::repeat(' ').take(2001).collect::<String>();
   ///
   /// let block = blocks::Input
-  ///     ::from_label_and_element(label, input)
-  ///     .with_block_id(long_string);
+  ///     ::builder()
+  ///     .label("On a scale from 1 - 5, how angsty are you?")
+  ///     .element(select)
+  ///     .block_id(long_string)
+  ///     .build();
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   ///

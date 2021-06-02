@@ -49,10 +49,8 @@ impl<'a, T, U> OptGroup<'a, T, U> {
   /// agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `from_label_and_opts` was called with `label`
-  ///     longer than 75 chars
-  /// - If `from_label_and_opts` was called with
-  ///     more than 100 options
+  /// - If `label` longer than 75 chars
+  /// - If `opts` contains more than 100 options
   ///
   /// # Example
   /// ```
@@ -62,8 +60,10 @@ impl<'a, T, U> OptGroup<'a, T, U> {
   ///
   /// let long_string: String = repeat(' ').take(76).collect();
   ///
-  /// let opt = Opt::from_mrkdwn_and_value("San Diego", "ca_sd");
-  /// let grp = OptGroup::from_label_and_opts(long_string, vec![opt]);
+  /// let opt = Opt::builder().text_plain("San Diego")
+  ///                         .value("ca_sd")
+  ///                         .build();
+  /// let grp = OptGroup::builder().label(long_string).option(opt).build();
   ///
   /// assert_eq!(true, matches!(grp.validate(), Err(_)));
   /// ```
@@ -166,15 +166,14 @@ pub mod build {
   ///             .build(),
   ///  ];
   ///
-  ///  let select: BlockElement =
+  ///  let select =
   ///    Static::builder().placeholder("Choose your favorite programming language!")
   ///                     .option_groups(groups)
   ///                     .action_id("lang_chosen")
-  ///                     .build()
-  ///                     .into();
+  ///                     .build();
   ///
   ///  let block: Block =
-  ///    Actions::try_from(select).expect("actions supports select elements")
+  ///    Actions::builder().element(select).build()
   ///                             .into();
   ///
   ///  // <send block to API>

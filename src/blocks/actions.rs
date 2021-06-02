@@ -7,8 +7,7 @@
 //! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
 //! [elements 🔗]: https://api.slack.com/reference/messaging/block-elements
 
-use std::{borrow::Cow,
-          convert::TryFrom};
+use std::{borrow::Cow, convert::TryFrom};
 
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -67,12 +66,16 @@ impl<'a> Actions<'a> {
   ///
   /// # Example
   /// ```
-  /// use slack_blocks::{blocks, compose};
+  /// use slack_blocks::{blocks, compose, elems::Button};
   ///
   /// let long_string = std::iter::repeat(' ').take(256).collect::<String>();
   ///
   /// let block =
-  ///   blocks::Actions::from_action_elements(vec![]).with_block_id(long_string);
+  ///   blocks::Actions::builder().element(Button::builder().text("Click me")
+  ///                                                       .action_id("btn")
+  ///                                                       .build())
+  ///                             .block_id(long_string)
+  ///                             .build();
   ///
   /// assert!(matches!(block.validate(), Err(_)));
   /// ```

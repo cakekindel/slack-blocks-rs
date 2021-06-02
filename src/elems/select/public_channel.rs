@@ -69,14 +69,15 @@ impl<'a> PublicChannel<'a> {
   /// use slack_blocks::elems::select;
   ///
   /// let select = select::PublicChannel::builder().placeholder(
-  ///         r#"Hey I really would appreciate it if you chose
+  ///                           r#"Hey I really would appreciate it if you chose
   ///         a channel relatively soon, so that we can figure out
   ///         where we need to send this poll, ok? it's kind of
   ///         important that you specify where this poll should be
   ///         sent, in case we haven't made that super clear.
-  ///         If you understand, could you pick a channel, already??"#,).action_id(
-  ///         "ABC123"
-  ///     ).build();
+  ///         If you understand, could you pick a channel, already??"#,
+  /// )
+  ///              .action_id("ABC123")
+  ///              .build();
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
