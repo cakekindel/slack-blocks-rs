@@ -52,7 +52,7 @@
 //!
 //! Or enable the `unstable` feature and use xml macros:
 //! ```rust
-//! use slack_blocks::mox::*;
+//! use slack_blocks::blox::*;
 //!
 //! let pick_date = blox! {
 //!   <date_picker action_id="datepicker123"
@@ -84,9 +84,9 @@
 #[macro_use]
 extern crate validator_derive;
 
-#[cfg(feature = "xml")]
-#[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
-pub mod mox;
+#[cfg(feature = "blox")]
+#[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
+pub mod blox;
 
 #[doc(inline)]
 pub mod blocks;

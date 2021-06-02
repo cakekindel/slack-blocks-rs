@@ -229,10 +229,9 @@ pub mod build {
     ///
     /// To set `text`, use the `text` attribute.
     /// ```
-    /// use mox::mox;
-    /// use slack_blocks::{blocks::Section, mox::*, text, text::ToSlackPlaintext};
+    /// use slack_blocks::{blocks::Section, blox::*, text, text::ToSlackPlaintext};
     ///
-    /// let xml = mox! {
+    /// let xml = blox! {
     ///   <section_block text={"Section".plaintext()}>
     ///     <text kind=plain>"Foo"</text>
     ///     <text kind=plain>"Bar"</text>
@@ -246,8 +245,8 @@ pub mod build {
     ///
     /// assert_eq!(xml, equiv);
     /// ```
-    #[cfg(feature = "xml")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
+    #[cfg(feature = "blox")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
     pub fn child<T>(self, text: T) -> SectionBuilder<'a, Set<method::text>>
       where T: Into<text::Text>
     {

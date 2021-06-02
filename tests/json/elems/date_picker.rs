@@ -1,6 +1,6 @@
 use pretty_assertions::assert_eq;
 use serde_json::json;
-use slack_blocks::{elems, mox::*, text::ToSlackPlaintext};
+use slack_blocks::{blox::*, elems, text::ToSlackPlaintext};
 
 #[test]
 pub fn docs_ex_1() {
