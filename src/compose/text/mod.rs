@@ -110,8 +110,8 @@ pub mod build {
 
   /// "Text Kind" for XML macro
   #[allow(non_camel_case_types)]
-  #[cfg(feature = "xml")]
-  #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
+  #[cfg(feature = "blox")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
   pub mod kind {
     use super::*;
     // This trick is kind of nasty. Essentially, I want the API to look like
@@ -229,21 +229,20 @@ pub mod build {
     /// to be set as a string literal instead of an attribute.
     ///
     /// ```
-    /// use mox::mox;
-    /// use slack_blocks::mox::*;
+    /// use slack_blocks::blox::*;
     ///
-    /// let as_attr = mox! {
+    /// let as_attr = blox! {
     ///   <text kind=plain text="Foo" />
     /// };
     ///
-    /// let as_child = mox! {
+    /// let as_child = blox! {
     ///   <text kind=plain>"Foo"</text>
     /// };
     ///
     /// assert_eq!(as_attr, as_child);
     /// ```
-    #[cfg(feature = "xml")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
+    #[cfg(feature = "blox")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
     pub fn child(self,
                  t: impl AsRef<str>)
                  -> TextBuilder<T, Set<method::text>> {
@@ -257,17 +256,16 @@ pub mod build {
     /// Intended to be used as an XML attribute with `build::kind::mrkdwn` or `build::kind::plain`
     ///
     /// ```
-    /// use mox::mox;
-    /// use slack_blocks::{mox::*, text};
+    /// use slack_blocks::{blox::*, text};
     ///
-    /// let xml = mox! {<text kind=plain>"Foo"</text>};
+    /// let xml = blox! {<text kind=plain>"Foo"</text>};
     ///
     /// let builder = text::Plain::from("Foo");
     ///
     /// assert_eq!(xml, builder)
     /// ```
-    #[cfg(feature = "xml")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
+    #[cfg(feature = "blox")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
     pub fn kind<T, K>(self, kind: K) -> TextBuilder<T, M>
       where T: Into<Text>,
             K: kind::TextKind<T>

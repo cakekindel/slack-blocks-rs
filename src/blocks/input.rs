@@ -265,8 +265,8 @@ pub mod build {
     }
 
     /// XML child alias for `element`
-    #[cfg(feature = "xml")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
+    #[cfg(feature = "blox")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
     pub fn child<El>(self,
                      element: El)
                      -> InputBuilder<'a, Set<method::element>, L>

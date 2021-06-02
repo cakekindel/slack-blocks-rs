@@ -161,6 +161,8 @@ pub mod build {
     /// Invoked by `blox!` when a child element is passed to `<actions_block>`.
     ///
     /// Alias of `ActionsBuilder.element`.
+    #[cfg(feature = "blox")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
     pub fn child<El>(self,
                      element: El)
                      -> ActionsBuilder<'a, Set<method::elements>>

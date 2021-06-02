@@ -252,8 +252,8 @@ pub mod build {
     }
 
     /// Allows using XML children to append options to the group.
-    #[cfg(feature = "xml")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
+    #[cfg(feature = "blox")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
     pub fn child<T2: Into<text::Text>>(
       self,
       opt: Opt<'a, T2, NoUrl>)

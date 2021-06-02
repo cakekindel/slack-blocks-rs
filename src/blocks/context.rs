@@ -127,8 +127,8 @@ pub mod build {
     }
 
     /// Alias of `element` for appending an element with an XML child.
-    #[cfg(feature = "xml")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
+    #[cfg(feature = "blox")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
     pub fn child<El>(self,
                      element: El)
                      -> ContextBuilder<'a, Set<method::elements>>

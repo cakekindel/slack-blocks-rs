@@ -15,8 +15,8 @@ keywords = ["slack", "messages", "models", "ergonomic", "fully-documented"]
 categories = ["data-structures"]
 
 [features]
-unstable = ["xml", "validation"]
-xml = ["mox"]
+unstable = ["blox", "validation"]
+blox = ["mox"]
 validation = []
 
 [package.metadata.docs.rs]

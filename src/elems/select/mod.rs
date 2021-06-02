@@ -38,8 +38,8 @@ pub use static_::Static;
 pub use user::User;
 
 /// Select builder
-#[cfg(feature = "xml")]
-#[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
+#[cfg(feature = "blox")]
+#[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
 pub mod build {
   use std::marker::PhantomData;
 

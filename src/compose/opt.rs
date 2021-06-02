@@ -316,10 +316,9 @@ pub mod build {
   impl<'a, V, U> OptBuilder<'a, RequiredMethodNotCalled<method::text>, V, U> {
     /// Alias for `text`, allowing you to set the text of the option like so:
     /// ```
-    /// use mox::mox;
-    /// use slack_blocks::{compose::Opt, mox::*, text};
+    /// use slack_blocks::{compose::Opt, blox::*, text};
     ///
-    /// let xml = mox! {
+    /// let xml = blox! {
     ///   <option value="foo">
     ///     <text kind=plain>"Foo"</text>
     ///   </option>
@@ -331,8 +330,8 @@ pub mod build {
     ///
     /// assert_eq!(xml, equiv)
     /// ```
-    #[cfg(feature = "xml")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "xml")))]
+    #[cfg(feature = "blox")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "blox")))]
     pub fn child<T: Into<text::Text>>(
       self,
       text: T)

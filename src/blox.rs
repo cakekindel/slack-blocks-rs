@@ -1,7 +1,4 @@
-//! # XML macro support
-//!
-//! This module provides shorthands for builder functions
-//! to be used with `mox` or a similar "xml -> Builder" macro.
+//! # XML macro builder support
 
 pub use elems::{button::Style::{Danger as btn_danger,
                                 Primary as btn_primary},
@@ -26,11 +23,11 @@ pub trait IntoChild: Sized {
 
 impl<T> IntoChild for T {}
 
-pub use mox_blocks::*;
-pub use mox_compose::*;
-pub use mox_elems::*;
+pub use blox_blocks::*;
+pub use blox_compose::*;
+pub use blox_elems::*;
 
-mod mox_blocks {
+mod blox_blocks {
   use super::*;
 
   /// # Build an actions block
@@ -40,7 +37,7 @@ mod mox_blocks {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Actions, elems::Button, mox::*, text};
+  /// use slack_blocks::{blocks::Actions, elems::Button, blox::*, text};
   ///
   /// let xml = blox! {
   ///   <actions_block>
@@ -74,7 +71,7 @@ mod mox_blocks {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Section, mox::*, text};
+  /// use slack_blocks::{blocks::Section, blox::*, text};
   ///
   /// let xml = blox! {
   ///   <section_block text=blox!{<text kind=plain>"Foo"</text>} />
@@ -100,7 +97,7 @@ mod mox_blocks {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Input, elems::TextInput, mox::*, text};
+  /// use slack_blocks::{blocks::Input, elems::TextInput, blox::*, text};
   ///
   /// let xml = blox! {
   ///   <input_block label="foo">
@@ -126,7 +123,7 @@ mod mox_blocks {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Context, elems::Image, mox::*, text};
+  /// use slack_blocks::{blocks::Context, elems::Image, blox::*, text};
   ///
   /// let xml = blox! {
   ///   <context_block>
@@ -158,7 +155,7 @@ mod mox_blocks {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::File, mox::*};
+  /// use slack_blocks::{blocks::File, blox::*};
   ///
   /// let xml = blox! {
   ///   <file_block external_id="foo" />
@@ -179,7 +176,7 @@ mod mox_blocks {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Image, mox::*};
+  /// use slack_blocks::{blocks::Image, blox::*};
   ///
   /// let xml = blox! {
   ///   <img_block src="https://foo.com/bar.png" alt="a pic of bar" />
@@ -196,7 +193,7 @@ mod mox_blocks {
   }
 }
 
-mod mox_elems {
+mod blox_elems {
   use super::*;
 
   /// # Build an text input element
@@ -206,7 +203,7 @@ mod mox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{elems::TextInput, mox::*};
+  /// use slack_blocks::{elems::TextInput, blox::*};
   ///
   /// let xml: TextInput = blox! {
   ///   <text_input action_id="name_input"
@@ -238,7 +235,7 @@ mod mox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{elems::Image, mox::*};
+  /// use slack_blocks::{elems::Image, blox::*};
   ///
   /// let xml: Image = blox! {
   ///   <img src="https://foo.com/bar.png" alt="a pic of bar" />
@@ -261,7 +258,7 @@ mod mox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{elems::Button, mox::*};
+  /// use slack_blocks::{elems::Button, blox::*};
   ///
   /// let xml: Button = blox! {
   ///   <button action_id="click_me">"Click me!"</button>
@@ -284,7 +281,7 @@ mod mox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{compose::Opt, elems::Checkboxes, mox::*};
+  /// use slack_blocks::{compose::Opt, elems::Checkboxes, blox::*};
   ///
   /// let xml: Checkboxes = blox! {
   ///   <checkboxes action_id="chex">
@@ -328,7 +325,7 @@ mod mox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{elems::DatePicker, mox::*};
+  /// use slack_blocks::{elems::DatePicker, blox::*};
   ///
   /// let xml = blox! {
   ///   <date_picker action_id="pick_birthday" placeholder="Pick your birthday!" />
@@ -354,7 +351,7 @@ mod mox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{compose::Opt, elems::Overflow, mox::*};
+  /// use slack_blocks::{compose::Opt, elems::Overflow, blox::*};
   ///
   /// let xml = blox! {
   ///   <overflow action_id="menu">
@@ -386,7 +383,7 @@ mod mox_elems {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Input, compose::Opt, elems::Radio, mox::*};
+  /// use slack_blocks::{blocks::Input, compose::Opt, elems::Radio, blox::*};
   ///
   /// let xml = blox! {
   ///   <input_block label="Pick your favorite cheese!">
@@ -423,8 +420,8 @@ mod mox_elems {
   /// # Build a select menu
   ///
   /// # Attributes
-  /// - `kind` (Optional): `single` or `multi` from `slack_blocks::mox`. Default is `single`.
-  /// - `choose_from` (Required): `users`, `public_channels`, `static_`, `external`, `conversations` from `slack_blocks::mox`
+  /// - `kind` (Optional): `single` or `multi` from `slack_blocks::blox`. Default is `single`.
+  /// - `choose_from` (Required): `users`, `public_channels`, `static_`, `external`, `conversations` from `slack_blocks::blox`
   ///
   /// # Children
   /// For `static_`, 1-100 `<option>` children are allowed.
@@ -439,7 +436,7 @@ mod mox_elems {
   /// # Example - Select many Users
   /// ```
   /// use slack_blocks::elems::select;
-  /// use slack_blocks::mox::*;
+  /// use slack_blocks::blox::*;
   ///
   /// let xml = blox! {
   ///   <select kind=multi choose_from=users placeholder="Pick some users!" action_id="foo" />
@@ -452,7 +449,7 @@ mod mox_elems {
   ///
   /// # Example - Select an option from a list defined by your app
   /// ```
-  /// use slack_blocks::{elems::select, compose::Opt, mox::*};
+  /// use slack_blocks::{elems::select, compose::Opt, blox::*};
   ///
   /// let xml = blox! {
   ///   <select choose_from=static_ placeholder="Pick your favorite cheese!" action_id="foo">
@@ -478,7 +475,7 @@ mod mox_elems {
   }
 }
 
-mod mox_compose {
+mod blox_compose {
   use super::*;
 
   /// # Text
@@ -490,7 +487,7 @@ mod mox_compose {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blocks::Section, mox::*, text};
+  /// use slack_blocks::{blocks::Section, blox::*, text};
   ///
   /// let xml = blox! {
   ///   <text kind=plain>"Foo"</text>
@@ -514,7 +511,7 @@ mod mox_compose {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{compose::Opt, mox::*};
+  /// use slack_blocks::{compose::Opt, blox::*};
   ///
   /// let xml = blox! {
   ///   <option value="foo">
@@ -544,7 +541,7 @@ mod mox_compose {
   /// ## Example - Options known at compile-time
   /// ```
   /// use slack_blocks::{compose::{Opt, OptGroup},
-  ///                    mox::*};
+  ///                    blox::*};
   ///
   /// let xml = blox! {
   ///   <option_group label="foos_and_bars">
@@ -568,7 +565,7 @@ mod mox_compose {
   /// ## Example - Dynamic vec of options
   /// ```
   /// use slack_blocks::{compose::{Opt, OptGroup},
-  ///                    mox::*};
+  ///                    blox::*};
   ///
   /// # fn uuid() -> String {"foo".to_string()}
   /// # fn random_word() -> String {"foo".to_string()}
@@ -609,7 +606,7 @@ mod mox_compose {
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{compose::Confirm, mox::*, text::ToSlackPlaintext};
+  /// use slack_blocks::{compose::Confirm, blox::*, text::ToSlackPlaintext};
   ///
   /// let xml = blox! {
   ///   <confirm title="Title"
