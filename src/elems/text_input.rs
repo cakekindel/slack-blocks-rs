@@ -16,7 +16,7 @@ use serde::{Deserialize as De, Serialize as Ser};
 #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{text, };
+use crate::text;
 #[cfg(feature = "validation")]
 use crate::val_helpr::*;
 
@@ -52,13 +52,14 @@ struct DispatchActionConfig {
 /// Works in [app surfaces 🔗]: Home tabs, Modals, Messages
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
-#[derive(Clone, Debug, Hash, PartialEq, Ser, De, )]
+#[derive(Clone, Debug, Hash, PartialEq, Ser, De)]
 #[cfg_attr(feature = "validation", derive(Validate))]
 pub struct TextInput<'a> {
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   action_id: Cow<'a, str>,
 
-  #[cfg_attr(feature = "validation", validate(custom = "validate_placeholder"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "validate_placeholder"))]
   #[serde(skip_serializing_if = "Option::is_none")]
   placeholder: Option<text::Text>,
 

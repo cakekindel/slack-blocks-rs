@@ -8,13 +8,13 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 use crate::{compose::{Confirm, ConversationFilter},
             text};
-  #[cfg(feature = "validation")]
-use crate::{val_helpr::ValidationResult};
 
 /// # Select Conversation List
 ///
@@ -25,7 +25,8 @@ use crate::{val_helpr::ValidationResult};
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Conversation<'a> {
-  #[cfg_attr(feature = "validation", validate(custom = "super::validate::placeholder"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate::placeholder"))]
   placeholder: text::Text,
 
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]

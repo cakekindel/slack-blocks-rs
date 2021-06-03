@@ -10,10 +10,11 @@
 use std::{borrow::Cow, convert::TryFrom};
 
 use serde::{Deserialize, Serialize};
-
 #[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
+use crate::val_helpr::*;
 use crate::{convert,
             elems::{select,
                     BlockElement,
@@ -22,10 +23,7 @@ use crate::{convert,
                     DatePicker,
                     Overflow,
                     Radio,
-                    TextInput},
-            };
-#[cfg(feature = "validation")]
-use crate::val_helpr::*;
+                    TextInput}};
 
 /// # Actions Block
 ///

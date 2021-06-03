@@ -14,17 +14,15 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
-
 #[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 use crate::{compose::{opt::{AnyText, NoUrl},
                       Confirm,
                       Opt},
-            text,
-            };
-#[cfg(feature = "validation")]
-use crate::val_helpr::ValidationResult;
+            text};
 
 /// Opt state supported by radio buttons
 pub type RadioButtonOpt<'a> = Opt<'a, AnyText, NoUrl>;

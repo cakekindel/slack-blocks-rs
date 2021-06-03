@@ -12,10 +12,9 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "validate")]
 use validator::Validate;
 
-use crate::{compose, text};
-
 #[cfg(feature = "validate")]
-use crate::{val_helpr::ValidationResult};
+use crate::val_helpr::ValidationResult;
+use crate::{compose, text};
 
 /// Opt state supported by static select
 pub type StaticOptGroup<'a> = OptGroup<'a, text::Plain, NoUrl>;
@@ -31,9 +30,10 @@ pub type StaticOptOrOptGroup<'a> = OptOrOptGroup<'a, text::Plain, NoUrl>;
 /// This is the simplest form of select menu,
 /// with a static list of options passed in when defining the element.
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-  #[cfg_attr(feature = "validation", derive(Validate))]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Static<'a> {
-  #[cfg_attr(feature = "validation", validate(custom = "super::validate::placeholder"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate::placeholder"))]
   placeholder: text::Text,
 
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]

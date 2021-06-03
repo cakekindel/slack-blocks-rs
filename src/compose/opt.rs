@@ -18,14 +18,13 @@
 use std::{borrow::Cow, marker::PhantomData};
 
 use serde::{Deserialize, Serialize};
-
 #[cfg(feature = "validation")]
 use validator::Validate;
 
 use super::text;
-use crate::{build::*, convert, };
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
+use crate::{build::*, convert};
 
 /// Opt supports text::Plain and text::Mrkdwn.
 #[derive(Copy, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]

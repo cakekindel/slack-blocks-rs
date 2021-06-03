@@ -14,16 +14,12 @@ use std::borrow::Cow;
 
 use compose::{opt::NoUrl, Confirm};
 use serde::{Deserialize, Serialize};
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose,
-            elems::select::static_::build,
-            text,
-            };
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
-            
+use crate::{compose, elems::select::static_::build, text};
 
 type OptGroup<'a> = compose::OptGroup<'a, text::Plain, NoUrl>;
 type Opt<'a> = compose::Opt<'a, text::Plain, NoUrl>;
@@ -43,7 +39,8 @@ type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, NoUrl>;
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Static<'a> {
-  #[cfg_attr(feature = "validation", validate(custom = "crate::elems::select::validate::placeholder"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "crate::elems::select::validate::placeholder"))]
   pub(in crate::elems::select) placeholder: text::Text,
 
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]

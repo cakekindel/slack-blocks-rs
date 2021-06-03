@@ -10,9 +10,9 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "validate")]
 use validator::Validate;
 
-use crate::{compose::Confirm, text};
 #[cfg(feature = "validate")]
-use crate::{val_helpr::ValidationResult};
+use crate::val_helpr::ValidationResult;
+use crate::{compose::Confirm, text};
 
 /// # Select menu with user list
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#users_select)
@@ -20,9 +20,10 @@ use crate::{val_helpr::ValidationResult};
 /// This select menu will populate its options with a list of
 /// Slack users visible to the current user in the active workspace.
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
-  #[cfg_attr(feature = "validation", derive(Validate))]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct User<'a> {
-  #[cfg_attr(feature = "validation", validate(custom = "super::validate::placeholder"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate::placeholder"))]
   placeholder: text::Text,
 
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]

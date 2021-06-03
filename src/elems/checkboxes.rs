@@ -14,25 +14,24 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
+use crate::val_helpr::*;
 use crate::{compose::{opt::{AnyText, NoUrl},
                       Confirm,
                       Opt},
             text};
-  #[cfg(feature = "validation")]
-                      use crate::{
-            val_helpr::*};
 
 type MyOpt<'a> = Opt<'a, AnyText, NoUrl>;
 
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 fn validate_options<'a>(o: &Cow<'a, [MyOpt<'a>]>) -> ValidatorResult {
   below_len("Checkboxes.options", 10, o.as_ref())
 }
 
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 fn validate_initial_options<'a>(o: &Cow<'a, [MyOpt<'a>]>) -> ValidatorResult {
   below_len("Checkboxes.initial_options", 10, o.as_ref())
 }
@@ -58,7 +57,8 @@ pub struct Checkboxes<'a> {
   #[cfg_attr(feature = "validation", validate(custom = "validate_options"))]
   options: Cow<'a, [MyOpt<'a>]>,
 
-  #[cfg_attr(feature = "validation", validate(custom = "validate_initial_options"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "validate_initial_options"))]
   #[serde(skip_serializing_if = "Option::is_none")]
   initial_options: Option<Cow<'a, [MyOpt<'a>]>>,
 

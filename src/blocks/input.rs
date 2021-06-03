@@ -13,16 +13,15 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 use crate::{compose::text,
             convert,
             elems,
-            elems::{select, BlockElement},
-            };
-#[cfg(feature = "validation")]
-use crate::val_helpr::ValidationResult;
+            elems::{select, BlockElement}};
 
 /// # Input Block
 ///

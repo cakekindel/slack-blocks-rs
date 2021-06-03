@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{text, };
+use crate::text;
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 

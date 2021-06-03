@@ -9,14 +9,12 @@
 //! [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
 
 use serde::{Deserialize, Serialize};
-
 #[cfg(feature = "validation")]
 use validator::Validate;
 
 use super::{opt::{AnyText, NoUrl},
             text,
             Opt};
-
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 

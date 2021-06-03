@@ -15,12 +15,11 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose,
-            compose::{opt::NoUrl, Confirm},
-            text,
-            };
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
+use crate::{compose,
+            compose::{opt::NoUrl, Confirm},
+            text};
 
 type Opt<'a> = compose::Opt<'a, text::Plain, NoUrl>;
 type OptGroup<'a> = compose::OptGroup<'a, text::Plain, NoUrl>;
@@ -36,10 +35,11 @@ type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, NoUrl>;
 /// [Slack API doc guide for setting up an external data source 🔗](https://api.slack.com/reference/block-kit/block-elements#external_select__setup)
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#external_select
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize,)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[cfg_attr(feature = "validation", derive(Validate))]
 pub struct External<'a> {
-  #[cfg_attr(feature = "validation", validate(custom = "super::validate::placeholder"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate::placeholder"))]
   placeholder: text::Text,
 
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]

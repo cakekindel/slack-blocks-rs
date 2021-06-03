@@ -12,12 +12,12 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
+use crate::val_helpr::*;
 use crate::{compose::Confirm, text};
-  #[cfg(feature = "validation")]
-use crate::{val_helpr::*};
 
 /// # Date Picker Element
 ///
@@ -30,12 +30,13 @@ use crate::{val_helpr::*};
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#datepicker
 /// [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
 #[derive(Clone, Debug, Hash, PartialEq, Ser, De)]
-  #[cfg_attr(feature = "validation", derive(Validate))]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct DatePicker<'a> {
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   action_id: Cow<'a, str>,
 
-  #[cfg_attr(feature = "validation", validate(custom = "validate_placeholder"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "validate_placeholder"))]
   #[serde(skip_serializing_if = "Option::is_none")]
   placeholder: Option<text::Text>,
 
@@ -47,7 +48,7 @@ pub struct DatePicker<'a> {
   confirm: Option<Confirm>,
 }
 
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 fn validate_placeholder(p: &text::Text) -> ValidatorResult {
   below_len("DatePicker.placeholder", 150, p)
 }

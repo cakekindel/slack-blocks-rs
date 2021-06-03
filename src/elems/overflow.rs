@@ -21,11 +21,10 @@ use serde::{Deserialize as De, Serialize as Ser};
 #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose::{opt::AllowUrl, Confirm, Opt},
-            text,
-            };
 #[cfg(feature = "validation")]
 use crate::val_helpr::*;
+use crate::{compose::{opt::AllowUrl, Confirm, Opt},
+            text};
 
 type MyOpt<'a> = Opt<'a, text::Plain, AllowUrl>;
 
@@ -45,7 +44,7 @@ type MyOpt<'a> = Opt<'a, text::Plain, AllowUrl>;
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#overflow
 /// [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
-#[derive(Clone, Debug, Hash, PartialEq, Ser, De, )]
+#[derive(Clone, Debug, Hash, PartialEq, Ser, De)]
 #[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Overflow<'a> {
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]

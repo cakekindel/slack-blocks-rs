@@ -7,10 +7,10 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-  #[cfg(feature = "validation")]
+#[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 use crate::{compose::Confirm, text};
 
@@ -22,7 +22,8 @@ use crate::{compose::Confirm, text};
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[cfg_attr(feature = "validation", derive(Validate))]
 pub struct PublicChannel<'a> {
-  #[cfg_attr(feature = "validation", validate(custom = "super::validate::placeholder"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate::placeholder"))]
   placeholder: text::Text,
 
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]

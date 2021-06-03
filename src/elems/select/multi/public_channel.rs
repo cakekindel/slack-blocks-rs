@@ -10,12 +10,9 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose::Confirm,
-            elems::select::public_channel::build,
-            text,
-            };
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
+use crate::{compose::Confirm, elems::select::public_channel::build, text};
 
 /// # Public Channel Select
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#channel_select)
@@ -25,7 +22,8 @@ use crate::val_helpr::ValidationResult;
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[cfg_attr(feature = "validation", derive(Validate))]
 pub struct PublicChannel<'a> {
-  #[cfg_attr(feature = "validation", validate(custom = "crate::elems::select::validate::placeholder"))]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "crate::elems::select::validate::placeholder"))]
   pub(in crate::elems::select) placeholder: text::Text,
 
   #[cfg_attr(feature = "validation", validate(length(max = 255)))]

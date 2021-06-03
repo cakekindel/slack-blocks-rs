@@ -9,16 +9,14 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
-
 #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{convert,
-            elems::{BlockElement, Image},
-            text,
-            };
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
+use crate::{convert,
+            elems::{BlockElement, Image},
+            text};
 
 /// # Context Block
 ///

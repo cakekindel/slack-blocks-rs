@@ -23,13 +23,12 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
-
 #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose::Confirm, text, };
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
+use crate::{compose::Confirm, text};
 
 /// # Button
 /// [slack api docs 🔗]
