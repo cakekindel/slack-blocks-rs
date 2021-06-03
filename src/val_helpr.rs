@@ -11,8 +11,7 @@ pub(crate) fn error<StrIsh: AsRef<str>>(kind: &'static str,
                                         msg: StrIsh)
                                         -> ValidationError {
   let mut error = ValidationError::new(kind);
-  error.add_param(Cow::from("message"),
-                  &msg.as_ref());
+  error.add_param(Cow::from("message"), &msg.as_ref());
 
   error
 }
