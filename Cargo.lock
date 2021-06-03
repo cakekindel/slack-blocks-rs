@@ -195,7 +195,6 @@ dependencies = [
  "mox",
  "pretty_assertions",
  "serde",
- "serde_json",
  "validator",
  "validator_derive",
 ]

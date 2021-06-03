@@ -7,34 +7,38 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
 use crate::{compose::Confirm,
             elems::select::public_channel::build,
             text,
-            val_helpr::ValidationResult};
+            };
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 /// # Public Channel Select
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#channel_select)
 ///
 /// This select menu will populate its options with a list of
 /// public channels visible to the current user in the active workspace.
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct PublicChannel<'a> {
-  #[validate(custom = "crate::elems::select::validate::placeholder")]
+  #[cfg_attr(feature = "validation", validate(custom = "crate::elems::select::validate::placeholder"))]
   pub(in crate::elems::select) placeholder: text::Text,
 
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   pub(in crate::elems::select) action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate]
+  #[cfg_attr(feature = "validation", validate)]
   pub(in crate::elems::select) confirm: Option<Confirm>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) initial_channels: Option<Cow<'a, [String]>>,
 
-  #[validate(range(min = 1))]
+  #[cfg_attr(feature = "validation", validate(range(min = 1)))]
   #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) max_selected_items: Option<u32>,
 }
@@ -54,10 +58,8 @@ impl<'a> PublicChannel<'a> {
   /// agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `from_placeholder_and_action_id` was called with
-  ///     `placeholder` longer than 150 chars
-  /// - If `from_placeholder_and_action_id` was called with
-  ///     `action_id` longer than 255 chars
+  /// - If `placeholder` longer than 150 chars
+  /// - If `action_id` longer than 255 chars
   ///
   /// # Example
   /// ```
@@ -76,6 +78,8 @@ impl<'a> PublicChannel<'a> {
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(&self)
   }

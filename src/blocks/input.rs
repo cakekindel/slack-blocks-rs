@@ -13,13 +13,16 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+  #[cfg(feature = "validation")]
 use validator::Validate;
 
 use crate::{compose::text,
             convert,
             elems,
             elems::{select, BlockElement},
-            val_helpr::ValidationResult};
+            };
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 /// # Input Block
 ///
@@ -342,6 +345,7 @@ convert!(impl<'a> From<select::multi::User<'a>> for SupportedElement<'a> => |r| 
 convert!(impl<'a> From<select::multi::Conversation<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
 convert!(impl<'a> From<select::multi::PublicChannel<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
 
+#[cfg(feature = "validation")]
 mod validate {
   use crate::{compose::text,
               val_helpr::{below_len, ValidatorResult}};

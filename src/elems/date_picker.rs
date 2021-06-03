@@ -12,6 +12,7 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
+  #[cfg(feature = "validation")]
 use validator::Validate;
 
 use crate::{compose::Confirm, text};

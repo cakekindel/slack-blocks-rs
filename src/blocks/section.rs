@@ -21,9 +21,12 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+  #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose::text, elems::BlockElement, val_helpr::ValidationResult};
+use crate::{compose::text, elems::BlockElement, };
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 /// # Section Block
 ///
@@ -94,6 +97,8 @@ impl<'a> Section<'a> {
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(feature = "validation", doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
@@ -307,6 +312,7 @@ pub mod build {
   }
 }
 
+#[cfg(feature = "validation")]
 mod validate {
   use super::*;
   use crate::{compose::text,

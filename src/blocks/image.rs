@@ -9,9 +9,12 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+  #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose::text, val_helpr::ValidationResult};
+use crate::{compose::text, };
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 /// # Image Block
 ///
@@ -254,6 +257,7 @@ pub mod build {
   }
 }
 
+#[cfg(feature = "validation")]
 mod validate {
   use crate::{compose::text,
               val_helpr::{below_len, ValidatorResult}};

@@ -10,8 +10,10 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 
 /// # File Block

@@ -23,7 +23,9 @@ use crate::{convert,
                     Overflow,
                     Radio,
                     TextInput},
-            val_helpr::*};
+            };
+#[cfg(feature = "validation")]
+use crate::val_helpr::*;
 
 /// # Actions Block
 ///

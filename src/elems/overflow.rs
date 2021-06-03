@@ -23,7 +23,7 @@ use validator::Validate;
 
 use crate::{compose::{opt::AllowUrl, Confirm, Opt},
             text,
-            val_helpr::*};
+            };
 #[cfg(feature = "validation")]
 use crate::val_helpr::*;
 

@@ -23,9 +23,13 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose::Confirm, text, val_helpr::ValidationResult};
+use crate::{compose::Confirm, text, };
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 /// # Button
 /// [slack api docs 🔗]
@@ -48,26 +52,28 @@ use crate::{compose::Confirm, text, val_helpr::ValidationResult};
 /// [Section 🔗]: https://api.slack.com/reference/block-kit/blocks#section
 /// [Actions 🔗]: https://api.slack.com/reference/block-kit/blocks#actions
 /// [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
-#[derive(Validate, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Button<'a> {
-  #[validate(custom = "validate::text")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::text"))]
   text: text::Text,
 
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate::url")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::url"))]
   url: Option<Cow<'a, str>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate::value")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::value"))]
   value: Option<Cow<'a, str>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   style: Option<Style>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
+  #[cfg_attr(feature = "validation", validate)]
   confirm: Option<Confirm>,
 }
 
@@ -99,6 +105,8 @@ impl<'a> Button<'a> {
   ///
   /// assert_eq!(true, matches!(btn.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
@@ -311,6 +319,7 @@ pub mod build {
   }
 }
 
+#[cfg(feature = "validation")]
 mod validate {
   use super::*;
   use crate::{text,

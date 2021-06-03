@@ -16,7 +16,9 @@ use serde::{Deserialize as De, Serialize as Ser};
 #[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{text, val_helpr::*};
+use crate::{text, };
+#[cfg(feature = "validation")]
+use crate::val_helpr::*;
 
 /// Interaction types that you would like to receive a [`block_actions` payload 🔗] for.
 ///

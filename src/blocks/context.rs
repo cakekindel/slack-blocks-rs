@@ -16,7 +16,9 @@ use validator::Validate;
 use crate::{convert,
             elems::{BlockElement, Image},
             text,
-            val_helpr::ValidationResult};
+            };
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 /// # Context Block
 ///

@@ -18,42 +18,28 @@
 use std::{borrow::Cow, marker::PhantomData};
 
 use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "validation")]
 use validator::Validate;
 
 use super::text;
-use crate::{build::*, convert, val_helpr::ValidationResult};
+use crate::{build::*, convert, };
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 /// Opt supports text::Plain and text::Mrkdwn.
-#[derive(Copy,
-           Clone,
-           Debug,
-           Deserialize,
-           Hash,
-           PartialEq,
-           Serialize,
-           Validate)]
+#[derive(Copy, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct AnyText;
 
 /// Opt does not support urls.
-#[derive(Copy,
-           Clone,
-           Debug,
-           Deserialize,
-           Hash,
-           PartialEq,
-           Serialize,
-           Validate)]
+#[derive(Copy, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct NoUrl;
 
 /// Opt does support urls.
-#[derive(Copy,
-           Clone,
-           Debug,
-           Deserialize,
-           Hash,
-           PartialEq,
-           Serialize,
-           Validate)]
+#[derive(Copy, Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct AllowUrl;
 
 convert!(impl From<NoUrl> for AllowUrl => |_| AllowUrl);
@@ -74,19 +60,20 @@ convert!(impl From<NoUrl> for AllowUrl => |_| AllowUrl);
 /// [checkbox group 🔗]: https://api.slack.com/reference/block-kit/block-elements#checkboxes
 /// [radio button group 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
 /// [overflow menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#overflow
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Opt<'a, T = AnyText, U = NoUrl> {
-  #[validate(custom = "validate::text")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::text"))]
   text: text::Text,
 
-  #[validate(length(max = 75))]
+  #[cfg_attr(feature = "validation", validate(length(max = 75)))]
   value: Cow<'a, str>,
 
-  #[validate(custom = "validate::desc")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::desc"))]
   #[serde(skip_serializing_if = "Option::is_none")]
   description: Option<text::Text>,
 
-  #[validate(custom = "validate::url")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::url"))]
   #[serde(skip_serializing_if = "Option::is_none")]
   url: Option<Cow<'a, str>>,
 
@@ -184,6 +171,8 @@ impl<'a, T, U> Opt<'a, T, U> {
   ///
   /// assert_eq!(true, matches!(opt.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(feature = "validation", doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
@@ -506,6 +495,7 @@ pub mod build {
   }
 }
 
+#[cfg(feature = "validation")]
 mod validate {
   use super::*;
   use crate::val_helpr::{below_len, ValidatorResult};

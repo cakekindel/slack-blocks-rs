@@ -12,12 +12,15 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
 use crate::{compose,
             compose::{opt::NoUrl, Confirm},
             text,
-            val_helpr::ValidationResult};
+            };
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 type Opt<'a> = compose::Opt<'a, text::Plain, NoUrl>;
 type OptGroup<'a> = compose::OptGroup<'a, text::Plain, NoUrl>;
