@@ -98,7 +98,7 @@ impl<'a> Section<'a> {
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   /// ```
   #[cfg(feature = "validation")]
-  #[cfg_attr(feature = "validation", doc(cfg(feature = "validation")))]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
