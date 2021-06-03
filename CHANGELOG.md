@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.24.0 (2021-06-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* move runtime validation to crate feature (#160)
+
+### Features
+
+* move runtime validation to crate feature ([#160](https://github.com/cakekindel/slack-blocks-rs/issues/160)) ([651b1b7](https://github.com/cakekindel/slack-blocks-rs/commit/651b1b7d04b6964e4cc1d7117974f0a78adee53d))
+
 ### 0.23.1 (2021-06-02)
 
 ## 0.23.0 (2021-06-02)
