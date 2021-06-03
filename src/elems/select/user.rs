@@ -7,25 +7,30 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validate")]
 use validator::Validate;
 
-use crate::{compose::Confirm, text, val_helpr::ValidationResult};
+#[cfg(feature = "validate")]
+use crate::val_helpr::ValidationResult;
+use crate::{compose::Confirm, text};
 
 /// # Select menu with user list
 /// [slack api docs 🔗](https://api.slack.com/reference/block-kit/block-elements#users_select)
 ///
 /// This select menu will populate its options with a list of
 /// Slack users visible to the current user in the active workspace.
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct User<'a> {
-  #[validate(custom = "super::validate::placeholder")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate::placeholder"))]
   placeholder: text::Text,
 
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate]
+  #[cfg_attr(feature = "validation", validate)]
   confirm: Option<Confirm>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -80,6 +85,8 @@ impl<'a> User<'a> {
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(&self)
   }

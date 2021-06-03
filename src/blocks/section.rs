@@ -21,9 +21,12 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose::text, elems::BlockElement, val_helpr::ValidationResult};
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
+use crate::{compose::text, elems::BlockElement};
 
 /// # Section Block
 ///
@@ -44,18 +47,19 @@ use crate::{compose::text, elems::BlockElement, val_helpr::ValidationResult};
 /// [messages 🔗]: https://api.slack.com/surfaces/messages
 /// [home tabs 🔗]: https://api.slack.com/surfaces/tabs
 /// [block elements 🔗]: https://api.slack.com/reference/messaging/block-elements
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Section<'a> {
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate::fields")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::fields"))]
   fields: Option<Cow<'a, [text::Text]>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate::text")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::text"))]
   text: Option<text::Text>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate::block_id")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::block_id"))]
   block_id: Option<Cow<'a, str>>,
 
   /// One of the available [element objects 🔗][element_objects].
@@ -93,6 +97,8 @@ impl<'a> Section<'a> {
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(feature = "validation", doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
@@ -306,6 +312,7 @@ pub mod build {
   }
 }
 
+#[cfg(feature = "validation")]
 mod validate {
   use super::*;
   use crate::{compose::text,

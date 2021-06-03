@@ -9,9 +9,12 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose::text, val_helpr::ValidationResult};
+use crate::compose::text;
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 /// # Image Block
 ///
@@ -20,27 +23,22 @@ use crate::{compose::text, val_helpr::ValidationResult};
 /// A simple image block, designed to make those cat photos really pop.
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#image
-#[derive(Clone,
-           Debug,
-           Default,
-           Deserialize,
-           Hash,
-           PartialEq,
-           Serialize,
-           Validate)]
+#[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Image<'a> {
-  #[validate(length(max = 3000))]
+  #[cfg_attr(feature = "validation", validate(length(max = 3000)))]
   image_url: Cow<'a, str>,
 
-  #[validate(length(max = 2000))]
+  #[cfg_attr(feature = "validation", validate(length(max = 2000)))]
   alt_text: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate::title")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::title"))]
   title: Option<text::Text>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "super::validate_block_id")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate_block_id"))]
   block_id: Option<Cow<'a, str>>,
 }
 
@@ -55,14 +53,11 @@ impl<'a> Image<'a> {
   /// Validate that this Image block agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `with_block_id` was called with a block id longer
+  /// - If `block_id` longer
   ///     than 255 chars
-  /// - If `with_title` was called with a title longer
-  ///     than 2000 chars
-  /// - If `from_url_and_alt_text` was called with `alt_text` longer
-  ///     than 2000 chars
-  /// - If `from_url_and_alt_text` was called with `image_url` longer
-  ///     than 3000 chars
+  /// - If title longer than 2000 chars
+  /// - If `alt_text` longer than 2000 chars
+  /// - If `image_url` longer than 3000 chars
   ///
   /// # Example
   /// ```
@@ -77,6 +72,8 @@ impl<'a> Image<'a> {
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
@@ -257,6 +254,7 @@ pub mod build {
   }
 }
 
+#[cfg(feature = "validation")]
 mod validate {
   use crate::{compose::text,
               val_helpr::{below_len, ValidatorResult}};

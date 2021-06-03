@@ -15,8 +15,10 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 
 /// # Image Element
@@ -32,7 +34,8 @@ use crate::val_helpr::ValidationResult;
 /// [`image` block 🔗]: https://api.slack.com/reference/block-kit/blocks#image
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
 /// [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
-#[derive(Clone, Debug, Hash, PartialEq, Ser, De, Validate)]
+#[derive(Clone, Debug, Hash, PartialEq, Ser, De)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Image<'a> {
   image_url: Cow<'a, str>,
   alt_text: Cow<'a, str>,
@@ -50,6 +53,8 @@ impl<'a> Image<'a> {
   /// Validate that this image element agrees with Slack's model requirements.
   ///
   /// No rules are specified in the Slack docs at the time of writing so this will always succeed.
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Ok(())
   }

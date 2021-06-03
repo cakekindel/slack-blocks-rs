@@ -45,8 +45,6 @@ pub mod section;
 #[doc(inline)]
 pub use section::Section;
 
-type ValidationResult = Result<(), validator::ValidationErrors>;
-
 /// # Layout Blocks
 ///
 /// Blocks are a series of components that can be combined
@@ -119,6 +117,8 @@ impl<'a> Block<'a> {
   ///
   /// assert!(matches!(img.validate(), Err(_)), "validation should fail!")
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     use Block::*;
 
@@ -141,6 +141,7 @@ convert!(impl<'a> From<Image<'a>>   for Block<'a> => |a| Block::Image(a));
 convert!(impl<'a> From<Context<'a>> for Block<'a> => |a| Block::Context(a));
 convert!(impl<'a> From<File<'a>>    for Block<'a> => |a| Block::File(a));
 
+#[cfg(feature = "validation")]
 fn validate_block_id(id: &std::borrow::Cow<str>)
                      -> crate::val_helpr::ValidatorResult {
   crate::val_helpr::below_len("block_id", 255, id)

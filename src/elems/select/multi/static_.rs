@@ -14,12 +14,12 @@ use std::borrow::Cow;
 
 use compose::{opt::NoUrl, Confirm};
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose,
-            elems::select::static_::build,
-            text,
-            val_helpr::ValidationResult};
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
+use crate::{compose, elems::select::static_::build, text};
 
 type OptGroup<'a> = compose::OptGroup<'a, text::Plain, NoUrl>;
 type Opt<'a> = compose::Opt<'a, text::Plain, NoUrl>;
@@ -36,31 +36,33 @@ type OptOrOptGroup<'a> = compose::OptOrOptGroup<'a, text::Plain, NoUrl>;
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
 /// [blocks 🔗]: https://api.slack.com/reference/block-kit/blocks
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Static<'a> {
-  #[validate(custom = "crate::elems::select::validate::placeholder")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "crate::elems::select::validate::placeholder"))]
   pub(in crate::elems::select) placeholder: text::Text,
 
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   pub(in crate::elems::select) action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 100))]
+  #[cfg_attr(feature = "validation", validate(length(max = 100)))]
   pub(in crate::elems::select) options: Option<Vec<Opt<'a>>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 100))]
+  #[cfg_attr(feature = "validation", validate(length(max = 100)))]
   pub(in crate::elems::select) option_groups: Option<Vec<OptGroup<'a>>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate]
+  #[cfg_attr(feature = "validation", validate)]
   pub(in crate::elems::select) confirm: Option<Confirm>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) initial_options:
     Option<Cow<'a, [OptOrOptGroup<'a>]>>,
 
-  #[validate(range(min = 1))]
+  #[cfg_attr(feature = "validation", validate(range(min = 1)))]
   #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) max_selected_items: Option<u32>,
 }
@@ -102,6 +104,8 @@ impl<'a> Static<'a> {
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }

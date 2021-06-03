@@ -10,8 +10,10 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 
 /// # File Block
@@ -22,12 +24,15 @@ use crate::val_helpr::ValidationResult;
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#file
 /// [remote file 🔗]: https://api.slack.com/messaging/files/remote
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct File<'a> {
   external_id: Cow<'a, str>,
   source: Cow<'a, str>,
+
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "super::validate_block_id")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate_block_id"))]
   block_id: Option<Cow<'a, str>>,
 }
 
@@ -42,8 +47,7 @@ impl<'a> File<'a> {
   /// Validate that this File block agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `with_block_id` was called with a block id longer
-  ///     than 256 chars
+  /// - If `block_id` longer than 256 chars
   ///
   /// # Example
   /// ```
@@ -63,6 +67,8 @@ impl<'a> File<'a> {
   /// # Ok(())
   /// # }
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }

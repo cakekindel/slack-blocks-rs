@@ -9,12 +9,14 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 use crate::{convert,
             elems::{BlockElement, Image},
-            text,
-            val_helpr::ValidationResult};
+            text};
 
 /// # Context Block
 ///
@@ -23,20 +25,15 @@ use crate::{convert,
 /// Displays message context, which can include both images and text.
 ///
 /// [context_docs]: https://api.slack.com/reference/block-kit/blocks#context
-#[derive(Clone,
-           Debug,
-           Default,
-           Deserialize,
-           Hash,
-           PartialEq,
-           Serialize,
-           Validate)]
+#[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Context<'a> {
-  #[validate(length(max = 10))]
+  #[cfg_attr(feature = "validation", validate(length(max = 10)))]
   elements: Vec<ImageOrText<'a>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "super::validate_block_id")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate_block_id"))]
   block_id: Option<Cow<'a, str>>,
 }
 
@@ -51,10 +48,8 @@ impl<'a> Context<'a> {
   /// Validate that this Context block agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `with_block_id` was called with a block id longer
-  ///     than 255 chars
-  /// - If `from_elements`, `from_context_elements`, or `with_element` was called with
-  ///     more than 10 objects
+  /// - If `block_id` longer than 255 chars
+  /// - If `elements` contains more than 10 objects
   ///
   /// # Example
   /// ```
@@ -68,6 +63,8 @@ impl<'a> Context<'a> {
   ///
   /// assert_eq!(true, matches!(block.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }

@@ -8,11 +8,13 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 use crate::{compose::{Confirm, ConversationFilter},
-            text,
-            val_helpr::ValidationResult};
+            text};
 
 /// # Select Conversation List
 ///
@@ -20,16 +22,18 @@ use crate::{compose::{Confirm, ConversationFilter},
 ///
 /// This select menu will populate its options with a list of public and private channels,
 /// DMs, and MPIMs visible to the current user in the active workspace.
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Conversation<'a> {
-  #[validate(custom = "super::validate::placeholder")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate::placeholder"))]
   placeholder: text::Text,
 
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate]
+  #[cfg_attr(feature = "validation", validate)]
   confirm: Option<Confirm>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,7 +42,7 @@ pub struct Conversation<'a> {
   #[serde(skip_serializing_if = "Option::is_none")]
   default_to_current_conversation: Option<bool>,
 
-  #[validate]
+  #[cfg_attr(feature = "validation", validate)]
   #[serde(skip_serializing_if = "Option::is_none")]
   filter: Option<ConversationFilter>,
 }
@@ -92,6 +96,8 @@ impl<'a> Conversation<'a> {
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(&self)
   }

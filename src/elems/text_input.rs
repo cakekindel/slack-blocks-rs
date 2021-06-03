@@ -13,9 +13,12 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{text, val_helpr::*};
+use crate::text;
+#[cfg(feature = "validation")]
+use crate::val_helpr::*;
 
 /// Interaction types that you would like to receive a [`block_actions` payload 🔗] for.
 ///
@@ -49,12 +52,14 @@ struct DispatchActionConfig {
 /// Works in [app surfaces 🔗]: Home tabs, Modals, Messages
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/block-elements#radio
-#[derive(Clone, Debug, Hash, PartialEq, Ser, De, Validate)]
+#[derive(Clone, Debug, Hash, PartialEq, Ser, De)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct TextInput<'a> {
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   action_id: Cow<'a, str>,
 
-  #[validate(custom = "validate_placeholder")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "validate_placeholder"))]
   #[serde(skip_serializing_if = "Option::is_none")]
   placeholder: Option<text::Text>,
 
@@ -64,7 +69,7 @@ pub struct TextInput<'a> {
   #[serde(skip_serializing_if = "Option::is_none")]
   multiline: Option<bool>,
 
-  #[validate(range(max = 3000))]
+  #[cfg_attr(feature = "validation", validate(range(max = 3000)))]
   #[serde(skip_serializing_if = "Option::is_none")]
   min_length: Option<u32>,
 
@@ -104,11 +109,14 @@ impl<'a> TextInput<'a> {
   ///
   /// assert!(matches!(input.validate(), Err(_)))
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
 }
 
+#[cfg(feature = "validation")]
 fn validate_placeholder<'a>(p: &text::Text) -> ValidatorResult {
   below_len("TextInput.placeholder", 150, p)
 }

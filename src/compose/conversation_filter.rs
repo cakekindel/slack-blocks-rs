@@ -10,8 +10,10 @@
 //! [conversations multi-select menu 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/block-elements#conversation_multi_select
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 
 /// # Filter for Conversations List
@@ -24,16 +26,10 @@ use crate::val_helpr::ValidationResult;
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#filter_conversations
 /// [conversations select menu 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/block-elements#conversation_select
 /// [conversations multi-select menu 🔗]: https://api.slack.comhttps://api.slack.com/reference/block-kit/block-elements#conversation_multi_select
-#[derive(Clone,
-           Debug,
-           Default,
-           Deserialize,
-           Hash,
-           PartialEq,
-           Serialize,
-           Validate)]
+#[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct ConversationFilter {
-  #[validate(length(min = 1, max = 4))]
+  #[cfg_attr(feature = "validation", validate(length(min = 1, max = 4)))]
   #[serde(skip_serializing_if = "Option::is_none")]
   include: Option<Vec<ConversationKind>>,
 
@@ -201,6 +197,8 @@ impl ConversationFilter {
   ///
   /// assert_eq!(false, matches!(filter.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(feature = "validation", doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }

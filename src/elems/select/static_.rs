@@ -9,9 +9,12 @@ use std::{borrow::Cow, marker::PhantomData};
 
 use compose::{opt::NoUrl, Confirm, Opt, OptGroup, OptOrOptGroup};
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validate")]
 use validator::Validate;
 
-use crate::{compose, text, val_helpr::ValidationResult};
+#[cfg(feature = "validate")]
+use crate::val_helpr::ValidationResult;
+use crate::{compose, text};
 
 /// Opt state supported by static select
 pub type StaticOptGroup<'a> = OptGroup<'a, text::Plain, NoUrl>;
@@ -26,24 +29,26 @@ pub type StaticOptOrOptGroup<'a> = OptOrOptGroup<'a, text::Plain, NoUrl>;
 ///
 /// This is the simplest form of select menu,
 /// with a static list of options passed in when defining the element.
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Static<'a> {
-  #[validate(custom = "super::validate::placeholder")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate::placeholder"))]
   placeholder: text::Text,
 
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 100))]
+  #[cfg_attr(feature = "validation", validate(length(max = 100)))]
   options: Option<Vec<StaticOpt<'a>>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(length(max = 100))]
+  #[cfg_attr(feature = "validation", validate(length(max = 100)))]
   option_groups: Option<Vec<StaticOptGroup<'a>>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate]
+  #[cfg_attr(feature = "validation", validate)]
   confirm: Option<Confirm>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -120,6 +125,8 @@ impl<'a> Static<'a> {
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }

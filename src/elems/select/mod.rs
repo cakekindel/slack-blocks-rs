@@ -210,6 +210,7 @@ pub mod select_kind {
   pub struct Single;
 }
 
+#[cfg(feature = "validation")]
 mod validate {
   use crate::{text, val_helpr::*};
 

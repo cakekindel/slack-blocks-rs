@@ -8,12 +8,12 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{compose::Confirm,
-            elems::select::user::build,
-            text,
-            val_helpr::ValidationResult};
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
+use crate::{compose::Confirm, elems::select::user::build, text};
 
 /// # Multi-Select User List
 ///
@@ -21,22 +21,24 @@ use crate::{compose::Confirm,
 ///
 /// This multi-select menu will populate its options with
 /// a list of Slack users visible to the current user in the active workspace.
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct User<'a> {
-  #[validate(custom = "crate::elems::select::validate::placeholder")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "crate::elems::select::validate::placeholder"))]
   pub(in crate::elems::select) placeholder: text::Text,
 
-  #[validate(length(max = 255))]
+  #[cfg_attr(feature = "validation", validate(length(max = 255)))]
   pub(in crate::elems::select) action_id: Cow<'a, str>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate]
+  #[cfg_attr(feature = "validation", validate)]
   pub(in crate::elems::select) confirm: Option<Confirm>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) initial_users: Option<Cow<'a, [String]>>,
 
-  #[validate(range(min = 1))]
+  #[cfg_attr(feature = "validation", validate(range(min = 1)))]
   #[serde(skip_serializing_if = "Option::is_none")]
   pub(in crate::elems::select) max_selected_items: Option<u32>,
 }
@@ -77,6 +79,8 @@ impl<'a> User<'a> {
   ///
   /// assert!(matches!(select.validate(), Err(_)))
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(&self)
   }

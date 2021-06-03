@@ -13,13 +13,15 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 use crate::{compose::text,
             convert,
             elems,
-            elems::{select, BlockElement},
-            val_helpr::ValidationResult};
+            elems::{select, BlockElement}};
 
 /// # Input Block
 ///
@@ -32,19 +34,21 @@ use crate::{compose::text,
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/blocks#input
 /// [slack's guide to using modals 🔗]: https://api.slack.com/surfaces/modals/using#gathering_input
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Input<'a> {
-  #[validate(custom = "validate::label")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::label"))]
   label: text::Text,
 
   element: SupportedElement<'a>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "super::validate_block_id")]
+  #[cfg_attr(feature = "validation",
+             validate(custom = "super::validate_block_id"))]
   block_id: Option<Cow<'a, str>>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  #[validate(custom = "validate::hint")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::hint"))]
   hint: Option<text::Text>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -67,10 +71,8 @@ impl<'a> Input<'a> {
   /// # Errors
   /// - If `from_label_and_element` was passed a Text object longer
   ///     than 2000 chars
-  /// - If `with_hint` was called with a block id longer
-  ///     than 2000 chars
-  /// - If `with_block_id` was called with a block id longer
-  ///     than 256 chars
+  /// - If `hint` longer than 2000 chars
+  /// - If `block_id` longer than 256 chars
   ///
   /// # Example
   /// ```
@@ -94,6 +96,8 @@ impl<'a> Input<'a> {
   ///
   /// // < send to slack API >
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
@@ -338,6 +342,7 @@ convert!(impl<'a> From<select::multi::User<'a>> for SupportedElement<'a> => |r| 
 convert!(impl<'a> From<select::multi::Conversation<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
 convert!(impl<'a> From<select::multi::PublicChannel<'a>> for SupportedElement<'a> => |r| SupportedElement(BlockElement::from(r)));
 
+#[cfg(feature = "validation")]
 mod validate {
   use crate::{compose::text,
               val_helpr::{below_len, ValidatorResult}};

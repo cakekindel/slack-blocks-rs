@@ -7,9 +7,12 @@
 //! [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#confirm
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-use crate::{text, val_helpr::ValidationResult};
+use crate::text;
+#[cfg(feature = "validation")]
+use crate::val_helpr::ValidationResult;
 
 /// # Confirm Dialog
 /// [slack api docs 🔗]
@@ -18,18 +21,19 @@ use crate::{text, val_helpr::ValidationResult};
 /// This dialog will ask the user to confirm their action by offering a confirm and deny buttons.
 ///
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#confirm
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct Confirm {
-  #[validate(custom = "validate::title")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::title"))]
   title: text::Text,
 
-  #[validate(custom = "validate::text")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::text"))]
   text: text::Text,
 
-  #[validate(custom = "validate::confirm")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::confirm"))]
   confirm: text::Text,
 
-  #[validate(custom = "validate::deny")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::deny"))]
   deny: text::Text,
 
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,6 +72,8 @@ impl Confirm {
   ///
   /// assert_eq!(true, matches!(dialog.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(feature = "validation", doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
@@ -317,6 +323,7 @@ pub mod build {
   }
 }
 
+#[cfg(feature = "validation")]
 mod validate {
   use crate::{text, val_helpr::*};
 

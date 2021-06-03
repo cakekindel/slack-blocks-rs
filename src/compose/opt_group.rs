@@ -9,11 +9,13 @@
 //! [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
 
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "validation")]
 use validator::Validate;
 
 use super::{opt::{AnyText, NoUrl},
             text,
             Opt};
+#[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 
 /// # Option Group
@@ -25,12 +27,13 @@ use crate::val_helpr::ValidationResult;
 /// [multi-select menu 🔗]: https://api.slack.com/reference/block-kit/block-elements#multi_select
 /// [slack api docs 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option_group
 /// [`plain_text` only text object 🔗]: https://api.slack.com/reference/block-kit/composition-objects#text
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[cfg_attr(feature = "validation", derive(Validate))]
 pub struct OptGroup<'a, T = AnyText, U = NoUrl> {
-  #[validate(custom = "validate::label")]
+  #[cfg_attr(feature = "validation", validate(custom = "validate::label"))]
   label: text::Text,
 
-  #[validate(length(max = 100))]
+  #[cfg_attr(feature = "validation", validate(length(max = 100)))]
   options: Vec<Opt<'a, T, U>>,
 }
 
@@ -67,6 +70,8 @@ impl<'a, T, U> OptGroup<'a, T, U> {
   ///
   /// assert_eq!(true, matches!(grp.validate(), Err(_)));
   /// ```
+  #[cfg(feature = "validation")]
+  #[cfg_attr(feature = "validation", doc(cfg(feature = "validation")))]
   pub fn validate(&self) -> ValidationResult {
     Validate::validate(self)
   }
@@ -322,6 +327,7 @@ pub mod build {
   }
 }
 
+#[cfg(feature = "validation")]
 mod validate {
   use super::*;
   use crate::val_helpr::{below_len, ValidatorResult};
