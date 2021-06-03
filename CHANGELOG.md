@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.24.1 (2021-06-03)
+
+
+### Bug Fixes
+
+* validation feature should compile ([#161](https://github.com/cakekindel/slack-blocks-rs/issues/161)) ([2eb9580](https://github.com/cakekindel/slack-blocks-rs/commit/2eb95805b21fde32155db395e1582904fd7da336))
+
 ## 0.24.0 (2021-06-03)
 
 
