@@ -28,15 +28,15 @@ dependencies = ["install-fmt"]
 
 [tasks.doctest-slow]
 command = "cargo"
-args = ["--locked", "test", "--features", "blox", "--jobs", "1", "--doc", "--", "--quiet"]
+args = ["--locked", "test", "--all-features", "--jobs", "1", "--doc", "--", "--quiet"]
 
 [tasks.doctest]
 command = "cargo"
-args = ["--locked", "test", "--features", "blox", "--doc", "--", "--quiet"]
+args = ["--locked", "test", "--all-features", "--doc", "--", "--quiet"]
 
 [tasks.test]
 command = "cargo"
-args = ["--locked", "test", "--features", "blox", "--tests", "--", "--quiet"]
+args = ["--locked", "test", "--all-features", "--tests", "--", "--quiet"]
 dependencies = ["doctest"]
 
 [tasks.tdd]
@@ -55,7 +55,7 @@ command = "cargo"
 args = [ "watch"
        , "--watch", "./src"
        , "--watch", "./tests"
-       , "-x", "check"
+       , "-x", "check --all-features"
        , "-x", "make fmt"
        ]
 

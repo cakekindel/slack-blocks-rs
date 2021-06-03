@@ -9,10 +9,10 @@ use std::{borrow::Cow, marker::PhantomData};
 
 use compose::{opt::NoUrl, Confirm, Opt, OptGroup, OptOrOptGroup};
 use serde::{Deserialize, Serialize};
-#[cfg(feature = "validate")]
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-#[cfg(feature = "validate")]
+#[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 use crate::{compose, text};
 
