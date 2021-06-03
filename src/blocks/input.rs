@@ -71,10 +71,8 @@ impl<'a> Input<'a> {
   /// # Errors
   /// - If `from_label_and_element` was passed a Text object longer
   ///     than 2000 chars
-  /// - If `with_hint` was called with a block id longer
-  ///     than 2000 chars
-  /// - If `with_block_id` was called with a block id longer
-  ///     than 256 chars
+  /// - If `hint` longer than 2000 chars
+  /// - If `block_id` longer than 256 chars
   ///
   /// # Example
   /// ```

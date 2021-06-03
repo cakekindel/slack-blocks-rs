@@ -53,14 +53,11 @@ impl<'a> Image<'a> {
   /// Validate that this Image block agrees with Slack's model requirements
   ///
   /// # Errors
-  /// - If `with_block_id` was called with a block id longer
+  /// - If `block_id` longer
   ///     than 255 chars
-  /// - If `with_title` was called with a title longer
-  ///     than 2000 chars
-  /// - If `from_url_and_alt_text` was called with `alt_text` longer
-  ///     than 2000 chars
-  /// - If `from_url_and_alt_text` was called with `image_url` longer
-  ///     than 3000 chars
+  /// - If title longer than 2000 chars
+  /// - If `alt_text` longer than 2000 chars
+  /// - If `image_url` longer than 3000 chars
   ///
   /// # Example
   /// ```
