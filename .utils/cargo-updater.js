@@ -1,4 +1,4 @@
-const { readFileSync } = require('fs');
+const {pick} = require('./common');
 
 /// # Public
 module.exports = {
@@ -11,12 +11,6 @@ module.exports = {
 // Regex pattern that matches against the version property in a Cargo.toml file,
 //     with the first capture group containing the version number.
 const tomlVersionPattern = /['"]?version['"]?\s*=\s*['"]([\d\.]+)['"]/mi;
-
-// returns a bool indicating whether a given val is null or undefined
-const isNullish = val => typeof val === 'null' || typeof val === 'undefined';
-
-// safely access a property
-const pick = (val, prop) => isNullish(val) ? undefined : val[prop];
 
 // read the "version" property in Cargo.toml
 const getVer = toml => pick(tomlVersionPattern.exec(toml), 1);
