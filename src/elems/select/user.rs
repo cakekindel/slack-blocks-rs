@@ -7,10 +7,10 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
-#[cfg(feature = "validate")]
+#[cfg(feature = "validation")]
 use validator::Validate;
 
-#[cfg(feature = "validate")]
+#[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 use crate::{compose::Confirm, text};
 

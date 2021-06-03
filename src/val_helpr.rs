@@ -12,7 +12,7 @@ pub(crate) fn error<StrIsh: AsRef<str>>(kind: &'static str,
                                         -> ValidationError {
   let mut error = ValidationError::new(kind);
   error.add_param(Cow::from("message"),
-                  &serde_json::Value::String(msg.as_ref().to_string()));
+                  &msg.as_ref());
 
   error
 }

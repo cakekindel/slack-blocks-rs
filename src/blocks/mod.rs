@@ -119,7 +119,7 @@ impl<'a> Block<'a> {
   /// ```
   #[cfg(feature = "validation")]
   #[cfg_attr(docsrs, doc(cfg(feature = "validation")))]
-  pub fn validate(&self) -> ValidationResult {
+  pub fn validate(&self) -> crate::val_helpr::ValidationResult {
     use Block::*;
 
     match self {
