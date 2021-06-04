@@ -141,6 +141,27 @@ convert!(impl<'a> From<Image<'a>>   for Block<'a> => |a| Block::Image(a));
 convert!(impl<'a> From<Context<'a>> for Block<'a> => |a| Block::Context(a));
 convert!(impl<'a> From<File<'a>>    for Block<'a> => |a| Block::File(a));
 
+/// Error yielded when `TryFrom` is called on an unsupported block element.
+#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+pub struct UnsupportedElement<'a> {
+  context: String,
+  element: crate::elems::BlockElement<'a>,
+}
+
+impl<'a> std::fmt::Display for UnsupportedElement<'a> {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    write!(f,
+           "(In {}) Block element not supported: {:#?}",
+           self.context, self.element)
+  }
+}
+
+impl<'a> std::error::Error for UnsupportedElement<'a> {
+  fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+    None
+  }
+}
+
 #[cfg(feature = "validation")]
 fn validate_block_id(id: &std::borrow::Cow<str>)
                      -> crate::val_helpr::ValidatorResult {

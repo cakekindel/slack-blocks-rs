@@ -234,9 +234,15 @@ pub mod build {
 pub struct SupportedElement<'a>(BlockElement<'a>);
 
 impl<'a> TryFrom<BlockElement<'a>> for self::SupportedElement<'a> {
-  type Error = ();
+  type Error = super::UnsupportedElement<'a>;
+
   fn try_from(el: BlockElement<'a>) -> Result<Self, Self::Error> {
     use BlockElement as El;
+
+    let unsupported = |el| super::UnsupportedElement { context:
+                                                         format!("{}::Actions",
+                                                                 module_path!()),
+                                                       element: el };
 
     match el {
       | El::SelectPublicChannel(_)
@@ -250,7 +256,7 @@ impl<'a> TryFrom<BlockElement<'a>> for self::SupportedElement<'a> {
       | El::TextInput(_)
       | El::Checkboxes(_)
       | El::DatePicker(_) => Ok(SupportedElement(el)),
-      | _ => Err(()),
+      | _ => Err(unsupported(el)),
     }
   }
 }
