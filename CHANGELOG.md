@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.24.3 (2021-06-04)
+
+
+### Bug Fixes
+
+* html-root-updater should export readVersion ([#163](https://github.com/cakekindel/slack-blocks-rs/issues/163)) ([b482a61](https://github.com/cakekindel/slack-blocks-rs/commit/b482a61ec16d8de29616bfe7d0d78043d7044420))
+
 ### 0.24.2 (2021-06-04)
 
 
