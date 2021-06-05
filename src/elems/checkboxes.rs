@@ -28,12 +28,12 @@ type MyOpt<'a> = Opt<'a, AnyText, NoUrl>;
 
 #[cfg(feature = "validation")]
 fn validate_options<'a>(o: &Cow<'a, [MyOpt<'a>]>) -> ValidatorResult {
-  below_len("Checkboxes.options", 10, o.as_ref())
+  below_len("options", 10, o.as_ref())
 }
 
 #[cfg(feature = "validation")]
 fn validate_initial_options<'a>(o: &Cow<'a, [MyOpt<'a>]>) -> ValidatorResult {
-  below_len("Checkboxes.initial_options", 10, o.as_ref())
+  below_len("initial_options", 10, o.as_ref())
 }
 
 /// # Checkbox Group
@@ -184,7 +184,7 @@ pub mod build {
   /// let boxes =
   ///   Checkboxes::builder().action_id("state_picker")
   ///                        .options(states)
-  ///                        .initial_options(vec![state_opt(usa::arizona()).into()])
+  ///                        .initial_options(vec![state_opt(usa::arizona())])
   ///                        .build();
   ///
   /// let block: Block = Actions::builder().element(boxes).build().into();
@@ -291,8 +291,13 @@ pub mod build {
     /// These options will be selected when the checkbox group initially loads.
     ///
     /// [option objects 🔗]: https://api.slack.com/reference/messaging/composition-objects#option
-    pub fn initial_options(mut self, options: Vec<MyOpt<'a>>) -> Self {
-      self.initial_options = Some(options);
+    pub fn initial_options<T: Into<text::Text>>(mut self,
+                                                options: Vec<Opt<'a,
+                                                        T,
+                                                        NoUrl>>)
+                                                -> Self {
+      self.initial_options =
+        Some(options.into_iter().map(|o| o.into()).collect());
       self
     }
 

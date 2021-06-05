@@ -144,13 +144,19 @@ mod blox_blocks {
   /// ## Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
-  /// |[`text`](blocks::section::build::SectionBuilder::text())|[`text::Plain`], [`text::Mrkdwn`], or [`text::Text`]|❌*|❌|
-  /// |[`field`](blocks::section::build::SectionBuilder::field())|[`text::Plain`], [`text::Mrkdwn`], or [`text::Text`]|❌*|✅|
-  /// |[`fields`](blocks::section::build::SectionBuilder::fields())|[`IntoIterator`] over [`text::Text`]|❌*|❌|
-  /// |[`accessory`](blocks::section::build::SectionBuilder::accessory())|[`elems::BlockElement`]|✅|❌|
-  /// |[`block_id`](blocks::section::build::SectionBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
+  /// |[`text`]     | [`text::Plain`], [`text::Mrkdwn`], or [`text::Text`]|❌*|❌|
+  /// |[`field`]    | [`text::Plain`], [`text::Mrkdwn`], or [`text::Text`]|❌*|✅|
+  /// |[`fields`]   | [`IntoIterator`] over [`text::Text`]                |❌*|❌|
+  /// |[`accessory`]| [`elems::BlockElement`]                             |✅ |❌|
+  /// |[`block_id`] | [`String`] or [`&str`]                              |✅ |❌|
   ///
   /// &#42; `text`, `field(s)`, or both are required.
+  ///
+  /// [`text`]: blocks::section::build::SectionBuilder::text()
+  /// [`field`]: blocks::section::build::SectionBuilder::field()
+  /// [`fields`]: blocks::section::build::SectionBuilder::fields()
+  /// [`accessory`]: blocks::section::build::SectionBuilder::accessory()
+  /// [`block_id`]: blocks::section::build::SectionBuilder::block_id()
   ///
   /// ## Example
   /// ```
@@ -184,10 +190,10 @@ mod blox_blocks {
   /// ## Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
-  /// |[`label`](blocks::input::build::InputBuilder::label())|[`text::Plain`], [`text::Mrkdwn`], or [`text::Text`]|❌|❌|
+  /// |[`label`](blocks::input::build::InputBuilder::label())|[`text::Plain`], [`text::Mrkdwn`], or [`text::Text`] ([`<text>`](super::text()))|❌|❌|
   /// |[`element`](blocks::input::build::InputBuilder::element())|`impl Into<`[`blocks::input::SupportedElement`]`>`|❌|✅|
   /// |[`block_id`](blocks::input::build::InputBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
-  /// |[`hint`](blocks::input::build::InputBuilder::hint())|[`text::Plain`], [`String`], or [`&str`]|✅|❌|
+  /// |[`hint`](blocks::input::build::InputBuilder::hint())|[`text::Plain`] ([`<text>`](super::text())), [`String`], or [`&str`]|✅|❌|
   /// |[`dispatch_actions`](blocks::input::build::InputBuilder::dispatch_actions())|[`bool`]|✅|❌|
   /// |[`optional`](blocks::input::build::InputBuilder::optional())|[`bool`]|✅|❌|
   ///
@@ -219,7 +225,7 @@ mod blox_blocks {
   /// ## Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
-  /// |[`element`](blocks::context::build::ContextBuilder::element())|[`text::Text`] or [`elems::Image`]|❌|✅|
+  /// |[`element`](blocks::context::build::ContextBuilder::element())|[`text::Text`] ([`<text>`](super::text())) or [`elems::Image`] ([`<img>`](super::img()))|❌|✅|
   /// |[`block_id`](blocks::context::build::ContextBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
   ///
   /// ## Example
@@ -312,8 +318,26 @@ mod blox_elems {
   ///
   /// Build a [`elems::TextInput`]
   ///
-  /// ## Children
-  /// None.
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`action_id`]      | [`String`] or [`&str`]                      |❌|❌|
+  /// |[`action_trigger`] | [`elems::text_input::ActionTrigger`]        |✅|❌|
+  /// |[`placeholder`]    | [`text::Plain`] ([`<text>`](super::text())), [`String`] or [`&str`]     |✅|❌|
+  /// |[`initial_value`]  | [`String`] or [`&str`]                      |✅|❌|
+  /// |[`length`]         | impl [`std::ops::RangeBounds`] over [`u32`] |✅|❌|
+  /// |[`min_length`]     | [`u32`]                                     |✅|❌|
+  /// |[`max_length`]     | [`u32`]                                     |✅|❌|
+  /// |[`multiline`]      | [`bool`]                                    |✅|❌|
+  ///
+  /// [`action_id`]:      elems::text_input::build::TextInputBuilder::action_id()
+  /// [`action_trigger`]: elems::text_input::build::TextInputBuilder::action_trigger()
+  /// [`placeholder`]:    elems::text_input::build::TextInputBuilder::placeholder()
+  /// [`initial_value`]:  elems::text_input::build::TextInputBuilder::initial_value()
+  /// [`length`]:         elems::text_input::build::TextInputBuilder::length()
+  /// [`min_length`]:     elems::text_input::build::TextInputBuilder::min_length()
+  /// [`max_length`]:     elems::text_input::build::TextInputBuilder::max_length()
+  /// [`multiline`]:      elems::text_input::build::TextInputBuilder::multiline()
   ///
   /// ## Example
   /// ```
@@ -346,8 +370,11 @@ mod blox_elems {
   ///
   /// Build a [`elems::Image`]
   ///
-  /// ## Children
-  /// None.
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`src`](elems::image::build::ImageBuilder::src()) | [`String`] or [`&str`] |❌|❌|
+  /// |[`alt`](elems::image::build::ImageBuilder::alt()) | [`String`] or [`&str`] |❌|❌|
   ///
   /// ## Example
   /// ```
@@ -371,19 +398,35 @@ mod blox_elems {
   ///
   /// Build a [`elems::Button`]
   ///
-  /// ## Children
-  /// The text to display in the button
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`action_id`] | [`String`] or [`&str`]                                              |❌|❌|
+  /// |[`text`]      | [`text::Plain`] ([`<text>`](super::text())), [`String`] or [`&str`] |❌|✅|
+  /// |[`url`]       | [`String`] or [`&str`]                                              |✅|❌|
+  /// |[`value`]     | [`String`] or [`&str`]                                              |✅|❌|
+  /// |[`style`]     | [`elems::button::Style`] ([`btn_primary`] or [`btn_danger`])        |✅|❌|
+  /// |[`confirm`]   | [`compose::Confirm`] ([`<confirm>`](super::confirm()))              |✅|❌|
+  ///
+  /// [`action_id`]: elems::button::build::ButtonBuilder::action_id()
+  /// [`text`]: elems::button::build::ButtonBuilder::text()
+  /// [`url`]: elems::button::build::ButtonBuilder::url()
+  /// [`value`]: elems::button::build::ButtonBuilder::value()
+  /// [`style`]: elems::button::build::ButtonBuilder::style()
+  /// [`confirm`]: elems::button::build::ButtonBuilder::confirm()
   ///
   /// ## Example
   /// ```
-  /// use slack_blocks::{blox::*, elems::Button};
+  /// use slack_blocks::{blox::*,
+  ///                    elems::button::{Button, Style}};
   ///
   /// let xml: Button = blox! {
-  ///   <button action_id="click_me">"Click me!"</button>
+  ///   <button action_id="dangerous" style=btn_danger>"DANGER!"</button>
   /// };
   ///
-  /// let equiv = Button::builder().action_id("click_me")
-  ///                              .text("Click me!")
+  /// let equiv = Button::builder().action_id("dangerous")
+  ///                              .text("DANGER!")
+  ///                              .style(Style::Danger)
   ///                              .build();
   ///
   /// assert_eq!(xml, equiv)
@@ -396,8 +439,22 @@ mod blox_elems {
   ///
   /// Build a [`elems::Checkboxes`]
   ///
-  /// ## Children
-  /// Options to populate the checkbox group with. Min 1, max 10
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`action_id`]       | [`String`] or [`&str`]                                               |❌|❌|
+  /// |[`option`]          | [`compose::Opt`] ([`<option>`](super::option()))*                    |❌ _(or `options`)_|✅|
+  /// |[`options`]         | [`Vec`] of [`compose::Opt`]*                                         |❌ _(or `option`)_|❌|
+  /// |[`initial_options`] | [`Vec`] of [`compose::Opt`]* provided via [`option`] or [`options`]. |✅|❌|
+  /// |[`confirm`]         | [`compose::Confirm`] ([`<confirm>`](super::confirm()))               |✅|❌|
+  ///
+  /// [`action_id`]: elems::checkboxes::build::CheckboxesBuilder::action_id()
+  /// [`option`]: elems::checkboxes::build::CheckboxesBuilder::option()
+  /// [`options`]: elems::checkboxes::build::CheckboxesBuilder::options()
+  /// [`initial_options`]: elems::checkboxes::build::CheckboxesBuilder::initial_options()
+  /// [`confirm`]: elems::checkboxes::build::CheckboxesBuilder::confirm()
+  ///
+  /// &#42; Options cannot have URL set, option text can be mrkdwn or plain.
   ///
   /// ## Example
   /// ```
@@ -442,8 +499,18 @@ mod blox_elems {
   ///
   /// Build a [`elems::DatePicker`]
   ///
-  /// ## Children
-  /// None
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`action_id`]    | [`String`] or [`&str`]                                 |❌|❌|
+  /// |[`placeholder`]  | [`String`] or [`&str`]                                 |✅|❌|
+  /// |[`initial_date`] | ([`u8`] _day_, [`u8`] _month_, [`u16`] _year_)         |✅|❌|
+  /// |[`confirm`]      | [`compose::Confirm`] ([`<confirm>`](super::confirm())) |✅|❌|
+  ///
+  /// [`action_id`]: elems::date_picker::build::DatePickerBuilder::action_id()
+  /// [`placeholder`]: elems::date_picker::build::DatePickerBuilder::placeholder()
+  /// [`initial_date`]: elems::date_picker::build::DatePickerBuilder::initial_date()
+  /// [`confirm`]: elems::date_picker::build::DatePickerBuilder::confirm()
   ///
   /// ## Example
   /// ```
@@ -470,8 +537,20 @@ mod blox_elems {
   ///
   /// Build a [`elems::Overflow`]
   ///
-  /// ## Children
-  /// Options contained in the overflow menu. Min 2, max 5.
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`action_id`] | [`String`] or [`&str`]                                 |❌|❌|
+  /// |[`option`]    | [`compose::Opt`] ([`<option>`](super::option()))*      |❌ _(or options)_|✅|
+  /// |[`options`]   | [`Vec`] of [`compose::Opt`]*                           |❌ _(or option)_|❌|
+  /// |[`confirm`]   | [`compose::Confirm`] ([`<confirm>`](super::confirm())) |✅|❌|
+  ///
+  /// [`action_id`]: elems::overflow::build::OverflowBuilder::action_id()
+  /// [`option`]: elems::overflow::build::OverflowBuilder::option()
+  /// [`options`]: elems::overflow::build::OverflowBuilder::options()
+  /// [`confirm`]: elems::overflow::build::OverflowBuilder::confirm()
+  ///
+  /// &#42; Options **can** have URL set, option text must be plain.
   ///
   /// ## Example
   /// ```
@@ -504,8 +583,22 @@ mod blox_elems {
   ///
   /// Build a [`elems::Radio`]
   ///
-  /// ## Children
-  /// Options contained in the radio button group
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`action_id`]      | [`String`] or [`&str`]                                 |❌|❌|
+  /// |[`option`]         | [`compose::Opt`] ([`<option>`](super::option()))*      |❌ _(or options)_|✅|
+  /// |[`options`]        | [`Vec`] of [`compose::Opt`]*                           |❌ _(or option)_|❌|
+  /// |[`initial_option`] | [`compose::Opt`]*                                      |✅|❌|
+  /// |[`confirm`]        | [`compose::Confirm`] ([`<confirm>`](super::confirm())) |✅|❌|
+  ///
+  /// [`action_id`]: elems::radio::build::RadioBuilder::action_id()
+  /// [`option`]: elems::radio::build::RadioBuilder::option()
+  /// [`options`]: elems::radio::build::RadioBuilder::options()
+  /// [`initial_option`]: elems::radio::build::RadioBuilder::initial_option()
+  /// [`confirm`]: elems::radio::build::RadioBuilder::confirm()
+  ///
+  /// &#42; Options **cannot** have URL set, option text can be mrkdwn or plain.
   ///
   /// ## Example
   /// ```
@@ -521,21 +614,25 @@ mod blox_elems {
   ///   </input_block>
   /// };
   ///
-  /// let radio = Radio::builder().action_id("cheese_picker")
-  ///                             .option(Opt::builder().value("feta")
-  ///                                                   .text_plain("Feta")
-  ///                                                   .build())
-  ///                             .option(Opt::builder().value("gouda")
-  ///                                                   .text_plain("Gouda")
-  ///                                                   .build())
-  ///                             .option(Opt::builder().value("cheddar")
-  ///                                                   .text_plain("Cheddar")
-  ///                                                   .build())
-  ///                             .build();
+  /// let equiv = {
+  ///   let feta = Opt::builder().value("feta").text_plain("Feta").build();
   ///
-  /// let equiv = Input::builder().label("Pick your favorite cheese!")
-  ///                             .element(radio)
-  ///                             .build();
+  ///   let gouda = Opt::builder().value("gouda").text_plain("Gouda").build();
+  ///
+  ///   let cheddar = Opt::builder().value("cheddar")
+  ///                               .text_plain("Cheddar")
+  ///                               .build();
+  ///
+  ///   let radio = Radio::builder().action_id("cheese_picker")
+  ///                               .option(feta)
+  ///                               .option(gouda)
+  ///                               .option(cheddar)
+  ///                               .build();
+  ///
+  ///   Input::builder().label("Pick your favorite cheese!")
+  ///                   .element(radio)
+  ///                   .build()
+  /// };
   ///
   /// assert_eq!(xml, equiv)
   /// ```
@@ -545,23 +642,119 @@ mod blox_elems {
 
   /// # [`elems::select`] - `<select>`
   ///
-  /// Build a [`elems::select`]
+  /// Build a [`elems::select`].
   ///
   /// # Attributes
-  /// - `kind` (Optional): `single` or `multi` from `slack_blocks::blox`. Default is `single`.
-  /// - `choose_from` (Required): `users`, `public_channels`, `static_`, `external`, `conversations` from `slack_blocks::blox`
   ///
-  /// # Children
-  /// For `static_`, 1-100 `<option>` children are allowed.
+  /// This element behaves like a flow chart, allowing you to construct all
+  /// Single and Multi-selects with a single XML element.
   ///
-  /// For all others, none are allowed.
+  /// Use the `kind` attribute to distinguish between
+  /// single- and multi-selects.
   ///
-  /// # Errors you may encounter
-  ///  - `Into<MyOpt> is not implemented for ...`: Make sure the `option` or `option_group` passed has the right `kind` of text for the select you're using.
-  ///  - `AppendOptOrOptGroup<MyOpt> is not implemented for ...`: Make sure the `option` or `option_group` has no `url` and contains **plain** text.
-  ///  - `Method `build` not found for...`: Make sure you've called all required methods. If you dig into the error message, you'll see `RequiredMethodNotCalled<method::foo>`, meaning you need to call `foo`.
+  /// Use the `choose_from` attribute to distinguish between
+  /// the many sources of options for the select menu.
   ///
-  /// # Example - Select many Users
+  /// ## Common
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`kind`]        | [`single`] (default) or [`multi`]                                            |✅|❌|
+  /// |[`choose_from`] | [`users`], [`public_channels`], [`static_`], [`external`], [`conversations`] |❌|❌|
+  /// |`action_id`     | [`String`] or [`&str`]                                                       |❌|❌|
+  /// |`placeholder`   | [`String`] or [`&str`]                                                       |✅|❌|
+  /// |`confirm`       | [`compose::Confirm`] ([`<confirm>`](super::confirm()))                       |✅|❌|
+  /// |**when kind=multi**<br/>`max_selected_items` | [`u32`] |✅|❌|
+  ///
+  /// [`kind`]: elems::select::build::SelectBuilder::kind()
+  /// [`choose_from`]: elems::select::build::SelectBuilder::choose_from()
+  ///
+  /// ## **When `choose_from=users`**
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |**when kind=single**<br/>[`initial_user`]| [`String`] or [`&str`] |✅|❌|
+  /// |**when kind=multi**<br/>[`initial_users`]| impl [`IntoIterator`] over [`String`] or [`&str`] |✅|❌|
+  ///
+  /// [`initial_user`]: elems::select::user::build::UserBuilder::initial_user()
+  /// [`initial_users`]: elems::select::user::build::UserBuilder::initial_users()
+  ///
+  /// ## **When `choose_from=public_channels`**
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |**when kind=single**<br/>[`initial_channel`]| [`String`] or [`&str`] |✅|❌|
+  /// |**when kind=multi**<br/>[`initial_channels`]| impl [`IntoIterator`] over [`String`] or [`&str`] |✅|❌|
+  ///
+  /// [`initial_channel`]: elems::select::public_channel::build::PublicChannelBuilder::initial_channel()
+  /// [`initial_channels`]: elems::select::public_channel::build::PublicChannelBuilder::initial_channels()
+  ///
+  /// ## **When `choose_from=external`**
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`min_query_length`] | [`u64`] |✅|❌|
+  /// |**when kind=single**<br/>[`initial_option`]| [`compose::Opt`]* |✅|❌|
+  /// |**when kind=single**<br/>[`initial_option_group`]| [`compose::OptGroup`]* |✅|❌|
+  /// |**when kind=multi**<br/>[`initial_options`]| impl [`IntoIterator`] over [`compose::Opt`]s*  |✅|❌|
+  /// |**when kind=multi**<br/>[`initial_option_groups`]| impl [`IntoIterator`] over [`compose::OptGroup`]s*  |✅|❌|
+  ///
+  /// &#42; Options **cannot** have URL set, option text must be plain.
+  ///
+  /// [`initial_option`]: elems::select::external::build::ExternalBuilder::initial_option()
+  /// [`initial_option_group`]: elems::select::external::build::ExternalBuilder::initial_option_group()
+  /// [`initial_option_groups`]: elems::select::external::build::ExternalBuilder::initial_option_groups()
+  /// [`initial_options`]: elems::select::external::build::ExternalBuilder::initial_options()
+  /// [`min_query_length`]: elems::select::external::build::ExternalBuilder::min_query_length()
+  ///
+  /// ## **When `choose_from=conversations`**
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`filter`] | [`compose::ConversationFilter`] |✅|❌|
+  /// |[`initial_channel_current`] | [`bool`] |✅|❌|
+  /// |**when kind=single**<br/>[`initial_channel`]| [`String`] or [`&str`] |✅|❌|
+  /// |**when kind=multi**<br/>[`initial_channels`]| impl [`IntoIterator`] over [`String`]s or [`&str`]s |✅|❌|
+  ///
+  /// [`filter`]: elems::select::conversation::build::ConversationBuilder::filter()
+  /// [`initial_channel_current`]: elems::select::conversation::build::ConversationBuilder::initial_channel_current()
+  /// [`initial_channel`]: elems::select::conversation::build::ConversationBuilder::initial_channel()
+  /// [`initial_channels`]: elems::select::conversation::build::ConversationBuilder::initial_channels()
+  ///
+  /// ## **When `choose_from=static_`**
+  /// This is the most complex select menu.
+  ///
+  /// It allows you to define the options in your app
+  /// by using children or `options`/`option_groups`.
+  ///
+  /// Note that all children must **either** be `<option>`s or `<option_group>`s.
+  /// You cannot mix options and groups in the same static select menu.
+  ///
+  /// For single-selects that use options, you can pre-select one of them with `initial_option`.
+  ///
+  /// For multi-selects that use options, you can pre-select any number of them with `initial_options`.
+  ///
+  /// For single-selects that use option groups, you can pre-select one of them with `initial_option_group`.
+  ///
+  /// For multi-selects that use option groups, you can pre-select any number of them with `initial_option_groups`.
+  ///
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// | Child | [`compose::Opt`] ([`<option>`](super::option())) or [`compose::OptGroup`] ([`<option_group>`](super::option_group()))* |❌ _(or `options` or `option_groups`)_|✅|
+  /// |[`option_groups`] | [`Vec`] of [`compose::OptGroup`]*                                                                           |❌ _(or Child or `option_groups`)_|❌|
+  /// |[`options`]       | [`Vec`] of [`compose::Opt`]*                                                                                |❌ _(or Child or `options`)_ |❌|
+  /// |**when kind=single**<br/>**and select uses Opts**<br/>(not OptGroups)<br/>[`initial_option`]| [`compose::Opt`]* |✅|❌|
+  /// |**when kind=single**<br/>**and select uses OptGroup**<br/>(not Opts)<br/>[`initial_option_group`]| [`compose::OptGroup`]* |✅|❌|
+  /// |**when kind=multi**<br/>**and select uses Opt**<br/>(not OptGroups)<br/>[`initial_options`]| impl [`IntoIterator`] over [`compose::Opt`]* |✅|❌|
+  /// |**when kind=multi**<br/>**and select uses OptGroup**<br/>(not Opts)<br/>[`initial_option_groups`]| impl [`IntoIterator`] over [`compose::OptGroup`]* |✅|❌|
+  ///
+  /// &#42; All children must either be options or option groups. Options **cannot** have URL set, option text must be plain.
+  ///
+  /// [`initial_option`]: elems::select::static_::build::StaticBuilder::initial_option()
+  /// [`initial_options`]: elems::select::static_::build::StaticBuilder::initial_options()
+  /// [`initial_option_group`]: elems::select::static_::build::StaticBuilder::initial_option_group()
+  /// [`initial_option_groups`]: elems::select::static_::build::StaticBuilder::initial_option_groups()
+  /// [`options`]: elems::select::static_::build::StaticBuilder::options()
+  /// [`option_groups`]: elems::select::static_::build::StaticBuilder::option_groups()
+  ///
+  /// # Examples
+  ///
+  /// ## `choose_from=users`
   /// ```
   /// use slack_blocks::elems::select;
   /// use slack_blocks::blox::*;
@@ -575,7 +768,7 @@ mod blox_elems {
   /// assert_eq!(xml, equiv)
   /// ```
   ///
-  /// # Example - Select an option from a list defined by your app
+  /// ## `choose_from=static_`
   /// ```
   /// use slack_blocks::{elems::select, compose::Opt, blox::*};
   ///
@@ -610,10 +803,18 @@ mod blox_compose {
   ///
   /// Build a [`compose::text`]
   ///
-  /// ## Children
-  /// Accepts a `String`, `&str` or anything else that implements
-  /// `AsRef<str>` as a child, representing the text that will be
-  /// rendered in Slack.
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`kind`]                              | [`mrkdwn`] or [`plain`] |❌|❌|
+  /// |[`text`]                              | [`&str`] or [`String`]  |❌|✅|
+  /// |**When kind=plain**<br/>[`emoji`]     | [`bool`]                |✅|❌|
+  /// |**When kind=mrkdwn**<br/>[`verbatim`] | [`bool`]                |✅|❌|
+  ///
+  /// [`kind`]: compose::text::build::TextBuilder::kind()
+  /// [`text`]: compose::text::build::TextBuilder::text()
+  /// [`emoji`]: compose::text::build::TextBuilder::emoji()
+  /// [`verbatim`]: compose::text::build::TextBuilder::verbatim()
   ///
   /// ## Example
   /// ```
@@ -635,11 +836,18 @@ mod blox_compose {
   ///
   /// Build a [`compose::opt`]
   ///
-  /// ## Children
-  /// The text to be displayed to the user.
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`value`] | [`&str`] or [`String`]  |❌|❌|
+  /// |[`text`]  | [`text::Plain`] or [`text::Mrkdwn`] ([`<text>`](super::text())) |❌|✅|
+  /// |[`desc`]  | [`&str`], [`String`], or [`text::Plain`] |✅|❌|
+  /// |[`url`]   | [`&str`] or [`String`]  |✅|❌|
   ///
-  /// Note that text can't be provided as a child if you're setting `url`
-  /// within an overflow menu - you need to set the text via a `text_plain` attribute.
+  /// [`value`]: compose::opt::build::OptBuilder::value()
+  /// [`text`]: compose::opt::build::OptBuilder::text()
+  /// [`desc`]: compose::opt::build::OptBuilder::desc()
+  /// [`url`]: compose::opt::build::OptBuilder::url()
   ///
   /// ## Example
   /// ```
@@ -663,8 +871,20 @@ mod blox_compose {
   ///
   /// Build a [`compose::opt_group`]
   ///
-  /// ## Children
-  /// Up to 100 option objects of the same type. Note that `syn-rsx` (and `mox` by extension)
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`label`] | [`&str`], [`String`], or [`text::Plain`]      |❌|❌|
+  /// |[`option`] | [`compose::Opt`]                             |❌ _(or options)_|✅|
+  /// |[`options`] | impl [`IntoIterator`] over [`compose::Opt`] |❌ _(or option)_|❌|
+  ///
+  /// [`label`]: compose::opt_group::build::OptGroupBuilder::label()
+  /// [`option`]: compose::opt_group::build::OptGroupBuilder::option()
+  /// [`options`]: compose::opt_group::build::OptGroupBuilder::options()
+  ///
+  /// Supports up to 100 option objects of the same type.
+  ///
+  /// Note that `syn-rsx` (and `mox` by extension)
   /// do not support using iterables as children.
   ///
   /// This means that if you have a `Vec<Opt>`,
@@ -737,8 +957,22 @@ mod blox_compose {
   ///
   /// Build a [`compose::Confirm`]
   ///
-  /// ## Children
-  /// No children.
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`title`] | [`&str`], [`String`], or [`text::Plain`]   |❌|❌|
+  /// |[`text`], [`text_plain`], or [`text_md`]|`text` wants [`text::Plain`] or [`text::Mrkdwn`]. `text_md` & `text_plain` want [`&str`] or [`String`]. |❌|❌|
+  /// |[`confirm`] | [`&str`], [`String`], or [`text::Plain`] |❌|❌|
+  /// |[`deny`] | [`&str`], [`String`], or [`text::Plain`]    |❌|❌|
+  /// |[`style`] | [`compose::confirm::ConfirmStyle`]    |✅|❌|
+  ///
+  /// [`title`]: compose::confirm::build::ConfirmBuilder::title()
+  /// [`text`]: compose::confirm::build::ConfirmBuilder::text()
+  /// [`text_plain`]: compose::confirm::build::ConfirmBuilder::text_plain()
+  /// [`text_md`]: compose::confirm::build::ConfirmBuilder::text_md()
+  /// [`confirm`]: compose::confirm::build::ConfirmBuilder::confirm()
+  /// [`deny`]: compose::confirm::build::ConfirmBuilder::deny()
+  /// [`style`]: compose::confirm::build::ConfirmBuilder::style()
   ///
   /// ## Example
   /// ```
@@ -746,7 +980,7 @@ mod blox_compose {
   ///
   /// let xml = blox! {
   ///   <confirm title="Title"
-  ///            text=blox!{<text kind=plain>"Body"</text>}
+  ///            text="Body".plaintext()
   ///            confirm="Yes"
   ///            deny="No"
   ///   />

@@ -73,7 +73,7 @@
 //! [Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
 
 #![doc(html_root_url = "https://docs.rs/slack-blocks/0.24.4")]
-// #![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 // #![feature(doc_cfg)] // for local docs
 #![deny(missing_docs)]
 #![cfg_attr(not(test),
