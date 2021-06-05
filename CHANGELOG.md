@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.25.0 (2021-06-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* crate should support header block and thoroughly document blox module (#165)
+
+### Features
+
+* crate should support header block and thoroughly document blox module ([#165](https://github.com/cakekindel/slack-blocks-rs/issues/165)) ([f57eb4d](https://github.com/cakekindel/slack-blocks-rs/commit/f57eb4d558bcc29c335ffea49c63d9c01ef56750))
+
 ### 0.24.4 (2021-06-04)
 
 ### 0.24.3 (2021-06-04)
