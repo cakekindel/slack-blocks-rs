@@ -132,8 +132,10 @@ pub mod build {
   ///
   /// # Required Methods
   /// `ConfirmBuilder::build()` is only available if these methods have been called:
+  ///  - `title`
   ///  - `text`
-  ///  - `plain` or `mrkdwn`
+  ///  - `confirm`
+  ///  - `deny`
   ///
   /// ```
   /// use slack_blocks::compose::Confirm;

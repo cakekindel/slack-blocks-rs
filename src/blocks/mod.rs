@@ -15,35 +15,33 @@ use serde::{Deserialize, Serialize};
 
 use crate::convert;
 
-#[doc(inline)]
 pub mod actions;
 #[doc(inline)]
 pub use actions::Actions;
 
-#[doc(inline)]
 pub mod context;
 #[doc(inline)]
 pub use context::Context;
 
-#[doc(inline)]
 pub mod file;
 #[doc(inline)]
 pub use file::File;
 
-#[doc(inline)]
 pub mod image;
 #[doc(inline)]
 pub use image::Image;
 
-#[doc(inline)]
 pub mod input;
 #[doc(inline)]
 pub use input::Input;
 
-#[doc(inline)]
 pub mod section;
 #[doc(inline)]
 pub use section::Section;
+
+pub mod header;
+#[doc(inline)]
+pub use header::Header;
 
 /// # Layout Blocks
 ///
@@ -55,7 +53,7 @@ pub use section::Section;
 /// You can include up to 50 blocks in each message, and 100 blocks in modals or home tabs.
 ///
 /// [building block layouts 🔗]: https://api.slack.com/block-kit/building
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Hash, PartialEq, Serialize, Deserialize, Debug)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Block<'a> {
   /// # Section Block
@@ -85,6 +83,9 @@ pub enum Block<'a> {
   /// # Input Block
   Input(Input<'a>),
 
+  /// # Input Block
+  Header(Header<'a>),
+
   /// # File Block
   File(File<'a>),
 }
@@ -92,6 +93,7 @@ pub enum Block<'a> {
 impl fmt::Display for Block<'_> {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     let kind = match self {
+      | Block::Header { .. } => "Header",
       | Block::Section { .. } => "Section",
       | Block::Divider => "Divider",
       | Block::Image { .. } => "Image",
@@ -128,6 +130,7 @@ impl<'a> Block<'a> {
       | Actions(contents) => contents.validate(),
       | Context(contents) => contents.validate(),
       | Input(contents) => contents.validate(),
+      | Header(contents) => contents.validate(),
       | File(contents) => contents.validate(),
       | Divider => Ok(()),
     }
@@ -140,6 +143,7 @@ convert!(impl<'a> From<Section<'a>> for Block<'a> => |a| Block::Section(a));
 convert!(impl<'a> From<Image<'a>>   for Block<'a> => |a| Block::Image(a));
 convert!(impl<'a> From<Context<'a>> for Block<'a> => |a| Block::Context(a));
 convert!(impl<'a> From<File<'a>>    for Block<'a> => |a| Block::File(a));
+convert!(impl<'a> From<Header<'a>>  for Block<'a> => |a| Block::Header(a));
 
 /// Error yielded when `TryFrom` is called on an unsupported block element.
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]

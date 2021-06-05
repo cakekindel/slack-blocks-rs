@@ -36,7 +36,7 @@ pub struct User<'a> {
   pub(in crate::elems::select) confirm: Option<Confirm>,
 
   #[serde(skip_serializing_if = "Option::is_none")]
-  pub(in crate::elems::select) initial_users: Option<Cow<'a, [String]>>,
+  pub(in crate::elems::select) initial_users: Option<Vec<Cow<'a, str>>>,
 
   #[cfg_attr(feature = "validation", validate(range(min = 1)))]
   #[serde(skip_serializing_if = "Option::is_none")]

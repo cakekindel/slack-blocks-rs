@@ -19,21 +19,13 @@ use crate::convert;
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;
 
-#[doc(inline)]
 pub mod button;
-#[doc(inline)]
 pub mod checkboxes;
-#[doc(inline)]
 pub mod date_picker;
-#[doc(inline)]
 pub mod image;
-#[doc(inline)]
 pub mod overflow;
-#[doc(inline)]
 pub mod radio;
-#[doc(inline)]
 pub mod select;
-#[doc(inline)]
 pub mod text_input;
 
 #[doc(inline)]

@@ -11,15 +11,10 @@
 
 use serde::{Deserialize, Serialize};
 
-#[doc(inline)]
 pub mod confirm;
-#[doc(inline)]
 pub mod conversation_filter;
-#[doc(inline)]
 pub mod opt;
-#[doc(inline)]
 pub mod opt_group;
-#[doc(inline)]
 pub mod text;
 
 #[doc(inline)]

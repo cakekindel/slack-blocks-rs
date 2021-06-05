@@ -149,7 +149,7 @@ pub mod build {
     action_id: Option<Cow<'a, str>>,
     confirm: Option<Confirm>,
     initial_user: Option<Cow<'a, str>>,
-    initial_users: Option<Cow<'a, [String]>>,
+    initial_users: Option<Vec<Cow<'a, str>>>,
     max_selected_items: Option<u32>,
     state: PhantomData<(Multi, Placeholder, ActionId)>,
   }
@@ -256,10 +256,14 @@ pub mod build {
     /// Set `initial_users` (Optional)
     ///
     /// A collection of user IDs of any valid users to be pre-selected when the menu loads.
-    pub fn initial_users<S>(mut self, users: S) -> Self
-      where S: Into<Cow<'a, [String]>>
+    pub fn initial_users<S, I>(mut self, users: I) -> Self
+      where S: Into<Cow<'a, str>>,
+            I: IntoIterator<Item = S>
     {
-      self.initial_users = Some(users.into());
+      self.initial_users = Some(users.into_iter()
+                                     .map(|s| s.into())
+                                     .collect::<Vec<_>>()
+                                     .into());
       self.cast_state()
     }
 
