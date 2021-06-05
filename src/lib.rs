@@ -72,7 +72,7 @@
 //! [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/
 //! [Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
 
-#![doc(html_root_url = "https://docs.rs/slack-blocks/0.24.4")]
+#![doc(html_root_url = "https://docs.rs/slack-blocks/0.25.0")]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 // #![feature(doc_cfg)] // for local docs
 #![deny(missing_docs)]
