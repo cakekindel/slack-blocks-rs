@@ -1,4 +1,86 @@
 //! # XML macro builder support
+//!
+//! # Blocks
+//!
+//! [`blocks::Actions`] - `<`[`actions_block`]`>`
+//!
+//! [`blocks::Header`] - `<`[`header_block`]`>` or `<`[`h1`]`>`
+//!
+//! [`blocks::Block::Divider`] - `<`[`divider_block`]`>` or `<`[`hr`]`>`
+//!
+//! [`blocks::Section`] - `<`[`section_block`]`>`
+//!
+//! [`blocks::Input`] - `<`[`input_block`]`>`
+//!
+//! [`blocks::Context`] - `<`[`context_block`]`>`
+//!
+//! [`blocks::File`] - `<`[`file_block`]`>`
+//!
+//! [`blocks::Image`] - `<`[`img_block`]`>`
+//!
+//! # Block Elements
+//!
+//! [`elems::TextInput`] - `<`[`text_input`]`>`
+//!
+//! [`elems::Image`] - `<`[`img`]`>`
+//!
+//! [`elems::Button`] - `<`[`button`]`>`
+//!
+//! [`elems::Checkboxes`] - `<`[`checkboxes`]`>`
+//!
+//! [`elems::DatePicker`] - `<`[`date_picker`]`>`
+//!
+//! [`elems::Overflow`] - `<`[`overflow`]`>`
+//!
+//! [`elems::Radio`] - `<`[`radio_buttons`]`>`
+//!
+//! [`elems::select`] - `<`[`select`]`>`
+//!
+//! # Composition Objects
+//!
+//! [`compose::text`] - `<`[`text()`]`>`
+//!
+//! [`compose::opt`] - `<`[`option`]`>`
+//!
+//! [`compose::opt_group`] - `<`[`option_group`]`>`
+//!
+//! [`compose::Confirm`] - `<`[`confirm`]`>`
+//!
+//! # Example
+//! Using an example from Slack's Documentation:
+//! ```json
+//! {
+//!   "type": "section",
+//!   "text": {
+//!     "text": "*Sally* has requested you set the deadline for the Nano launch project",
+//!     "type": "mrkdwn"
+//!   },
+//!   "accessory": {
+//!     "type": "datepicker",
+//!     "action_id": "datepicker123",
+//!     "initial_date": "1990-04-28",
+//!     "placeholder": {
+//!       "type": "plain_text",
+//!       "text": "Select a date"
+//!     }
+//!   }
+//! }
+//! ```
+//! ```rust
+//! use slack_blocks::blox::*;
+//!
+//! let pick_date = blox! {
+//!   <date_picker action_id="datepicker123"
+//!                placeholder="Select a date"
+//!                initial_date=(28, 4, 1990) />
+//! };
+//!
+//! let section = blox! {
+//!   <section_block accessory=pick_date>
+//!     <text kind=plain>"*Sally* has requested you set the deadline for the Nano launch project"</text>
+//!   </section_block>
+//! };
+//! ```
 
 pub use elems::{button::Style::{Danger as btn_danger,
                                 Primary as btn_primary},
@@ -82,7 +164,7 @@ mod blox_blocks {
   ///
   /// Build a [`blocks::Header`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`text`](blocks::header::build::HeaderBuilder::text())|[`text::Plain`], [`String`], [`&str`]|❌|✅|
@@ -113,7 +195,7 @@ mod blox_blocks {
   ///
   /// Build a [`blocks::Block::Divider`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// None
   ///
   /// ## Example
@@ -141,7 +223,7 @@ mod blox_blocks {
   ///
   /// Build a [`blocks::Section`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`text`]     | [`text::Plain`], [`text::Mrkdwn`], or [`text::Text`]|❌*|❌|
@@ -187,7 +269,7 @@ mod blox_blocks {
   ///
   /// Build a [`blocks::Input`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`label`](blocks::input::build::InputBuilder::label())|[`text::Plain`], [`text::Mrkdwn`], or [`text::Text`] ([`<text>`](super::text()))|❌|❌|
@@ -222,7 +304,7 @@ mod blox_blocks {
   ///
   /// Build a [`blocks::Context`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`element`](blocks::context::build::ContextBuilder::element())|[`text::Text`] ([`<text>`](super::text())) or [`elems::Image`] ([`<img>`](super::img()))|❌|✅|
@@ -259,7 +341,7 @@ mod blox_blocks {
   ///
   /// Build a [`blocks::File`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`external_id`](blocks::file::build::FileBuilder::external_id())|[`String`] or [`&str`]|❌|✅|
@@ -285,7 +367,7 @@ mod blox_blocks {
   ///
   /// Build a [`blocks::Image`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`src`](blocks::image::build::ImageBuilder::src())|[`String`] or [`&str`]|❌|❌|
@@ -318,7 +400,7 @@ mod blox_elems {
   ///
   /// Build a [`elems::TextInput`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`action_id`]      | [`String`] or [`&str`]                      |❌|❌|
@@ -370,7 +452,7 @@ mod blox_elems {
   ///
   /// Build a [`elems::Image`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`src`](elems::image::build::ImageBuilder::src()) | [`String`] or [`&str`] |❌|❌|
@@ -398,7 +480,7 @@ mod blox_elems {
   ///
   /// Build a [`elems::Button`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`action_id`] | [`String`] or [`&str`]                                              |❌|❌|
@@ -439,7 +521,7 @@ mod blox_elems {
   ///
   /// Build a [`elems::Checkboxes`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`action_id`]       | [`String`] or [`&str`]                                               |❌|❌|
@@ -499,7 +581,7 @@ mod blox_elems {
   ///
   /// Build a [`elems::DatePicker`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`action_id`]    | [`String`] or [`&str`]                                 |❌|❌|
@@ -537,7 +619,7 @@ mod blox_elems {
   ///
   /// Build a [`elems::Overflow`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`action_id`] | [`String`] or [`&str`]                                 |❌|❌|
@@ -583,7 +665,7 @@ mod blox_elems {
   ///
   /// Build a [`elems::Radio`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`action_id`]      | [`String`] or [`&str`]                                 |❌|❌|
@@ -803,7 +885,7 @@ mod blox_compose {
   ///
   /// Build a [`compose::text`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`kind`]                              | [`mrkdwn`] or [`plain`] |❌|❌|
@@ -836,7 +918,7 @@ mod blox_compose {
   ///
   /// Build a [`compose::opt`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`value`] | [`&str`] or [`String`]  |❌|❌|
@@ -871,7 +953,7 @@ mod blox_compose {
   ///
   /// Build a [`compose::opt_group`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`label`] | [`&str`], [`String`], or [`text::Plain`]      |❌|❌|
@@ -957,7 +1039,7 @@ mod blox_compose {
   ///
   /// Build a [`compose::Confirm`]
   ///
-  /// ## Attributes
+  /// # Attributes
   /// |Attribute|Type|Optional|Available as child|
   /// |-|-|-|-|
   /// |[`title`] | [`&str`], [`String`], or [`text::Plain`]   |❌|❌|
