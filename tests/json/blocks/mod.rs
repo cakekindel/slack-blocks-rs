@@ -15,3 +15,9 @@ pub use file::*;
 
 pub mod image;
 pub use image::*;
+
+pub mod header;
+pub use header::*;
+
+pub mod divider;
+pub use divider::*;

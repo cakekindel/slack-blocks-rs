@@ -46,7 +46,7 @@ use serde::{Deserialize, Serialize};
 /// |`` `some code!` ``| `some code!`        |
 /// |`` ```multiline code\n2 lines!``` `` | <code>multiline code<br> 2 lines!</code> |
 /// |` - li \n - li `  | <ul><li>li</li><li>li</li></ul> |
-/// |<code>&lt;http://www.foo.com&#124;link name&gt;</code>| [link name](http://www.foo.com) |
+/// |<code>&lt;<http://www.foo.com>&#124;link name&gt;</code>| [link name](http://www.foo.com) |
 /// |`:joy:` (list from [iamcal/emoji-data 🔗](https://github.com/iamcal/emoji-data)) | 😂 |
 /// | link to #channel: `<#Cxxxxxx>` | [#channel](https://work.slack.com/some-public-channel) |
 /// | link to @user: `<@Uxxxxxx>` | [@user](https://work.slack.com/some-user) |

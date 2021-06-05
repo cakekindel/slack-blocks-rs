@@ -11,9 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::convert;
 
-#[doc(inline)]
 pub mod mrkdwn;
-#[doc(inline)]
 pub mod plain;
 
 #[doc(inline)]

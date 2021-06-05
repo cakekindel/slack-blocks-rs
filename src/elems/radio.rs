@@ -189,6 +189,7 @@ pub mod build {
     ///
     /// Should be unique among all other `action_id`s in the containing block.
     /// Maximum length for this field is 255 characters.
+    ///
     /// [identify the source of the action 🔗]: https://api.slack.com/interactivity/handling#payloads
     pub fn action_id<S>(mut self,
                         action_id: S)
@@ -204,6 +205,7 @@ pub mod build {
     /// An array of [option objects 🔗].
     ///
     /// A maximum of 10 options are allowed.
+    ///
     /// [option objects 🔗]: https://api.slack.com/reference/block-kit/composition-objects#option
     pub fn options<I, T2: Into<text::Text>>(
       self,

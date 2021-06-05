@@ -11,15 +11,10 @@
 //! [select menus 🔗]: https://api.slack.com/reference/block-kit/block-elements#select
 //! [guide to enabling interactivity 🔗]: https://api.slack.com/interactivity/handling
 
-#[doc(inline)]
 pub mod conversation;
-#[doc(inline)]
 pub mod external;
-#[doc(inline)]
 pub mod public_channel;
-#[doc(inline)]
 pub mod static_;
-#[doc(inline)]
 pub mod user;
 
 #[doc(inline)]

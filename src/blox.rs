@@ -30,10 +30,24 @@ pub use blox_elems::*;
 mod blox_blocks {
   use super::*;
 
-  /// # Build an actions block
+  /// Dummy builder so [blocks::Block::Divider] can be built with XML macro
+  #[derive(Debug, Copy, Clone)]
+  pub struct DividerBuilder;
+  impl DividerBuilder {
+    /// Constructs [blocks::Block::Divider]
+    pub fn build(self) -> blocks::Block<'static> {
+      blocks::Block::Divider
+    }
+  }
+
+  /// # [`blocks::Actions`] - `<actions_block>`
   ///
-  /// ## Children
-  /// Accepts at least one, and up to 5 supported block elements as children.
+  /// Build a [`blocks::Actions`]
+  ///
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`element`](blocks::actions::build::ActionsBuilder::element())|`impl Into<`[`blocks::actions::SupportedElement`]`>`|❌|✅|
+  /// |[`block_id`](blocks::actions::build::ActionsBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
   ///
   /// ## Example
   /// ```
@@ -64,20 +78,95 @@ mod blox_blocks {
     blocks::Actions::builder()
   }
 
-  /// # Build a section block
+  /// # [`blocks::Header`] - `<header_block>` or `<h1>`
   ///
-  /// ## Children
-  /// Accepts at least one, and up to 10 text objects as children.
+  /// Build a [`blocks::Header`]
+  ///
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`text`](blocks::header::build::HeaderBuilder::text())|[`text::Plain`], [`String`], [`&str`]|❌|✅|
+  /// |[`block_id`](blocks::header::build::HeaderBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
+  ///
+  /// ## Example
+  /// ```
+  /// use slack_blocks::{blocks::Header, blox::*};
+  ///
+  /// let xml = blox! {
+  ///   <h1>"Foo"</h1>
+  /// };
+  ///
+  /// let equivalent = Header::builder().text("Foo").build();
+  ///
+  /// assert_eq!(xml, equivalent);
+  /// ```
+  pub fn header_block() -> blocks::header::build::HeaderBuilderInit<'static> {
+    blocks::Header::builder()
+  }
+
+  /// Alias for [`header_block`]
+  pub fn h1() -> blocks::header::build::HeaderBuilderInit<'static> {
+    blocks::Header::builder()
+  }
+
+  /// # [`blocks::Block::Divider`] - `<divider_block />` or `<hr />`
+  ///
+  /// Build a [`blocks::Block::Divider`]
+  ///
+  /// ## Attributes
+  /// None
+  ///
+  /// ## Example
+  /// ```
+  /// use slack_blocks::{blocks::Block, blox::*};
+  ///
+  /// let xml = blox! {
+  ///   <hr />
+  /// };
+  ///
+  /// let equivalent = Block::Divider;
+  ///
+  /// assert_eq!(xml, equivalent);
+  /// ```
+  pub fn divider_block() -> DividerBuilder {
+    DividerBuilder
+  }
+
+  /// Alias for [`divider_block`]
+  pub fn hr() -> DividerBuilder {
+    divider_block()
+  }
+
+  /// # [`blocks::Section`] - `<section_block>`
+  ///
+  /// Build a [`blocks::Section`]
+  ///
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`text`](blocks::section::build::SectionBuilder::text())|[`text::Plain`], [`text::Mrkdwn`], or [`text::Text`]|❌*|❌|
+  /// |[`field`](blocks::section::build::SectionBuilder::field())|[`text::Plain`], [`text::Mrkdwn`], or [`text::Text`]|❌*|✅|
+  /// |[`fields`](blocks::section::build::SectionBuilder::fields())|[`IntoIterator`] over [`text::Text`]|❌*|❌|
+  /// |[`accessory`](blocks::section::build::SectionBuilder::accessory())|[`elems::BlockElement`]|✅|❌|
+  /// |[`block_id`](blocks::section::build::SectionBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
+  ///
+  /// &#42; `text`, `field(s)`, or both are required.
   ///
   /// ## Example
   /// ```
   /// use slack_blocks::{blocks::Section, blox::*, text};
   ///
+  /// let section_text = blox! { <text kind=plain>"Foo"</text> };
+  ///
   /// let xml = blox! {
-  ///   <section_block text=blox!{<text kind=plain>"Foo"</text>} />
+  ///   <section_block text=section_text>
+  ///     <text kind=mrkdwn>"Bar"</text>
+  ///   </section_block>
   /// };
   ///
-  /// let equivalent = Section::builder().text(text::Plain::from("Foo")).build();
+  /// let equivalent = Section::builder().text(text::Plain::from("Foo"))
+  ///                                    .field(text::Mrkdwn::from("Bar"))
+  ///                                    .build();
   ///
   /// assert_eq!(xml, equivalent);
   /// ```
@@ -88,12 +177,19 @@ mod blox_blocks {
     blocks::Section::builder()
   }
 
-  /// # Build an input block
+  /// # [`blocks::Input`] - `<input_block>`
   ///
-  /// ## Children
-  /// Input requires a single child of a supported block element.
+  /// Build a [`blocks::Input`]
   ///
-  /// For the list of supported elements, see `slack_blocks::blocks::input::SupportedElement`.
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`label`](blocks::input::build::InputBuilder::label())|[`text::Plain`], [`text::Mrkdwn`], or [`text::Text`]|❌|❌|
+  /// |[`element`](blocks::input::build::InputBuilder::element())|`impl Into<`[`blocks::input::SupportedElement`]`>`|❌|✅|
+  /// |[`block_id`](blocks::input::build::InputBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
+  /// |[`hint`](blocks::input::build::InputBuilder::hint())|[`text::Plain`], [`String`], or [`&str`]|✅|❌|
+  /// |[`dispatch_actions`](blocks::input::build::InputBuilder::dispatch_actions())|[`bool`]|✅|❌|
+  /// |[`optional`](blocks::input::build::InputBuilder::optional())|[`bool`]|✅|❌|
   ///
   /// ## Example
   /// ```
@@ -116,10 +212,15 @@ mod blox_blocks {
     blocks::Input::builder()
   }
 
-  /// # Build a context block
+  /// # [`blocks::Context`] - `<context_block>`
   ///
-  /// ## Children
-  /// Allows at least one, up to 10 text or img elements.
+  /// Build a [`blocks::Context`]
+  ///
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`element`](blocks::context::build::ContextBuilder::element())|[`text::Text`] or [`elems::Image`]|❌|✅|
+  /// |[`block_id`](blocks::context::build::ContextBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
   ///
   /// ## Example
   /// ```
@@ -148,10 +249,15 @@ mod blox_blocks {
     blocks::Context::builder()
   }
 
-  /// # Build a file block
+  /// # [`blocks::File`] - `<file_block>`
   ///
-  /// ## Children
-  /// None
+  /// Build a [`blocks::File`]
+  ///
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`external_id`](blocks::file::build::FileBuilder::external_id())|[`String`] or [`&str`]|❌|✅|
+  /// |[`block_id`](blocks::file::build::FileBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
   ///
   /// ## Example
   /// ```
@@ -169,10 +275,16 @@ mod blox_blocks {
     blocks::File::builder()
   }
 
-  /// # Build an image block
+  /// # [`blocks::Image`] - `<img_block>`
   ///
-  /// ## Children
-  /// Allows at least one, up to 10 text or img elements.
+  /// Build a [`blocks::Image`]
+  ///
+  /// ## Attributes
+  /// |Attribute|Type|Optional|Available as child|
+  /// |-|-|-|-|
+  /// |[`src`](blocks::image::build::ImageBuilder::src())|[`String`] or [`&str`]|❌|❌|
+  /// |[`alt`](blocks::image::build::ImageBuilder::alt())|[`String`] or [`&str`]|❌|❌|
+  /// |[`block_id`](blocks::file::build::FileBuilder::block_id())|[`String`] or [`&str`]|✅|❌|
   ///
   /// ## Example
   /// ```
@@ -196,7 +308,9 @@ mod blox_blocks {
 mod blox_elems {
   use super::*;
 
-  /// # Build an text input element
+  /// # [`elems::TextInput`] - `<text_input>`
+  ///
+  /// Build a [`elems::TextInput`]
   ///
   /// ## Children
   /// None.
@@ -228,7 +342,9 @@ mod blox_elems {
     elems::TextInput::builder()
   }
 
-  /// # Build an image element
+  /// # [`elems::Image`] - `<img />`
+  ///
+  /// Build a [`elems::Image`]
   ///
   /// ## Children
   /// None.
@@ -251,7 +367,9 @@ mod blox_elems {
     elems::Image::builder()
   }
 
-  /// # Build a button
+  /// # [`elems::Button`] - `<button>`
+  ///
+  /// Build a [`elems::Button`]
   ///
   /// ## Children
   /// The text to display in the button
@@ -274,7 +392,9 @@ mod blox_elems {
     elems::Button::builder()
   }
 
-  /// # Build a checkbox group
+  /// # [`elems::Checkboxes`] - `<checkboxes>`
+  ///
+  /// Build a [`elems::Checkboxes`]
   ///
   /// ## Children
   /// Options to populate the checkbox group with. Min 1, max 10
@@ -318,7 +438,9 @@ mod blox_elems {
     elems::Checkboxes::builder()
   }
 
-  /// # Build a date picker
+  /// # [`elems::DatePicker`] - `<date_picker>`
+  ///
+  /// Build a [`elems::DatePicker`]
   ///
   /// ## Children
   /// None
@@ -344,7 +466,9 @@ mod blox_elems {
     elems::DatePicker::builder()
   }
 
-  /// # Build an overflow menu
+  /// # [`elems::Overflow`] - `<overflow>`
+  ///
+  /// Build a [`elems::Overflow`]
   ///
   /// ## Children
   /// Options contained in the overflow menu. Min 2, max 5.
@@ -376,7 +500,9 @@ mod blox_elems {
     elems::Overflow::builder()
   }
 
-  /// # Build a radio button group
+  /// # [`elems::Radio`] - `<radio_buttons>`
+  ///
+  /// Build a [`elems::Radio`]
   ///
   /// ## Children
   /// Options contained in the radio button group
@@ -417,7 +543,9 @@ mod blox_elems {
     elems::Radio::builder()
   }
 
-  /// # Build a select menu
+  /// # [`elems::select`] - `<select>`
+  ///
+  /// Build a [`elems::select`]
   ///
   /// # Attributes
   /// - `kind` (Optional): `single` or `multi` from `slack_blocks::blox`. Default is `single`.
@@ -478,7 +606,9 @@ mod blox_elems {
 mod blox_compose {
   use super::*;
 
-  /// # Text
+  /// # [`compose::text`] - `<text>`
+  ///
+  /// Build a [`compose::text`]
   ///
   /// ## Children
   /// Accepts a `String`, `&str` or anything else that implements
@@ -501,7 +631,9 @@ mod blox_compose {
     text::Text::builder()
   }
 
-  /// # Option
+  /// # [`compose::opt`] - `<option>`
+  ///
+  /// Build a [`compose::opt`]
   ///
   /// ## Children
   /// The text to be displayed to the user.
@@ -527,7 +659,9 @@ mod blox_compose {
     compose::Opt::builder()
   }
 
-  /// # Option Group
+  /// # [`compose::opt_group`] - `<option_group>`
+  ///
+  /// Build a [`compose::opt_group`]
   ///
   /// ## Children
   /// Up to 100 option objects of the same type. Note that `syn-rsx` (and `mox` by extension)
@@ -599,7 +733,9 @@ mod blox_compose {
     compose::OptGroup::builder()
   }
 
-  /// # Confirm
+  /// # [`compose::Confirm`] - `<confirm>`
+  ///
+  /// Build a [`compose::Confirm`]
   ///
   /// ## Children
   /// No children.
