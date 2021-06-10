@@ -94,6 +94,13 @@
 //!                 .unwrap();
 //! ```
 //!
+//! There is also a crate example (`./examples/reqwest.rs`) that can be run like so:
+//! ```sh
+//! > export SLACK_API_TOKEN=foo
+//! > export SLACK_API_TOKEN=bar
+//! > cargo run --all-features --example reqwest
+//! ```
+//!
 //! [Block Kit 🔗]: https://api.slack.com/block-kit
 //! [`cargo-make`]: https://github.com/sagiegurari/cargo-make/
 //! [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/
