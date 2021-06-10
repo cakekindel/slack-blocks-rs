@@ -31,9 +31,24 @@ Head over to https://api.slack.com/authentication/basics for a guide on how to c
                   .build()
                   .unwrap();
 
-  println!("{:#?}",
-           String::from_utf8_lossy(req.body().unwrap().as_bytes().unwrap()));
+  let req_body_bytes = req.body()
+                          .expect("body was definitely set")
+                          .as_bytes()
+                          .unwrap();
 
-  let res = client.execute(req).await.unwrap();
-  println!("{:#?}", res.text().await);
+  fn to_json<'a>(s: impl Into<std::borrow::Cow<'a, str>>) -> serde_json::Value {
+    serde_json::from_str(&s.into()).expect("assume `s` is valid json")
+  }
+
+  let req_body_json = to_json(String::from_utf8_lossy(req_body_bytes));
+
+  println!("Request body: {:#?}", req_body_json);
+
+  let res = client.execute(req)
+                  .await
+                  .expect("http should definitely succeed");
+
+  let res_body_json =
+    to_json(&res.text().await.expect("response _should_ contain a body"));
+  println!("Response body: {:#?}", res_body_json);
 }
