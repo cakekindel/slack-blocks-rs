@@ -67,6 +67,33 @@
 //! };
 //! ```
 //!
+//! Then you can send the block to Slack's API, for example:
+//!
+//! ```
+//! # use slack_blocks::{text::ToSlackMarkdown, blocks::Section, elems::DatePicker};
+//! # let section = Section::builder()
+//! #                       .text("*Sally* has requested you set the deadline for the Nano launch project".markdown())
+//! #                       .accessory(DatePicker::builder()
+//! #                                             .action_id("datepicker123")
+//! #                                             .initial_date((28, 4, 1990))
+//! #                                             .placeholder("Select a date")
+//! #                                             .build()
+//! #                       )
+//! #                       .build();
+//! let blocks: Vec<Block> = vec![section.into()]; // using section from examples above
+//!
+//! let req = reqwest::Client::new()
+//!                 .post("https://slack.com/api/chat.postMessage")
+//!                 .header("Content-Type", "application/json")
+//!                 .bearer_auth("<api token here>")
+//!                 .body(serde_json::json!({
+//!                   "channel": "<a channel id>",
+//!                   "blocks": blocks
+//!                 }).to_string())
+//!                 .build()
+//!                 .unwrap();
+//! ```
+//!
 //! [Block Kit 🔗]: https://api.slack.com/block-kit
 //! [`cargo-make`]: https://github.com/sagiegurari/cargo-make/
 //! [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/

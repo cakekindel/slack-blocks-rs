@@ -73,6 +73,23 @@ let section = blox! {
 };
 ```
 
+Then you can send the block to Slack's API, for example:
+
+```rust
+let blocks: Vec<Block> = vec![section.into()]; // using section from examples above
+
+let req = reqwest::Client::new()
+                .post("https://slack.com/api/chat.postMessage")
+                .header("Content-Type", "application/json")
+                .bearer_auth("<api token here>")
+                .body(serde_json::json!({
+                  "channel": "<a channel id>",
+                  "blocks": blocks
+                }).to_string())
+                .build()
+                .unwrap();
+```
+
 [Block Kit 🔗]: https://api.slack.com/block-kit
 [`cargo-make`]: https://github.com/sagiegurari/cargo-make/
 [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/
