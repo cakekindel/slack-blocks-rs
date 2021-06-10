@@ -25,9 +25,9 @@ Head over to https://api.slack.com/authentication/basics for a guide on how to c
                   .header("Content-Type", "application/json")
                   .bearer_auth(api_token)
                   .body(serde_json::json!({
-                    "channel": channel_id,
-                    "blocks": [block]
-                  }).to_string())
+                          "channel": channel_id,
+                          "blocks": [block]
+                        }).to_string())
                   .build()
                   .unwrap();
 

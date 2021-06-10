@@ -82,7 +82,7 @@
 //! #                       .build();
 //! let blocks: Vec<Block> = vec![section.into()]; // using section from examples above
 //!
-//! let req = reqwest::Client::new()
+//! reqwest::Client::new()
 //!                 .post("https://slack.com/api/chat.postMessage")
 //!                 .header("Content-Type", "application/json")
 //!                 .bearer_auth("<api token here>")
@@ -90,8 +90,7 @@
 //!                   "channel": "<a channel id>",
 //!                   "blocks": blocks
 //!                 }).to_string())
-//!                 .build()
-//!                 .unwrap();
+//!                 .send();
 //! ```
 //!
 //! There is also a crate example (`./examples/reqwest.rs`) that can be run like so:
