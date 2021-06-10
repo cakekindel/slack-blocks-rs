@@ -328,14 +328,10 @@ mod validate {
 
   pub(super) fn fields(texts: &Cow<[text::Text]>) -> ValidatorResult {
     below_len("Section.fields", 10, texts.as_ref()).and(
-                                                        texts.iter()
-                                                             .map(|text| {
-                                                               below_len(
-             "Section.fields",
-             2000,
-             text.as_ref())
-                                                             })
-                                                             .collect(),
+      texts
+        .iter()
+        .map(|text| below_len("Section.fields", 2000, text.as_ref()))
+        .collect(),
     )
   }
 }
