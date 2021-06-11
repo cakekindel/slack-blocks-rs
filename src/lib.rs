@@ -70,7 +70,7 @@
 //! Then you can send the block to Slack's API, for example:
 //!
 //! ```
-//! # use slack_blocks::{text::ToSlackMarkdown, blocks::Section, elems::DatePicker};
+//! # use slack_blocks::{Block, text::ToSlackMarkdown, blocks::Section, elems::DatePicker};
 //! # let section = Section::builder()
 //! #                       .text("*Sally* has requested you set the deadline for the Nano launch project".markdown())
 //! #                       .accessory(DatePicker::builder()
