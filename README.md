@@ -73,6 +73,29 @@ let section = blox! {
 };
 ```
 
+Then you can send the block to Slack's API, for example:
+
+```rust
+let blocks: Vec<Block> = vec![section.into()]; // using section from examples above
+
+reqwest::Client::new()
+                .post("https://slack.com/api/chat.postMessage")
+                .header("Content-Type", "application/json")
+                .bearer_auth("<api token here>")
+                .body(serde_json::json!({
+                  "channel": "<a channel id>",
+                  "blocks": blocks
+                }).to_string())
+                .send();
+```
+
+There is also a crate example (`./examples/reqwest.rs`) that can be run like so:
+```sh
+> export SLACK_API_TOKEN=foo
+> export SLACK_API_TOKEN=bar
+> cargo run --all-features --example reqwest
+```
+
 [Block Kit 🔗]: https://api.slack.com/block-kit
 [`cargo-make`]: https://github.com/sagiegurari/cargo-make/
 [issues]: https://github.com/cakekindel/slack-blocks-rs/issues/

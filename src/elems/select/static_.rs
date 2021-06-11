@@ -228,11 +228,13 @@ pub mod build {
                                 ActionId,
                                 Set<(method::options, StaticOpt<'a>)>>;
     fn add_to(self,
-              builder: StaticBuilder<'a,
-                            Multi,
-                            Placeholder,
-                            ActionId,
-                            RequiredMethodNotCalled<method::options>>)
+              builder: StaticBuilder<
+        'a,
+        Multi,
+        Placeholder,
+        ActionId,
+        RequiredMethodNotCalled<method::options>,
+      >)
               -> Self::Output {
       builder.option(self)
     }
@@ -250,11 +252,13 @@ pub mod build {
                                 ActionId,
                                 Set<(method::options, StaticOptGroup<'a>)>>;
     fn add_to(self,
-              builder: StaticBuilder<'a,
-                            Multi,
-                            Placeholder,
-                            ActionId,
-                            RequiredMethodNotCalled<method::options>>)
+              builder: StaticBuilder<
+        'a,
+        Multi,
+        Placeholder,
+        ActionId,
+        RequiredMethodNotCalled<method::options>,
+      >)
               -> Self::Output {
       builder.option_group(self)
     }

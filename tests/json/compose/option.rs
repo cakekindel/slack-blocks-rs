@@ -32,7 +32,7 @@ pub fn groups_docs_ex_1() {
                       <option_group label="Group 2">
                         <option value="value-3" text_plain="*this is plain_text text*" />
                       </option_group>
-                    }];
+                    },];
   let actual = serde_json::to_value(groups).unwrap();
   let expected = json!(
   [
