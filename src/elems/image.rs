@@ -15,8 +15,7 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize as De, Serialize as Ser};
-#[cfg(feature = "validation")]
-use validator::Validate;
+
 
 #[cfg(feature = "validation")]
 use crate::val_helpr::ValidationResult;

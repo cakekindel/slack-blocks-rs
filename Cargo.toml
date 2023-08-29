@@ -28,8 +28,8 @@ maintenance = { status = "actively-developed" }
 
 [dependencies]
 serde = { version = "^1", features = ["derive"] }
-validator = { version = "0.10.0", optional = true }
-validator_derive = { version = "0.10.0", optional = true }
+validator = { version = "0.16.0", optional = true }
+validator_derive = { version = "0.16.0", optional = true }
 mox = { version = "0.12", optional = true }
 
 [dev-dependencies]
