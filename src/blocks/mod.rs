@@ -43,6 +43,10 @@ pub mod header;
 #[doc(inline)]
 pub use header::Header;
 
+pub mod rich_text;
+#[doc(inline)]
+pub use rich_text::RichText;
+
 /// # Layout Blocks
 ///
 /// Blocks are a series of components that can be combined
@@ -88,6 +92,9 @@ pub enum Block<'a> {
 
   /// # File Block
   File(File<'a>),
+
+  /// # Rich Text Block
+  RichText(RichText<'a>),
 }
 
 impl fmt::Display for Block<'_> {
@@ -101,6 +108,7 @@ impl fmt::Display for Block<'_> {
       | Block::Context { .. } => "Context",
       | Block::Input { .. } => "Input",
       | Block::File { .. } => "File",
+      | Block::RichText { .. } => "RichText",
     };
 
     write!(f, "{}", kind)
@@ -132,18 +140,20 @@ impl<'a> Block<'a> {
       | Input(contents) => contents.validate(),
       | Header(contents) => contents.validate(),
       | File(contents) => contents.validate(),
+      | RichText(contents) => validator::Validate::validate(contents),
       | Divider => Ok(()),
     }
   }
 }
 
-convert!(impl<'a> From<Actions<'a>> for Block<'a> => |a| Block::Actions(a));
-convert!(impl<'a> From<Input<'a>>   for Block<'a> => |a| Block::Input(a));
-convert!(impl<'a> From<Section<'a>> for Block<'a> => |a| Block::Section(a));
-convert!(impl<'a> From<Image<'a>>   for Block<'a> => |a| Block::Image(a));
-convert!(impl<'a> From<Context<'a>> for Block<'a> => |a| Block::Context(a));
-convert!(impl<'a> From<File<'a>>    for Block<'a> => |a| Block::File(a));
-convert!(impl<'a> From<Header<'a>>  for Block<'a> => |a| Block::Header(a));
+convert!(impl<'a> From<RichText<'a>> for Block<'a> => Block::RichText);
+convert!(impl<'a> From<Actions<'a>>  for Block<'a> => Block::Actions);
+convert!(impl<'a> From<Input<'a>>    for Block<'a> => Block::Input);
+convert!(impl<'a> From<Section<'a>>  for Block<'a> => Block::Section);
+convert!(impl<'a> From<Image<'a>>    for Block<'a> => Block::Image);
+convert!(impl<'a> From<Context<'a>>  for Block<'a> => Block::Context);
+convert!(impl<'a> From<File<'a>>     for Block<'a> => Block::File);
+convert!(impl<'a> From<Header<'a>>   for Block<'a> => Block::Header);
 
 /// Error yielded when `TryFrom` is called on an unsupported block element.
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
